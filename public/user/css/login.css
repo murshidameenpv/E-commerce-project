@@ -1,0 +1,48 @@
+.login_box .form-group {
+    margin-bottom: 15px;
+}
+
+.login_box .text-center button[type="submit"] {
+    display: block;
+    margin: 10px auto;
+    background-color: #1d4289;
+    border-color: #1d4289;
+}
+.login_box .form-group .input-group {
+    position: relative;
+}
+
+.login_box .form-group .input-group .send-otp-btn {
+    right: 0;
+    top: 0;
+    background-color: #f7ba01;
+    border-color: #f7ba01;
+    color: #000000;
+}
+.signup_box .form-group {
+    margin-bottom: 15px;
+}
+
+.signup_box .text-center button[type="submit"] {
+    display: block;
+    margin: 10px auto;
+    background-color: #1d4289;
+    border-color: #1d4289;
+    color: #ffffff;
+}
+
+
+ .blink_me {
+   animation: blinker 1s linear infinite;
+ }
+
+ @keyframes blinker {
+   50% {
+     opacity: 0;
+   }
+ }
+
+ text {
+   text-align: center;
+   color: rgb(172, 16, 16);
+ }

@@ -1,0 +1,88 @@
+
+<%-include('includes/header')%>
+<%-include('includes/navbar')%>
+
+   <section id="login" class="pt-5 pb-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="login_box">
+                        <h3 class="text-center">Login</h3>
+                        <form action="/verify" method="POST">
+                            <div class="form-group">
+                                <label for="phone">Phone Number</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="phone" name="phone" required>
+                                    <button type="button" class="btn btn-primary send-otp-btn" onclick="sendOTP()">Send OTP</button>
+                                </div>
+                            </div>
+                            <p id="otp-status" class="text-center blink_me"></p>
+                            <div class="form-group">
+                                <label for="otp">OTP</label>
+                                <input type="text" class="form-control" id="otp" name="otp" required>
+                            </div>
+                                <% if (locals.message) { %>
+                                 <p class="text-center blink_me" id="otp-error-message">
+                                        <%= message %>
+                                    </p>
+                                <% } %>
+                            <div class="form-group text-center">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                           
+                            <div class="form-group text-center">
+                                <p class="text-muted" id="resend-link-container" style="cursor:pointer; display: none" onclick="sendOTP(true)">
+                                    <a class="text-muted resend-link">
+                                    Resend otp</a></p>
+                            </div>
+                            <div class="form-group text-center">
+                                <p class="text-muted">Don't have an account? <a href="/signup">Sign up</a></p>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+<script>
+    function sendOTP(isResend) {
+        const phone = document.getElementById('phone').value;
+        // Phone number regex pattern
+        const phoneRegex = /^\+91\d{10}$/;
+        if (!phoneRegex.test(phone)) {
+            // Invalid phone number
+            document.getElementById('otp-status').textContent = 'Invalid phone number';
+            return;
+        }
+        fetch('/send-otp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ phone: phone })
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response.text(); // Extract the response text
+                } else {
+                    throw new Error('Failed to send OTP');
+                }
+            })
+            .then(data => {
+                // Update the content of otp-status element with the  message
+                document.getElementById('otp-status').textContent = isResend ? 'OTP resent successfully' : data;
+                // Show the resend OTP link
+                document.getElementById('resend-link-container').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error sending OTP:', error);
+                document.getElementById('otp-status').textContent = 'Failed to send OTP';
+            });
+    }
+</script>
+
+<%-include('includes/footer')%>

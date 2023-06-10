@@ -1,0 +1,64 @@
+<%-include('includes/header')%>
+<%-include('includes/navbar')%>
+
+<section id="signup" class="pt-5 pb-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="signup_box">
+                    <h3 class="text-center">Sign Up</h3>
+                    <form action="/signup" method="POST">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" required>
+                        </div>
+                        <%if (message && message.field === 'email') {%>
+                            <p id="msg" class="blink_me">
+                                <%=message.msg%>
+                            </p>
+                              <% } %>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+                        <%if (message && message.field === 'password') {%>
+                            <p id="msg" class="blink_me">
+                                <%=message.msg%>
+                            </p>
+                            <% } %>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm Password</label>
+                            <input type="password" class="form-control" id="confirm_password" name="confirm_password"
+                                required>
+                        </div>
+                        <%if (message && message.field==='password_match' ) {%>
+                            <p id="msg" class="blink_me">
+                                <%=message.msg%>
+                            </p>
+                            <% } %>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="text" class="form-control" id="phone" name="phone" required>
+                        </div>
+                        <%if (message && message.field==='phone' ) {%>
+                            <p id="msg" class="blink_me">
+                                <%=message.msg%>
+                            </p>
+                            <% } %>
+                        <div class="form-group text-center">
+                            <button type="submit" class="btn btn-primary">Sign Up</button>
+                        </div>
+                        <div class="form-group text-center">
+                            <p class="text-muted">Already have an account? <a href="/login">Log in</a></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<%-include('includes/footer')%>
