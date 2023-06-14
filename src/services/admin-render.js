@@ -28,7 +28,17 @@ exports.adminUserManagement = async (req, res) => {
   }
 
 
-
+exports.adminProductManagement = async (req, res) => { 
+try {
+       const response = await axios.get('http://localhost:8000/api/admin/products'); // Make a GET request to the user API endpoint
+       const products = response.data //Extract the data
+         res.render('admin/products', { products });
+     }
+     catch (err) { 
+        console.error('Error fetching users from MongoDB', err);
+        res.status(500).send('Internal Server Error');
+    }
+}
   
 
 
@@ -47,13 +57,16 @@ exports.adminAddUser = (req, res) => {
 exports.adminDashboard = (req, res) => { 
   res.render('admin/index')
 }
-exports.adminProductManagement = (req, res) => { 
-  res.render('admin/products')
-}
+
 exports.adminOrderManagement= (req, res) => { 
   res.render('admin/orders')
 }
 
 exports.adminCategoryManagement = (req, res) => { 
   res.render('admin/category')
+}
+
+
+exports.adminChartManagement = (req, res) => {
+  res.render('admin/charts')
 }

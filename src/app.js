@@ -26,7 +26,13 @@ app.use(morgan("tiny"));
 app.set('view engine', 'ejs');
 
 //load assets
-app.use(express.static(path.join(__dirname,"../public")))
+app.use(express.static(path.join(__dirname, "../public")))
+
+app.use(express.static(path.join('uploads')))
+
+app.use(express.static('js'));
+
+
 
 
 //Load routers

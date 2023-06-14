@@ -1,6 +1,9 @@
+const  db  = require("../models/productSchema");
 
-exports.home = (req, res) => { 
-  res.render('user/index', {user:req.session.user})
+exports.home = async(req, res) => { 
+    const superDeal =await db.find()
+    console.log(superDeal,"kk");
+  res.render('user/index', {user:req.session.user, superDeal})
 }
 
 exports.login = (req, res) => {
