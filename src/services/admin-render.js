@@ -1,5 +1,6 @@
 const axios = require("axios");
 const userDb = require("../models/userSchema");
+const productDb = require("../models/productSchema");
 
 exports.adminLogin = (req, res) => {
   let message = "";
@@ -20,12 +21,12 @@ exports.adminUserManagement = async (req, res) => {
   }
 };
 
+
+
 exports.adminProductManagement = async (req, res) => {
   try {
-    const response = await axios.get(
-      "http://localhost:8000/api/admin/products"
-    ); // Make a GET request to the user API endpoint
-    const products = response.data; //Extract the data
+    const products = await productDb.find().exec();
+    console.log(products);
     res.render("admin/products", { products });
   } catch (err) {
     console.error("Error fetching users from MongoDB", err);

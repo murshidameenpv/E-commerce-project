@@ -44,7 +44,7 @@ router.put('/api/admin/users/:id/block', adminController.adminBlockUser)
 router.put('/api/admin/users/:id/unblock', adminController.adminUnBlockUser)
 router.delete('/api/admin/users/:id/delete', adminController.adminDeleteUser)
 //products
-router.get('/api/admin/products',adminController.adminFindAllProduct)
+// router.get('/api/admin/products',adminController.adminFindAllProduct)
 router.post('/api/admin/product/add-product', upload.array('image'), adminController.adminAddProduct)
 router.delete('/api/admin/product/:id/delete', adminController.adminDeleteProduct)
 router.get('/api/admin/product', adminController.getProductById)

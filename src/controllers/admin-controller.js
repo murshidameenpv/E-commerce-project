@@ -76,6 +76,7 @@ exports.adminAddProduct = async (req, res) => {
 exports.adminFindAllProduct = async (req, res) => {
   try {
     const productsData = await productDb.find();
+    console.log(productsData);
     res.send(productsData);
   } catch (err) {
     console.error("Error retrieving data from Mongoose", err);

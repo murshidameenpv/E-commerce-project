@@ -81,8 +81,8 @@
                                                         </td>
                                                         <td class="cell">
                                                             <span style="cursor: pointer" data-bs-toggle="modal"
-                                                                data-bs-target="#updateProductModal"
-                                                                class="edit-product"
+                                                                data-bs-target="#updateProductModal-<%= product._id %>"
+
                                                                 data-product-id="<%= product._id %>">
                                                                 <i class="fa fa-edit"></i> Edit
                                                             </span>
@@ -188,7 +188,8 @@
 
 
             <!-- Modal Update Product-->
-            <div class="modal fade" id="updateProductModal" tabindex="-1" aria-labelledby="updateProductModalLabel"
+            <% products.forEach((product)=> { %>
+            <div class="modal fade" id="updateProductModal-<%= product._id %>"  tabindex="-1" aria-labelledby="updateProductModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog">
                     <div class="modal-content">
@@ -203,11 +204,12 @@
                             <form id="updateProductForm" enctype="multipart/form-data" >
                                 <div class="mb-3">
                                     <label for="updateProductName" class="form-label">Product Name</label>
-                                    <input type="text" class="form-control" id="updateProductName" name="productName">
+                                    <input type="text" class="form-control" value="<%= product.productName %>" id="updateProductName" name="productName">
                                 </div>
                                 <div class="mb-3">
                                     <label for="updateCategory" class="form-label">Category</label>
                                     <select class="form-select" id="updateCategory" name="category">
+                                        <option value=" <%=product.category %>"><%= product.category %></option>
                                         <option value="oneplus">OnePlus</option>
                                         <option value="Apple">Apple</option>
                                         <option value="Samsung">Samsung</option>
@@ -218,11 +220,11 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="updatePrice" class="form-label">Price</label>
-                                    <input type="number" class="form-control" id="updatePrice" name="price">
+                                    <input type="number" class="form-control" value="<%= product.price %>" id="updatePrice" name="price">
                                 </div>
                                 <div class="mb-3">
                                     <label for="updateStock" class="form-label">Quantity</label>
-                                    <input type="number" class="form-control" id="updateStock" name="stock">
+                                    <input type="number" class="form-control" value="<%= product.stock %>" id="updateStock" name="stock">
                                 </div>
                                 <div class="mb-3">
                                     <label for="updateDescription" class="form-label">Description</label>
@@ -230,7 +232,12 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="updateImagesBox" class="form-label">Images</label>
-                                    <div id="updateImagesBox"></div>
+
+                                    <div id="updateImagesBox">
+                                        <% product.image.forEach((img)=>{ %>
+                                            <img src='/<%= img%>' style="height: 80px; width: 80px;">
+                                        <% })%>
+                                    </div>
                                 </div>
                                 <div class="mb-3">
                                     <label for="updateImage" class="form-label">Upload Image</label>
@@ -252,6 +259,8 @@
                     </div>
                 </div>
             </div>
+            <% }) %>
+
             <!-- Update Product Modal -->
 
 
