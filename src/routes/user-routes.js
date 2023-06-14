@@ -18,7 +18,7 @@ router.get('/checkout', userRender.checkout)
 router.get('/cart', userRender.checkout)
 router.get('/otplogin', userRender.otplogin)
 
-
+ 
 
 
 //POST METHODS

@@ -5,7 +5,7 @@ const authToken = process.env.TWILIO_AUTH_TOKEN;
 const verifySid = process.env.TWILIO_VERIFY_SERVICE_SID;
 const client = require('twilio')(accountSid, authToken);
 
-exports.  sendOTP = async (req, res) => {
+exports.sendOTP = async (req, res) => {
   const { phone } = req.body;
   try {
     const verification = await client.verify

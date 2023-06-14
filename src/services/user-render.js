@@ -2,7 +2,6 @@ const  db  = require("../models/productSchema");
 
 exports.home = async(req, res) => { 
     const superDeal =await db.find()
-    console.log(superDeal,"kk");
   res.render('user/index', {user:req.session.user, superDeal})
 }
 
@@ -41,11 +40,15 @@ exports.logout = (req, res) => {
 
 
 
-exports.aboutUs = (req, res) => { 
+exports.aboutUs = (req, res) => {  
+  if (req.session.user) {
+    
+  }
   res.render('user/about',{user:req.session.user})
 }
 
 exports.products = (req, res) => { 
+
   res.render('user/product',{user:req.session.user})
 }
 

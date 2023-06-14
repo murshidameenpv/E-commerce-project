@@ -29,11 +29,10 @@
                             <div class="form-group text-center">
                                 <button type="submit" class="btn btn-primary">Login</button>
                             </div>
-                           
                             <div class="form-group text-center">
-                                <p class="text-muted" id="resend-link-container" style="cursor:pointer; display: none" onclick="sendOTP(true)">
-                                    <a class="text-muted resend-link">
-                                    Resend otp</a></p>
+                                <p class="text-muted" id="resend-link-container" style="cursor:pointer;" onclick="sendOTP(true)">
+                                    <a class="text-muted resend-link">Resend OTP</a>
+                                </p>
                             </div>
                             <div class="form-group text-center">
                                 <p class="text-muted">Don't have an account? <a href="/signup">Sign up</a></p>
@@ -44,7 +43,6 @@
             </div>
         </div>
     </section>
-
 
 
 
@@ -73,16 +71,39 @@
                 }
             })
             .then(data => {
-                // Update the content of otp-status element with the  message
+                // Update the content of otp-status element with the message
                 document.getElementById('otp-status').textContent = isResend ? 'OTP resent successfully' : data;
                 // Show the resend OTP link
                 document.getElementById('resend-link-container').style.display = 'block';
+                // Start the countdown
+                startCountdown();
             })
             .catch(error => {
                 console.error('Error sending OTP:', error);
                 document.getElementById('otp-status').textContent = 'Failed to send OTP';
             });
     }
+
+
+    function startCountdown() {
+        let timeLeft = 30; // Number of seconds for the countdown
+
+        const countdownElement = document.getElementById('resend-link-container');
+        countdownElement.innerHTML = `Resend OTP (${timeLeft}s)`;
+        countdownElement.style.cursor = 'not-allowed';
+
+        countdownTimer = setInterval(() => {
+            timeLeft--;
+            countdownElement.innerHTML = `Resend OTP (${timeLeft}s)`;
+
+            if (timeLeft === 0) {
+                clearInterval(countdownTimer);
+                countdownElement.innerHTML = '<a class="text-muted resend-link">Resend OTP</a>';
+                countdownElement.style.cursor = 'pointer';
+            }
+        }, 1000);
+    }
 </script>
+
 
 <%-include('includes/footer')%>

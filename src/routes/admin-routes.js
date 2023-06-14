@@ -4,7 +4,8 @@ const adminRender = require('../services/admin-render');
 const validate = require('../middleware/admin/validateAdmin')
 const checkSession = require('../middleware/admin/checkSession')
 const adminController = require('../controllers/admin-controller')
-const upload = require('../middleware/admin/multer')
+const upload = require('../middleware/admin/multer');
+const { isAdminLoggedIn } = require('../middleware/admin/checkSession');
 
 
 
@@ -28,7 +29,7 @@ router.get('/admin/category',
         adminRender.adminCategoryManagement);
 router.get('/admin/charts',
         checkSession.sessionExists,
-        adminRender.adminChartManagement);
+        adminRender.adminChartManagement);      
 
 //POST METHODS
 router.post('/admin',
@@ -36,7 +37,9 @@ router.post('/admin',
         adminController.adminLoginController
 );
 //user
-router.get('/api/admin/users',adminController.adminFindUser)
+router.get(
+  "/api/admin/users", isAdminLoggedIn, adminController.adminFindUser
+);
 router.put('/api/admin/users/:id/block', adminController.adminBlockUser)
 router.put('/api/admin/users/:id/unblock', adminController.adminUnBlockUser)
 router.delete('/api/admin/users/:id/delete', adminController.adminDeleteUser)

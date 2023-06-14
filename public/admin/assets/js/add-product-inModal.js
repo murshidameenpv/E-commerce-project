@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 // Reset form fields when the modal is closed
 document
-  .querySelector("#uProductModal")
+  .querySelector("#newProductModal")
   .addEventListener("hidden.bs.modal", function () {
     document.querySelector("#updateProductForm").reset();
   });
