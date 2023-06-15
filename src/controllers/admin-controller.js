@@ -2,20 +2,18 @@ const userDb = require("../models/userSchema");
 const productDb = require("../models/productSchema");
 
 exports.adminLoginController = (req, res) => {
-  res.redirect(302, "/admin/dashboard");
+  res.redirect(302, "/admin");
 };
 
-//ADMIN USERS VIEW CONTROLLER
-exports.adminFindUser = async (req, res) => {
-  try {
-    console.log("apicall");
-      const userData = await userDb.find();
-      res.send(userData);
-  } catch (err) {
-    console.error("Error retrieving data from Mongoose", err);
-    res.status(500).send("Internal Server Error");
-  }
+exports.adminLogout = (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error destroying session:", err);
+    }
+    res.redirect("/admin");
+  });
 };
+
 
 //ADMIN BLOCK_UNBLOCK CONTROLLER
 exports.adminBlockUser = async (req, res) => {
@@ -72,50 +70,40 @@ exports.adminAddProduct = async (req, res) => {
   }
 };
 
-// ADMIN VIEW PRODUCTS
-exports.adminFindAllProduct = async (req, res) => {
-  try {
-    const productsData = await productDb.find();
-    console.log(productsData);
-    res.send(productsData);
-  } catch (err) {
-    console.error("Error retrieving data from Mongoose", err);
-    res.status(500).send("Internal Server Error");
-  }
-};
-
-//ADMIN GET PRODUCT BY ID
-exports.getProductById = async (req, res) => {
-  const productId = req.query.id;
-  console.log(productId);
-  try {
-    const product = await productDb.findById(productId);
-    res.json(product);
-  } catch (err) {
-    console.error("Error retrieving data from Mongoose", err);
-    res.status(500).send("Internal Server Error");
-  }
-};
 
 // ADMIN UPDATE PRODUCT
 exports.adminUpdateProduct = async (req, res) => {
-  const productId = req.query.id;
-  const updatedData = req.body.data;
-  console.log(productId);
-  console.log(updatedData, "ooooooooooooooooooo");
-
+  console.log("server here")
   try {
-    const updatedProduct = await userDb.findByIdAndUpdate(
+    const productId = req.query.productId;
+    console.log(productId);
+    const { productName, category, price, stock, description } = req.body;
+    console.log(req.file, "file")
+    console.log(req.files)
+    const newImages = req.files.map((file) => file.filename);
+    const updatedProduct = await productDb.findByIdAndUpdate(
       productId,
-      updatedData,
+      {
+        $push: { image: { $each: newImages } },
+        $set: {
+          productName: productName,
+          category: category,
+          price: price,
+          stock: stock,
+          description: description,
+          listed: true,
+        },
+      },
       { new: true }
     );
-    res.status(200).json({ success: true, updatedProduct });
+    res.status(201).json(updatedProduct);
   } catch (err) {
-    console.error("Error updating product:", err);
-    res.status(500).json({ success: false, message: "Internal Server Error" });
+    console.error("Error creating new product:", err);
+    res.status(500).send("Internal Server Error");
   }
 };
+
+
 
 //ADMIN DELETE PRODUCTS
 exports.adminDeleteProduct = async (req, res) => {

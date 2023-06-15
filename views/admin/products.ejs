@@ -191,7 +191,7 @@
             <% products.forEach((product)=> { %>
             <div class="modal fade" id="updateProductModal-<%= product._id %>"  tabindex="-1" aria-labelledby="updateProductModalLabel"
                 aria-hidden="true">
-                <div class="modal-dialog">
+                <div class="modal-dialog">  
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="updateProductModalLabel">Update Product</h5>
@@ -199,7 +199,7 @@
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <input type="text" class="form-control" id="productId" name="productId" readonly>
+                                <input type="text" class="form-control" id="productId" name="productId" readonly value="<%= product._id %>" style="font-weight: bold;">
                             </div>
                             <form id="updateProductForm" enctype="multipart/form-data" >
                                 <div class="mb-3">
@@ -228,7 +228,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="updateDescription" class="form-label">Description</label>
-                                    <textarea class="form-control" id="updateDescription" name="description"></textarea>
+                                    <textarea class="form-control" id="updateDescription" name="description"><%= product.description %></textarea>
                                 </div>
                                 <div class="mb-3">
                                     <label for="updateImagesBox" class="form-label">Images</label>

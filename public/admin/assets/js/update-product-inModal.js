@@ -1,71 +1,35 @@
-//Get Product in Modal
-document.addEventListener("click", function (event) {
-  if (event.target.classList.contains("edit-product")) {
-    const productId = event.target.getAttribute("data-product-id");
-
-    axios
-      .get("/api/admin/product", {
-        params: { id: productId },
-      })
-      .then(function (response) {
-        const product = response.data;
-
-        // Populate the images in the updateImagesBox
-        const imagesBox = document.querySelector("#updateImagesBox");
-        imagesBox.innerHTML = ""; // Clear previous images
-        product.image.forEach(function (imageUrl) {
-          const imgElement = document.createElement("img");
-          imgElement.src = "/" + imageUrl;
-          imgElement.classList.add("update-product-image");
-          imgElement.style = "width: 70px;height: 80px";
-          imagesBox.appendChild(imgElement);
-
-          // Populate the modal with the retrieved product data
-          document.querySelector("#productId").value = product._id;
-          document.querySelector("#updateProductName").value =
-            product.productName;
-          document.querySelector("#updateCategory").value = product.category;
-          document.querySelector("#updatePrice").value = product.price;
-          document.querySelector("#updateStock").value = product.stock;
-          document.querySelector("#updateDescription").value =
-            product.description;
-        });
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-  }
-});
-
-
 document.addEventListener("DOMContentLoaded", function () {
   document
     .querySelector("#updateProductForm")
     .addEventListener("submit", function (event) {
       event.preventDefault(); // Prevent default form submission
 
+      // Get the product ID
+      let productId = document.querySelector("#productId").value;
+
       // Show loading spinner
-      document.querySelector("#loadingSpinner").style.display = "block";
+      document.querySelector("#loadingSpinnerUpdate").style.display = "block";
+
       // Disable submit button
       document.querySelector("#updateProductBtn").disabled = true;
-      const productId = document.querySelector("#productId").value;
+
       // Create FormData object with form data
       const formData = new FormData(this);
-      console.log(JSON.stringify(formData), "aaaaaaa");
-      formData.append("productId", productId);
-      // Make Axios request
+
+      // Make Axios request with the product ID as a query parameter
       axios
-        .post("/api/admin/product/update", formData, {
+        .put(`/api/admin/product/update?productId=${productId}`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         })
         .then(function (response) {
           // Hide loading spinner
-          document.querySelector("#loadingSpinner").style.display = "none";
+          document.querySelector("#loadingSpinnerUpdate").style.display = "none";
+
           // Show success message on the modal
-          const successMessage = document.querySelector("#successMessage");
-          successMessage.textContent = "Product Updated successfully";
+          const successMessage = document.querySelector("#successMessageUpdate");
+          successMessage.textContent = "Product updated successfully";
           successMessage.style.display = "block";
           setTimeout(function () {
             successMessage.style.display = "none";
@@ -93,22 +57,16 @@ document.addEventListener("DOMContentLoaded", function () {
           console.error(error);
 
           // Hide loading spinner
-          document.querySelector("#loadingSpinner").style.display = "none";
+          document.querySelector("#loadingSpinnerUpdate").style.display = "none";
 
           // Show error message on the modal
-          const errorMessage = document.querySelector("#errorMessage");
-          errorMessage.textContent = "Error adding product. Please try again.";
+          const errorMessage = document.querySelector("#errorMessageUpdate");
+          errorMessage.textContent =
+            "Error updating product. Please try again.";
           errorMessage.style.display = "block";
 
           // Enable submit button
-          document.querySelector("#addProductBtn").disabled = false;
+          document.querySelector("#updateProductBtn").disabled = false;
         });
     });
 });
-
-//Reset form fields when the modal is closed
-document
-  .querySelector("#updateProductModal")
-  .addEventListener("hidden.bs.modal", function () {
-    document.querySelector("#updateProductForm").reset();
-  });

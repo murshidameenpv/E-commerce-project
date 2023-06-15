@@ -4,12 +4,10 @@ exports.sessionExists = (req, res, next) => {
     }
     next()
 }
-
-exports.isAdminLoggedIn = (req, res, next) => {
+exports.ifLoggedIn = (req, res, next) => {
     if (req.session.admin) {
-        console.log("api call on middleware")
-        next()
+        res.redirect('/admin/dashboard')
     } else {
-        res.redirect('/admin');
+        next() 
     }
 }

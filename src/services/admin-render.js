@@ -1,4 +1,4 @@
-const axios = require("axios");
+
 const userDb = require("../models/userSchema");
 const productDb = require("../models/productSchema");
 
@@ -26,7 +26,6 @@ exports.adminUserManagement = async (req, res) => {
 exports.adminProductManagement = async (req, res) => {
   try {
     const products = await productDb.find().exec();
-    console.log(products);
     res.render("admin/products", { products });
   } catch (err) {
     console.error("Error fetching users from MongoDB", err);

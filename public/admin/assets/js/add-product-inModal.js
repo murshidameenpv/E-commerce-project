@@ -63,9 +63,3 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 });
-// Reset form fields when the modal is closed
-document
-  .querySelector("#newProductModal")
-  .addEventListener("hidden.bs.modal", function () {
-    document.querySelector("#updateProductForm").reset();
-  });
