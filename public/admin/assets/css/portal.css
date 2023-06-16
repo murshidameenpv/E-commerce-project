@@ -27,3 +27,11 @@
     background-color: #c82333;
     border-color: #bd2130;
 }
+.right-aligned-column {
+    width: 100%;
+}
+
+.right-aligned-column th:last-child,
+.right-aligned-column td:last-child {
+    text-align: right;
+}

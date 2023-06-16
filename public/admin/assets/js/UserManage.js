@@ -1,12 +1,9 @@
-// Handle block/unblock button click
+// HANDLE BLOCK_UNBLOCK USER
 document.addEventListener("click", function (event) {
-  if (
-    event.target.classList.contains("block-btn") ||
-    event.target.classList.contains("unblock-btn")
-  ) {
+  if (event.target.id === "userBlockBtn" || event.target.id === "userUnBlockBtn") {
     event.preventDefault();
     const userId = event.target.getAttribute("data-id");
-    const isBlocked = event.target.classList.contains("block-btn");
+    const isBlocked = event.target.id === "userBlockBtn";
 
     const url = `/api/admin/users/${userId}${
       isBlocked ? "/block" : "/unblock"
@@ -16,12 +13,10 @@ document.addEventListener("click", function (event) {
       .then(function (response) {
         if (response.data.success) {
           if (isBlocked) {
-            event.target.classList.remove("block-btn");
-            event.target.classList.add("unblock-btn");
+            event.target.id = "userUnBlockBtn";
             event.target.textContent = "Unblock";
           } else {
-            event.target.classList.remove("unblock-btn");
-            event.target.classList.add("block-btn");
+            event.target.id = "userBlockBtn";
             event.target.textContent = "Block";
           }
           axios.get(location.href).then(function (response) {
@@ -40,9 +35,11 @@ document.addEventListener("click", function (event) {
 });
 
 
-/// DELETE USER WHEN CLICK DELETE
+
+
+// DELETE USER WHEN CLICK DELETE
 document.addEventListener("click", function (event) {
-  if (event.target.classList.contains("delete-button")) {
+  if (event.target.id === "userDeleteBtn") {
     event.preventDefault();
     const userId = event.target.getAttribute("data-id");
 
@@ -60,5 +57,3 @@ document.addEventListener("click", function (event) {
       });
   }
 });
-;
-

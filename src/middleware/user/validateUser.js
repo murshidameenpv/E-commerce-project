@@ -98,7 +98,6 @@ const email = req.body.email;
 exports.checkPhoneNumberExistSignup = async (req, res, next)=>{
   const { phone } = req.body
   const data = req.session.phone = req.body
-  console.log(data,"oooooooooooooooooooooooo");
     try {
         const existingUser = await userDb.findOne({ phone });
         if (existingUser) {

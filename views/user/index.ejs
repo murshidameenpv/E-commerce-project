@@ -48,12 +48,13 @@
         </div>
         <div class="row prod_2 text-center">
             <% superDeal.forEach((product) => { %> 
+                <% if(!product.listed){ %>
             <div class="col-md-3">
                 <div class="prod_2im position-relative clearfix">
                     <div class="prod_2i1 clearfix">
                         <div class="grid clearfix">
                             <figure class="effect-jazz mb-0">
-                                <a href="detail.html"><img src="<%= product.image[0] %>" style="max-width: 100%; max-height: 100%;" class="w-100" alt="abc"></a>
+                                <a href="detail.html"><img src="<%= product.image[product.image.length-1] %>"class="w-100" alt="abc"></a>
                             </figure>
                         </div>
                     </div>
@@ -66,6 +67,7 @@
                     </div>
                 </div>
             </div>
+            <% } %>
             <% }); %>
         </div>
     </div>

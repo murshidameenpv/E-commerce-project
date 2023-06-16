@@ -75,21 +75,23 @@
                                                             </td>
                                                             <td class="cell">
                                                                 <% if (user.isBlocked) { %>
-                                                                    <span class="btn-sm app-btn-secondary unblock-btn" data-id="<%= user._id %>" style="cursor: pointer;" >Unblock</span>
+                                                                    <span class="btn-sm app-btn-secondary unblock-btn" data-id="<%= user._id %>" style="cursor: pointer;" id="userUnBlockBtn">Unblock</span>
                                                                 <% } else { %>
-                                                                    <span class="btn-sm app-btn-secondary block-btn" data-id="<%= user._id %>" style="cursor: pointer;">Block</span>
+                                                                    <span class="btn-sm app-btn-secondary block-btn" data-id="<%= user._id %>" style="cursor: pointer;" id="userBlockBtn">Block</span>
                                                                 <% } %>
                                                             </td>
                                                             <td class="cell">
-                                                                <span class="btn-sm app-btn-danger delete-button" data-id="<%= user._id %>" style="cursor: pointer;">Delete</span></td>
+                                                                <span class="btn-sm app-btn-danger delete-button" data-id="<%= user._id %>" style="cursor: pointer;" id="userDeleteBtn">Delete</span>
+                                                            </td>
                                                         </tr>
                                                             <% }) %>
                                                     </tbody>
                                                 </table>
                                         </div><!--//table-responsive-->
-
                                     </div><!--//app-card-body-->
                                 </div><!--//app-card-->
+
+
                                 <nav class="app-pagination">
                                     <ul class="pagination justify-content-center">
                                         <li class="page-item disabled">
@@ -103,10 +105,11 @@
                                         </li>
                                     </ul>
                                 </nav><!--//app-pagination-->
-
                             </div><!--//tab-pane-->
                         </div><!--//tab-content-->
                     </div><!--//container-fluid-->
                 </div><!--//app-content-->
+
+
     </div><!--//app-wrapper-->
     <%-include('includes/footer')%>

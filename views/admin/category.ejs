@@ -1,11 +1,11 @@
-<%-include('includes/header')%>
-    <%-include('includes/sidebar')%>
+<%- include('includes/header') %>
+    <%- include('includes/sidebar') %>
         <div class="app-wrapper">
             <div class="app-content pt-3 p-md-3 p-lg-4">
                 <div class="container-xl">
                     <div class="row g-3 mb-4 align-items-center justify-content-between">
-                        <div class="col-auto">
-                            <h1 class="app-page-title mb-0">Orders</h1>
+                        <div class="col">
+                            <h1 class="app-page-title mb-0">Categories</h1>
                         </div>
                         <div class="col-auto">
                             <div class="page-utilities">
@@ -20,242 +20,87 @@
                                                 <button type="submit" class="btn app-btn-secondary">Search</button>
                                             </div>
                                         </form>
-
-                                    </div><!--//col-->
+                                    </div><!--//col-auto-->
                                     <div class="col-auto">
-
-                                        <select class="form-select w-auto">
-                                            <option selected value="option-1">All</option>
-                                            <option value="option-2">This week</option>
-                                            <option value="option-3">This month</option>
-                                            <option value="option-4">Last 3 months</option>
-                                        </select>
+                                        <span class="btn app-btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#addCategoryModal" style="cursor:pointer">Add Category</span>
                                     </div>
                                 </div><!--//row-->
                             </div><!--//table-utilities-->
                         </div><!--//col-auto-->
                     </div><!--//row-->
 
-
-                    <nav id="orders-table-tab"
+                    <nav id="category-table-tab"
                         class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
-                        <a class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab" data-bs-toggle="tab"
-                            href="#orders-all" role="tab" aria-controls="orders-all" aria-selected="true">All</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="orders-paid-tab" data-bs-toggle="tab"
-                            href="#orders-paid" role="tab" aria-controls="orders-paid" aria-selected="false">Paid</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="orders-pending-tab" data-bs-toggle="tab"
-                            href="#orders-pending" role="tab" aria-controls="orders-pending"
-                            aria-selected="false">Pending</a>
-                        <a class="flex-sm-fill text-sm-center nav-link" id="orders-cancelled-tab" data-bs-toggle="tab"
-                            href="#orders-cancelled" role="tab" aria-controls="orders-cancelled"
-                            aria-selected="false">Cancelled</a>
+                        <span class="flex-sm-fill text-sm-center nav-link active" id="categor-all-tab" >All
+                            Categories</span>
                     </nav>
-
-
-                    <div class="tab-content" id="orders-table-tab-content">
+                    <div class="tab-content" id="category-table-tab-content">
                         <div class="tab-pane fade show active" id="orders-all" role="tabpanel"
                             aria-labelledby="orders-all-tab">
                             <div class="app-card app-card-orders-table shadow-sm mb-5">
                                 <div class="app-card-body">
                                     <div class="table-responsive">
-                                        <table class="table app-table-hover mb-0 text-left">
+                                        <table class="table app-table-hover mb-0 text-left right-aligned-column">
                                             <thead>
                                                 <tr>
-                                                    <th class="cell">Order</th>
-                                                    <th class="cell">Product</th>
-                                                    <th class="cell">Customer</th>
-                                                    <th class="cell">Date</th>
-                                                    <th class="cell">Status</th>
-                                                    <th class="cell">Total</th>
-                                                    <th class="cell"></th>
+                                                    <th class="cell">Category</th>
+                                                    <th></th>
+                                                    <th class="cell">Delete Category</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                <% categories.forEach((category)=> { %>
                                                 <tr>
-                                                    <td class="cell">#15346</td>
-                                                    <td class="cell"><span class="truncate">Lorem ipsum dolor sit amet
-                                                            eget volutpat erat</span></td>
-                                                    <td class="cell">John Sanders</td>
-                                                    <td class="cell"><span>17 Oct</span><span class="note">2:16
-                                                            PM</span></td>
-                                                    <td class="cell"><span class="badge bg-success">Paid</span></td>
-                                                    <td class="cell">$259.35</td>
-                                                    <td class="cell"><a class="btn-sm app-btn-secondary"
-                                                            href="#">View</a></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="cell">#15345</td>
-                                                    <td class="cell"><span class="truncate">Consectetur adipiscing
-                                                            elit</span></td>
-                                                    <td class="cell">Dylan Ambrose</td>
-                                                    <td class="cell"><span class="cell-data">16 Oct</span><span
-                                                            class="note">03:16 AM</span></td>
-                                                    <td class="cell"><span class="badge bg-warning">Pending</span></td>
-                                                    <td class="cell">$96.20</td>
-                                                    <td class="cell"><a class="btn-sm app-btn-secondary"
-                                                            href="#">View</a></td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="cell">#15342</td>
-                                                    <td class="cell"><span class="truncate">Justo feugiat neque</span>
+                                                    <td class="cell"><%=category.category%></td>
+                                                    <td></td>
+                                                    <td class="cell">
+                                                        <span class="btn-sm app-btn-danger delete-button"
+                                                            style="cursor: pointer;"
+                                                            id="categoryDeleteBtn" data-id="<%=category._id%>">Delete</span>
                                                     </td>
-                                                    <td class="cell">Reina Brooks</td>
-                                                    <td class="cell"><span class="cell-data">12 Oct</span><span
-                                                            class="note">04:23 PM</span></td>
-                                                    <td class="cell"><span class="badge bg-danger">Cancelled</span></td>
-                                                    <td class="cell">$59.00</td>
-                                                    <td class="cell"><a class="btn-sm app-btn-secondary"
-                                                            href="#">View</a></td>
                                                 </tr>
-                                            </tbody>
-                                        </table>
-                                    </div><!--//table-responsive-->
-
-                                </div><!--//app-card-body-->
-                            </div><!--//app-card-->
-                            <nav class="app-pagination">
-                                <ul class="pagination justify-content-center">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                                    </li>
-                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">Next</a>
-                                    </li>
-                                </ul>
-                            </nav><!--//app-pagination-->
-
-                        </div><!--//tab-pane-->
-
-                        <div class="tab-pane fade" id="orders-paid" role="tabpanel" aria-labelledby="orders-paid-tab">
-                            <div class="app-card app-card-orders-table mb-5">
-                                <div class="app-card-body">
-                                    <div class="table-responsive">
-
-                                        <table class="table mb-0 text-left">
-                                            <thead>
-                                                <tr>
-                                                    <th class="cell">Order</th>
-                                                    <th class="cell">Product</th>
-                                                    <th class="cell">Customer</th>
-                                                    <th class="cell">Date</th>
-                                                    <th class="cell">Status</th>
-                                                    <th class="cell">Total</th>
-                                                    <th class="cell"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="cell">#15346</td>
-                                                    <td class="cell"><span class="truncate">Lorem ipsum dolor sit amet
-                                                            eget volutpat erat</span></td>
-                                                    <td class="cell">John Sanders</td>
-                                                    <td class="cell"><span>17 Oct</span><span class="note">2:16
-                                                            PM</span></td>
-                                                    <td class="cell"><span class="badge bg-success">Paid</span></td>
-                                                    <td class="cell">$259.35</td>
-                                                    <td class="cell"><a class="btn-sm app-btn-secondary"
-                                                            href="#">View</a></td>
-                                                </tr>
+                                                <% }) %>
                                             </tbody>
                                         </table>
                                     </div><!--//table-responsive-->
                                 </div><!--//app-card-body-->
                             </div><!--//app-card-->
                         </div><!--//tab-pane-->
-
-                        <div class="tab-pane fade" id="orders-pending" role="tabpanel"
-                            aria-labelledby="orders-pending-tab">
-                            <div class="app-card app-card-orders-table mb-5">
-                                <div class="app-card-body">
-                                    <div class="table-responsive">
-                                        <table class="table mb-0 text-left">
-                                            <thead>
-                                                <tr>
-                                                    <th class="cell">Order</th>
-                                                    <th class="cell">Product</th>
-                                                    <th class="cell">Customer</th>
-                                                    <th class="cell">Date</th>
-                                                    <th class="cell">Status</th>
-                                                    <th class="cell">Total</th>
-                                                    <th class="cell"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="cell">#15345</td>
-                                                    <td class="cell"><span class="truncate">Consectetur adipiscing
-                                                            elit</span></td>
-                                                    <td class="cell">Dylan Ambrose</td>
-                                                    <td class="cell"><span class="cell-data">16 Oct</span><span
-                                                            class="note">03:16 AM</span></td>
-                                                    <td class="cell"><span class="badge bg-warning">Pending</span></td>
-                                                    <td class="cell">$96.20</td>
-                                                    <td class="cell"><a class="btn-sm app-btn-secondary"
-                                                            href="#">View</a></td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div><!--//table-responsive-->
-                                </div><!--//app-card-body-->
-                            </div><!--//app-card-->
-                        </div><!--//tab-pane-->
-                        <div class="tab-pane fade" id="orders-cancelled" role="tabpanel"
-                            aria-labelledby="orders-cancelled-tab">
-                            <div class="app-card app-card-orders-table mb-5">
-                                <div class="app-card-body">
-                                    <div class="table-responsive">
-                                        <table class="table mb-0 text-left">
-                                            <thead>
-                                                <tr>
-                                                    <th class="cell">Order</th>
-                                                    <th class="cell">Product</th>
-                                                    <th class="cell">Customer</th>
-                                                    <th class="cell">Date</th>
-                                                    <th class="cell">Status</th>
-                                                    <th class="cell">Total</th>
-                                                    <th class="cell"></th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-
-                                                <tr>
-                                                    <td class="cell">#15342</td>
-                                                    <td class="cell"><span class="truncate">Justo feugiat neque</span>
-                                                    </td>
-                                                    <td class="cell">Reina Brooks</td>
-                                                    <td class="cell"><span class="cell-data">12 Oct</span><span
-                                                            class="note">04:23 PM</span></td>
-                                                    <td class="cell"><span class="badge bg-danger">Cancelled</span></td>
-                                                    <td class="cell">$59.00</td>
-                                                    <td class="cell"><a class="btn-sm app-btn-secondary"
-                                                            href="#">View</a></td>
-                                                </tr>
-
-                                            </tbody>
-                                        </table>
-                                    </div><!--//table-responsive-->
-                                </div><!--//app-card-body-->
-                            </div><!--//app-card-->
-                        </div><!--//tab-pane-->
-                    </div><!--//tab-content-->
-
-
-
-                </div><!--//container-fluid-->
+                    </div><!--//category-table-tab-content-->
+                </div><!--//container-xl-->
             </div><!--//app-content-->
 
-            <footer class="app-footer">
-                <div class="container text-center py-3">
-                    <!--/* This template is free as long as you keep the footer attribution link. If you'd like to use the template without the attribution link, you can buy the commercial license via our website: themes.3rdwavemedia.com Thank you for your support. :) */-->
-                    <small class="copyright">Designed with <span class="sr-only">love</span><i class="fas fa-heart"
-                            style="color: #fb866a;"></i> by <a class="app-link" href="http://themes.3rdwavemedia.com"
-                            target="_blank">Xiaoying Riley</a> for developers</small>
 
+            <!-- Category Modal -->
+            <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addCategoryModalLabel">New Category</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id ="addCategoryForm">
+                                <div class="mb-3">
+                                    <label for="categoryInput" class="form-label">Category:</label>
+                                    <input type="text" class="form-control" id="categoryInput" name="category"
+                                        placeholder="Enter category">
+                                </div>
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-primary" id="addCategoryBtn">Add Category</button>
+                                </div>
+                            </form>
+                            <div id="loadingSpinnerCategory" class="spinner-border text-primary" role="status" style="display: none;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div id="statusMessageCategory" class="alert" style="display: none;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
                 </div>
-            </footer><!--//app-footer-->
-
-        </div><!--//app-wrapper-->
-        <%-include('includes/footer')%>
+            </div>
+        <%- include('includes/footer') %>

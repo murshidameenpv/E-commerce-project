@@ -24,12 +24,12 @@ var productSchema = new mongoose.Schema({
         required: true,
     },
     image: {
-        type:[String]   ,
+        type:[String],
         required:true
     },
     listed: {
         type: Boolean,
-        required:true
+        default: false,
     }
 });
 

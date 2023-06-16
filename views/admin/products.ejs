@@ -32,10 +32,9 @@
 
 
 
-                    <nav id="orders-table-tab"
+                    <nav id="products-table-tab"
                         class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
-                        <span class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab"
-                            data-bs-toggle="tab" role="tab" aria-controls="orders-all" aria-selected="true">All
+                        <span class="flex-sm-fill text-sm-center nav-link active" id="product-all-tab">All
                             products</span>
                     </nav>
 
@@ -55,7 +54,8 @@
                                                     <th class="cell">In Stock</th>
                                                     <th class="cell">Image</th>
                                                     <th class="cell">Edit Product</th>
-                                                    <th class="cell">Delete</th>
+                                                    <th class="cell">Status</th>
+                                                    <th class="cell">Action</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -88,19 +88,29 @@
                                                             </span>
                                                         </td>
                                                         <td class="cell">
-                                                            <span class="btn-sm app-btn-danger delete-button"
-                                                                data-id="<%= product._id %>"
-                                                                style="cursor: pointer;">Delete</span>
+                                                            <% if (product.listed) { %>
+                                                                <span class="badge bg-danger">Blocked</span>
+                                                                <% } else { %>
+                                                                    <span class="badge bg-success">Active</span>
+                                                                    <% } %>
                                                         </td>
+                                                        <td class="cell">
+                                                            <% if (product.listed) { %>
+                                                                <span id="unListBtn" class="btn-sm app-btn-secondary" data-id="<%= product._id %>" style="cursor:pointer;">Unblock</span>
+                                                                <% } else { %>
+                                                                    <span id="listBtn" class="btn-sm app-btn-secondary" data-id="<%= product._id %>"style="cursor: pointer;">Block</span>
+                                                                    <% } %>
+                                                        </td>
+                                                        </tr>
                                                     </tr>
                                                     <% }) %>
                                             </tbody>
                                         </table>
-
                                     </div><!--//table-responsive-->
-
                                 </div><!--//app-card-body-->
                             </div><!--//app-card-->
+                           
+                           
                             <nav class="app-pagination">
                                 <ul class="pagination justify-content-center">
                                     <li class="page-item disabled">
@@ -140,12 +150,9 @@
                                 <div class="mb-3">
                                     <label for="category" class="form-label">Category</label>
                                     <select class="form-select" id="category" name="category">
-                                        <option value="oneplus">OnePlus</option>
-                                        <option value="Apple">Apple</option>
-                                        <option value="Samsun">Samsung</option>
-                                        <option value="Realmi">Realmi</option>
-                                        <option value="Xiaomi">Xiaomi</option>
-                                        <option value="Oppo">Oppo</option>
+                                        <% category.forEach((category)=>{ %>
+                                        <option value="<%=category.category %>"><%=category.category %></option>
+                                        <% }) %>
                                     </select>
                                 </div>
                                 <div class="mb-3">
@@ -169,11 +176,11 @@
                                 </div>
                                 <button type="submit" class="btn btn-primary" id="addProductBtn">Add Product</button>
                             </form>
-                            <div id="loadingSpinner" class="spinner-border text-primary" role="status"
+                            <div id="loadingSpinnerAdd" class="spinner-border text-primary" role="status"
                                 style="display: none;">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
-                            <div id="successMessage" class="alert alert-success" style="display: none;"></div>
+                            <div id="statusMessageAdd" class="alert" style="display: none;"></div>
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
@@ -201,7 +208,7 @@
                             <div class="mb-3">
                                 <input type="text" class="form-control" id="productId" name="productId" readonly value="<%= product._id %>" style="font-weight: bold;">
                             </div>
-                            <form id="updateProductForm" enctype="multipart/form-data" >
+                            <form id="updateProductForm"  data-product-id="<%= product._id %>" enctype="multipart/form-data" >
                                 <div class="mb-3">
                                     <label for="updateProductName" class="form-label">Product Name</label>
                                     <input type="text" class="form-control" value="<%= product.productName %>" id="updateProductName" name="productName">
@@ -252,27 +259,11 @@
                             </div>
                             <div id="successMessageUpdate" class="alert alert-success" style="display: none;"></div>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-
-                        </div>
                     </div>
                 </div>
             </div>
             <% }) %>
-
             <!-- Update Product Modal -->
-
-
-
-
-
-
-
-
-            <footer class="app-footer">
-                <div class="container text-center py-3">
-                </div>
-            </footer><!--//app-footer-->
+            
         </div><!--//app-wrapper-->
         <%-include('includes/footer')%>
