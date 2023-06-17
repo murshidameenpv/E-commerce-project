@@ -75,8 +75,6 @@ exports.adminAddProduct = async (req, res) => {
 exports.adminUpdateProduct = async (req, res) => {
   try {
     const productId = req.query.productId;
-    console.log("server here", productId);
-    console.log("body here", req.body);
     const { productName, category, price, stock, description } = req.body;
     const newImages = req.files.map((file) => file.filename);
     const updatedProduct = await productDb.findByIdAndUpdate(
@@ -104,28 +102,49 @@ exports.adminUpdateProduct = async (req, res) => {
 
 
 
-//PRODUCT LISTED UNLISTED CONTROLLER
-exports.adminListProduct = async (req, res) => {
-  const productId = req.params.id;
-  try {
-    await productDb.findByIdAndUpdate(productId, { listed: true });
-    return res.json({ success: true });
-  } catch (err) {
-    console.error("Error Updating data from Mongoose", err);
-    res.status(500).send("Internal Server Error");
-  }
-};
-exports.adminUnListProduct = async (req, res) => {
-  const productId = req.params.id;
-  try {
-    await productDb.findByIdAndUpdate(productId, { listed: false });
-    return res.json({ success: true });
-  } catch (err) {
-    console.error("Error Updating data from Mongoose", err);
-    res.status(500).send("Internal Server Error");
-  }
-};
+  //PRODUCT LISTED UNLISTED CONTROLLER
+  exports.adminListProduct = async (req, res) => {
+    const productId = req.params.id;
+    try {
+      await productDb.findByIdAndUpdate(productId, { listed: true });
+      return res.json({ success: true });
+    } catch (err) {
+      console.error("Error Listing data from Mongoose", err);
+      res.status(500).send("Internal Server Error");
+    }
+  };
+  exports.adminUnListProduct = async (req, res) => {
+    const productId = req.params.id;
+    try {
+      await productDb.findByIdAndUpdate(productId, { listed: false });
+      return res.json({ success: true });
+    } catch (err) {
+      console.error("Error Unlisting data from Mongoose", err);
+      res.status(500).send("Internal Server Error");
+    }
+  };
 
+
+  //PRODUCT DELETE IMAGE
+  exports.deleteProductImage = async (req, res) => {
+    const productId = req.query.productId
+    const imageUrl = req.query.imageUrl
+    try {
+      await productDb.updateOne(
+        { _id: productId },
+        { $pull: { image: imageUrl } });
+        return res.json({success:true});
+    }
+    catch (err) {
+      console.error("Error Deleting Image  from Mongoose", err);
+      res.status(500).send("Internal Server Error");
+    }
+
+  }
+
+
+
+//ADD CATEGORY
 exports.adminAddCategory = async (req, res) => {
   const { category } = req.body;
   try {
@@ -138,6 +157,9 @@ exports.adminAddCategory = async (req, res) => {
   }
 };
 
+
+
+//DELETE CATEGORY
 exports.deleteCategory = async (req, res) => {
   const categoryId = req.params.id;
   try {
@@ -148,3 +170,6 @@ exports.deleteCategory = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
+
+

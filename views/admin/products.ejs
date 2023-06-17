@@ -74,11 +74,14 @@
                                                             <%= product.stock %>
                                                         </td>
                                                         <td class="cell">
-                                                            <% product.image.forEach((img)=> { %>
-                                                                <img src="/<%= img %>" alt="Product Image"
-                                                                    style="width: 100px; height: 100px;">
+                                                            <% product.image.forEach((img,index)=> { %>
+                                                                <div class="image-container">
+                                                                    <img src="/<%= img %>" alt="Product Image" style="width: 100px; height: 100px;">
+                                                                    <span class="delete-image-btn" onclick="deleteImage('<%= product._id %>', '<%= img %>' )" style="cursor: pointer;"> <i class="fas fa-times"></i></span>
+                                                                </div>
                                                                 <% }) %>
                                                         </td>
+
                                                         <td class="cell">
                                                             <span style="cursor: pointer" data-bs-toggle="modal"
                                                                 data-bs-target="#updateProductModal-<%= product._id %>"
@@ -206,9 +209,9 @@
                         </div>
                         <div class="modal-body">
                             <div class="mb-3">
-                                <input type="text" class="form-control" id="productId" name="productId" readonly value="<%= product._id %>" style="font-weight: bold;">
+                                <input type="text" class="form-control" id="productId" name="productId" value="<%= product._id %>" style="font-weight: bold;" readonly>
                             </div>
-                            <form id="updateProductForm"  data-product-id="<%= product._id %>" enctype="multipart/form-data" >
+                            <form id="updateProductForm-<%= product._id %>"  data-product-id="<%= product._id %>" enctype="multipart/form-data" >
                                 <div class="mb-3">
                                     <label for="updateProductName" class="form-label">Product Name</label>
                                     <input type="text" class="form-control" value="<%= product.productName %>" id="updateProductName" name="productName">
@@ -216,13 +219,11 @@
                                 <div class="mb-3">
                                     <label for="updateCategory" class="form-label">Category</label>
                                     <select class="form-select" id="updateCategory" name="category">
-                                        <option value=" <%=product.category %>"><%= product.category %></option>
-                                        <option value="oneplus">OnePlus</option>
-                                        <option value="Apple">Apple</option>
-                                        <option value="Samsung">Samsung</option>
-                                        <option value="Realmi">Realmi</option>
-                                        <option value="Xiaomi">Xiaomi</option>
-                                        <option value="Oppo">Oppo</option>
+                                        <% category.forEach((category)=>{ %>
+                                            <option value="<%=category.category %>">
+                                            <%=category.category %>
+                                            </option>
+                                            <% }) %>
                                     </select>
                                 </div>
                                 <div class="mb-3">
@@ -250,14 +251,14 @@
                                     <label for="updateImage" class="form-label">Upload Image</label>
                                     <input type="file" class="form-control" id="updateImage" name="image" multiple>
                                 </div>
-                                <button type="submit" class="btn btn-primary" id="updateProductBtn">Update
+                                <button type="submit" class="btn btn-primary" id="updateProductBtn-<%= product._id %>">Update
                                     Product</button>
                             </form>
-                            <div id="loadingSpinnerUpdate" class="spinner-border text-primary" role="status"
+                            <div id="loadingSpinnerUpdate-<%= product._id %>" class="spinner-border text-primary" role="status"
                                 style="display: none;">
                                 <span class="visually-hidden">Loading...</span>
                             </div>
-                            <div id="successMessageUpdate" class="alert alert-success" style="display: none;"></div>
+                            <div id="messageStatus-<%= product._id %>" class="alert" style="display: none;"></div>
                         </div>
                     </div>
                 </div>

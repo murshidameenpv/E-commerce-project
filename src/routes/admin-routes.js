@@ -89,7 +89,11 @@ router.put(
   upload.array('image'),
  adminController.adminUpdateProduct
 );
-
+router.delete(
+  "/api/admin/product/delete-image",
+  checkSession.sessionExists,
+  adminController.deleteProductImage
+);
 router.post(
   "/api/admin/category/add-category",
   checkSession.sessionExists,
@@ -100,5 +104,6 @@ router.delete(
   checkSession.sessionExists,
   adminController.deleteCategory
 )
+
 
 module.exports = router;
