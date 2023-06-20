@@ -1,38 +1,27 @@
 
 <%-include('includes/header')%>
 <%-include('includes/navbar')%>
-
-   <section id="login" class="pt-5 pb-5">
+<!--SECTION 1-->
+<div id="main-section">
+   <section id="send-otp" class="pt-5 pb-5">
         <div class="container">
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="login_box">
                         <h3 class="text-center">Login</h3>
-                        <form action="/verify" method="POST">
+                        <form>
                             <div class="form-group">
                                 <label for="phone">Phone Number</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="phone" name="phone" required>
-                                    <button type="button" class="btn btn-primary send-otp-btn" onclick="sendOTP()">Send OTP</button>
-                                </div>
-                            </div>
-                            <p id="otp-status" class="text-center blink_me"></p>
-                            <div class="form-group">
-                                <label for="otp">OTP</label>
-                                <input type="text" class="form-control" id="otp" name="otp" required>
-                            </div>
-                                <% if (locals.message) { %>
-                                 <p class="text-center blink_me" id="otp-error-message">
+                                <input type="text" class="form-control" id="phone" name="phone" required>
+                                <p id="number-status" class="text-center blink_me"></p>
+                                <% if (typeof message !=='undefined' ) { %>
+                                    <p class="text-center blink_me">
                                         <%= message %>
                                     </p>
-                                <% } %>
-                            <div class="form-group text-center">
-                                <button type="submit" class="btn btn-primary">Login</button>
+                                    <% } %>
                             </div>
                             <div class="form-group text-center">
-                                <p class="text-muted" id="resend-link-container" style="cursor:pointer;" onclick="sendOTP(true)">
-                                    <a class="text-muted resend-link">Resend OTP</a>
-                                </p>
+                                <button type="submit" class="btn btn-primary">Send OTP</button>
                             </div>
                             <div class="form-group text-center">
                                 <p class="text-muted">Don't have an account? <a href="/signup">Sign up</a></p>
@@ -44,65 +33,83 @@
         </div>
     </section>
 
+    <!--SECTION 2-->
+   <section id="login-otp" class="pt-5 pb-5" style="display: none;">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <div class="login_box">
+          <form action="/verify" method="post">
+            <input type="hidden" name="phone" value="">
+            <div class="form-group">
+              <label for="phone">Enter The OTP</label>
+              <input type="text" class="form-control" id="otp" name="otp" required>
+            </div>
+            <div class="form-group text-center">
+              <button type="submit" class="btn btn-primary">LogIn</button>
+            </div>
+          </form>
+          <div class="form-group text-center">
+            <p  id="countdown"></p>
+            <p  id="resendOtpLink" style="display: none;cursor: pointer;">Resend OTP</p>
+          </div>  
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+    
+
 
 
 <script>
-    function sendOTP(isResend) {
-        const phone = document.getElementById('phone').value;
-        // Phone number regex pattern
-        const phoneRegex = /^\+91\d{10}$/;
-        if (!phoneRegex.test(phone)) {
-            // Invalid phone number
-            document.getElementById('otp-status').textContent = 'Invalid phone number';
-            return;
-        }
-        fetch('/send-otp', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ phone: phone })
+  const form = document.querySelector('form');
+    const phoneInput = document.querySelector('#phone');
+    const numberStatus = document.querySelector('#number-status');
+    const sendOtpSection = document.querySelector('#send-otp');
+    const loginOtpSection = document.querySelector('#login-otp');
+    const phoneInputHidden = document.querySelector('#login-otp input[name="phone"]');
+    const countdownElement = document.querySelector('#countdown');
+    const resendOtpLink = document.querySelector('#resendOtpLink');
+
+    form.addEventListener('submit', sendOtp);
+    resendOtpLink.addEventListener('click', sendOtp);
+
+    function sendOtp(event) {
+      event.preventDefault();
+      resendOtpLink.style.display = 'none';
+      const phoneNumber = phoneInput.value;
+      axios.post('/send-otp', { phone: phoneNumber })
+        .then(response => {
+          numberStatus.textContent = response.data;
+          if (response.data === 'OTP sent successfully') {
+            sendOtpSection.style.display = 'none';
+            loginOtpSection.style.display = 'block';
+            phoneInputHidden.value = phoneNumber;
+            startCountdown(10);
+          }
         })
-            .then(response => {
-                if (response.ok) {
-                    return response.text(); // Extract the response text
-                } else {
-                    throw new Error('Failed to send OTP');
-                }
-            })
-            .then(data => {
-                // Update the content of otp-status element with the message
-                document.getElementById('otp-status').textContent = isResend ? 'OTP resent successfully' : data;
-                // Show the resend OTP link
-                document.getElementById('resend-link-container').style.display = 'block';
-                // Start the countdown
-                startCountdown();
-            })
-            .catch(error => {
-                console.error('Error sending OTP:', error);
-                document.getElementById('otp-status').textContent = 'Failed to send OTP';
-            });
+        .catch(error => {
+          console.log(error);
+        });
     }
 
-
-    function startCountdown() {
-        let timeLeft = 30; // Number of seconds for the countdown
-
-        const countdownElement = document.getElementById('resend-link-container');
-        countdownElement.innerHTML = `Resend OTP (${timeLeft}s)`;
-        countdownElement.style.cursor = 'not-allowed';
-
-        countdownTimer = setInterval(() => {
-            timeLeft--;
-            countdownElement.innerHTML = `Resend OTP (${timeLeft}s)`;
-
-            if (timeLeft === 0) {
-                clearInterval(countdownTimer);
-                countdownElement.innerHTML = '<a class="text-muted resend-link">Resend OTP</a>';
-                countdownElement.style.cursor = 'pointer';
-            }
-        }, 1000);
+    function startCountdown(seconds) {
+      let remainingSeconds = seconds;
+      countdownElement.textContent = `Resend OTP in ${remainingSeconds} seconds`;
+      const intervalId = setInterval(() => {
+        remainingSeconds--;
+        if (remainingSeconds === 0) {
+          clearInterval(intervalId);
+          countdownElement.textContent = '';
+          resendOtpLink.style.display = 'inline';
+        } else {
+          countdownElement.textContent = `Resend OTP in ${remainingSeconds} seconds`;
+        }
+      }, 1000);
     }
+
 </script>
 
 

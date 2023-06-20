@@ -122,27 +122,9 @@
 <!--footer -->
 
 
-
-<!--sticky navbar -->
-
-<script>
-    window.onscroll = function () { myFunction() };
-
-    var navbar_sticky = document.getElementById("navbar_sticky");
-    var sticky = navbar_sticky.offsetTop;
-    var navbar_height = document.querySelector('.navbar').offsetHeight;
-
-    function myFunction() {
-        if (window.pageYOffset >= sticky + navbar_height) {
-            navbar_sticky.classList.add("sticky")
-            document.body.style.paddingTop = navbar_height + 'px';
-        } else {
-            navbar_sticky.classList.remove("sticky");
-            document.body.style.paddingTop = '0'
-        }
-    }
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
 <script src="/user/js/bootstrap.bundle.min.js"></script>
+<script src="/user/js/stickyNavbar.js"></script>
 </body>
 
 </html>

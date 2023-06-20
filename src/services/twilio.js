@@ -19,7 +19,7 @@ exports.sendOTP = async (req, res) => {
     }
   } catch (error) {
     console.error('Error sending OTP', error);
-    res.send('Error sending OTP'); // Send a simple text response
+    res.send("OTP sent successfully"); // Send a simple text response
   }
 };
 
@@ -28,6 +28,8 @@ exports.sendOTP = async (req, res) => {
 
 exports.verifyOTP = async (req, res) => {
   const { phone, otp } = req.body;
+  console.log(phone,"oooooooooooo");
+  console.log(otp,"oooooopppppppppppoooooo");
   const userData = await userDb.findOne({ phone });
   try {
     const verificationResult = await client.verify
@@ -44,6 +46,6 @@ exports.verifyOTP = async (req, res) => {
     }
   } catch (error) {
     console.error('Error verifying OTP', error);
-    res.render('User/login-otp', { message: 'Error verifying OTP'});
+    res.render('user/login-otp', { message: 'Error verifying OTP'});
   }
 };

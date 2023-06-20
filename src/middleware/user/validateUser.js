@@ -162,17 +162,21 @@ exports.checkUserExists = async (req, res, next) => {
                   /*Checks phone number is exist or not when login with otp*/
 exports.checkPhoneNumberExistOtp = async (req, res, next) => {
   const { phone } = req.body;
+  const regex = /^\+91\d{10}$/;
+  if (!regex.test(phone)) {
+    return res.send("Invalid phone number");
+  }
   try {
     const userData = await userDb.findOne({ phone });
     if (!userData) {
-      return res.send('User not found with this number');
+      return res.send("User not found with this number");
     }
     if (userData.isBlocked) {
-      return res.send('User is  Blocked');
-      }
+      return res.send("User is Blocked");
+    }
     next();
   } catch (err) {
-    console.error('Error checking user existence in MongoDB', err);
-    res.status(500).send('Internal Server Error');
+    console.error("Error checking user existence in MongoDB", err);
+    res.status(500).send("Internal Server Error");
   }
 };

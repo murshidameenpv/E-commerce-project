@@ -16,7 +16,7 @@ router.get('/login', userRender.login)
 router.get('/signup', userRender.signup)
 router.get('/checkout', userRender.checkout)
 router.get('/cart', userRender.checkout)
-router.get('/otplogin', userRender.otplogin)
+router.get('/login/otplogin', userRender.otplogin)
 
  
 

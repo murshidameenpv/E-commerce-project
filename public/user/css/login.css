@@ -12,13 +12,7 @@
     position: relative;
 }
 
-.login_box .form-group .input-group .send-otp-btn {
-    right: 0;
-    top: 0;
-    background-color: #f7ba01;
-    border-color: #f7ba01;
-    color: #000000;
-}
+
 .signup_box .form-group {
     margin-bottom: 15px;
 }
@@ -45,4 +39,7 @@
  text {
    text-align: center;
    color: rgb(172, 16, 16);
+ }
+ #main-section{
+  height: 630px;
  }
