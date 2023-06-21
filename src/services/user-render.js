@@ -57,17 +57,28 @@ exports.logout = (req, res) => {
         category
       })
   }
+exports.products = async (req, res) => {
+  try {
+    const page = parseInt(req.params.page) || 1;
+    const limit = 9;
+    const skip = (page - 1) * limit;
 
-exports.products = async (req, res) => { 
-  const product = await products.find();
-  const category = await categories.find();
-  res.render("user/product", {
-    user: req.session.user,
-    product,
-    category,
-  });
-}
+    const productCount = await products.countDocuments();
+    const product = await products.find().skip(skip).limit(limit);
+    const category = await categories.find();
 
+    res.render("user/product", {
+      user: req.session.user,
+      product,
+      category,
+      currentPage: page,
+      totalPages: Math.ceil(productCount / limit),
+    });
+  } catch (err) {
+    console.error("Error fetching products from MongoDB", err);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
 exports.contactUs = async (req, res) => { 
   const category = await categories.find()

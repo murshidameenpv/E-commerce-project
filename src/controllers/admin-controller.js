@@ -161,8 +161,13 @@ exports.adminAddCategory = async (req, res) => {
 
 //DELETE CATEGORY
 exports.deleteCategory = async (req, res) => {
-  const categoryId = req.params.id;
+  const categoryId = req.params.id;   
   try {
+    const categoryExists = await productDb.find({ category: categoryId });
+    if (categoryExists.length > 0) {
+      //IF CATEGORY DELETED THEN BLOCK THE PRODUCT
+     await productDb.updateMany({category:categoryId},{$set:{listed:true}})       
+    }
     await categoryDb.findByIdAndRemove(categoryId);
     res.json({ success: true });
   } catch (err) {

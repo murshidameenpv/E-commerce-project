@@ -1,14 +1,13 @@
 
-  const form = document.querySelector('form');
+    const otpForm = document.querySelector("#otpLoginForm");
     const phoneInput = document.querySelector('#phone');
     const numberStatus = document.querySelector('#number-status');
     const sendOtpSection = document.querySelector('#send-otp');
     const loginOtpSection = document.querySelector('#login-otp');
     const phoneInputHidden = document.querySelector('#login-otp input[name="phone"]');
     const countdownElement = document.querySelector('#countdown');
-    const resendOtpLink = document.querySelector('#resendOtpLink');
-
-    form.addEventListener('submit', sendOtp);
+    const resendOtpLink = document.querySelector("#resendOtpLink");
+     otpForm.addEventListener('submit', sendOtp);
     resendOtpLink.addEventListener('click', sendOtp);
 
     function sendOtp(event) {

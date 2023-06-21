@@ -27,6 +27,14 @@ exports.userSignUp = async (req, res) => {
   }
 }
 
+exports.productDetails = async (req, res) => {
+  const product = req.param
+  try {
+    
+  } catch (error) {
+    
+  }
+}
 
 
 

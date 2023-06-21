@@ -10,7 +10,7 @@ const twilio = require('../services/twilio')
 router.get('/', userRender.home);
 router.get('/home', userRender.home);   
 router.get('/aboutUs', userRender.aboutUs);
-router.get('/products',userRender.products)
+router.get('/products/:page?',userRender.products)
 router.get('/contactUs',userRender.contactUs)
 router.get('/login', userRender.login)
 router.get('/signup', userRender.signup)
@@ -19,7 +19,9 @@ router.get('/cart', userRender.checkout)
 router.get('/login/otplogin', userRender.otplogin)
 
  
-
+router.get('/products/item/',
+    userController.productDetails
+)
 
 //POST METHODS
 
