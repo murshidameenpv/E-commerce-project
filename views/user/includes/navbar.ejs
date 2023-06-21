@@ -4,7 +4,7 @@
     <nav class="navbar navbar-expand-md navbar-light pt-0 pb-0" id="navbar_sticky">
         <div class="container-fluid">
             <a class="col_dark navbar-brand" href="index.html"><i class="fa fa-shopping-basket col_yell"></i>
-                PhoneZone</a>
+                GadgetsOn</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -18,23 +18,23 @@
                             <i class="fa fa-navicon me-1"></i> ALL CATEGORIES
                         </a>
                         <ul class="dropdown-menu drop_cat" aria-labelledby="navbarDropdown">
+                            <% if (locals.category) { %>
+                            <% category.forEach(Category=>{ %>
                             <li><a class="dropdown-item" href="#"><i class="fa fa-female me-2 col_yell"></i>
-                                    Smart Phones</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fa fa-car me-2 col_yell"></i>
-                                    Smart Watches</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fa fa-television me-2 col_yell"></i>
-                                    Speakers</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fa fa-camera-retro me-2 col_yell"></i>
-                                    Cameras &amp; Photo</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="fa fa-laptop me-2 col_yell"></i>
-                                    Laptops</a></li>
+                                    <%= Category.category %></a>
+                            </li>
+                            <% }) %>
+                                
+                            <%} %>
+
+                           
                         </ul>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link " aria-current="page" href="/home">Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " aria-current="page" href="/products">Mobiles</a>
+                        <a class="nav-link " aria-current="page" href="/products">Products</a>
                     </li>
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"

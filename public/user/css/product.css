@@ -1,12 +1,36 @@
-/*
-Template Name: Eco Mart
-File: Layout CSS
-Author: TemplatesOnWeb
-Author URI: https://www.templateonweb.com/
-Licence: <a href="https://www.templateonweb.com/license">Website Template Licence</a>
-*/
+.form-check-label::before {
+    content: "";
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    margin-right: 5px;
+    border-radius: 50%;
+}
 
-/*********************product****************/
+.form-check-label[for="customCheck1"]::before {
+    background-color: red;
+}
+
+.form-check-label[for="customCheck2"]::before {
+    background-color: black;
+}
+
+.form-check-label[for="customCheck3"]::before {
+    background-color: blue;
+}
+
+.form-check-label[for="customCheck4"]::before {
+    background-color: yellow;
+}
+
+.form-check-label[for="customCheck5"]::before {
+    background-color: brown;
+}
+
+.form-check-label[for="customCheck6"]::before {
+    background-color: pink;
+}
+
 .prod_pg1l1il h6 i{
 font-size:10px; 
  }

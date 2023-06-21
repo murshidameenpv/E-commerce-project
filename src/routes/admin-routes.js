@@ -97,7 +97,7 @@ router.delete(
 router.post(
   "/api/admin/category/add-category",
   checkSession.sessionExists,
-  adminController.adminAddCategory
+  adminController.adminAddCategory  
 );
 router.delete(
   "/api/admin/category/:id/delete",

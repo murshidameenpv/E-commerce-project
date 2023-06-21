@@ -87,7 +87,7 @@ exports.adminUpdateProduct = async (req, res) => {
           price: price,
           stock: stock,
           description: description,
-          listed: true,
+          listed: false,
         },
       },
       { new: true }

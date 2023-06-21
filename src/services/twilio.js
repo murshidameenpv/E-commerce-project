@@ -19,7 +19,7 @@ exports.sendOTP = async (req, res) => {
     }
   } catch (error) {
     console.error('Error sending OTP', error);
-    res.send("OTP sent successfully"); // Send a simple text response
+    res.send("Error sending OTP"); // Send a simple text response
   }
 };
 

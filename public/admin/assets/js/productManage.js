@@ -54,16 +54,7 @@ document.addEventListener("DOMContentLoaded", function () {
         addProductBtn.disabled = false;
 
         // Reload the table
-        axios.get(window.location.href).then(function (response) {
-          const ordersTableContent = document.querySelector(
-            "#product-table-tab-content"
-          );
-          const newContent = document.createElement("div");
-          newContent.innerHTML = response.data;
-          ordersTableContent.innerHTML = newContent.querySelector(
-            "#product-table-tab-content"
-          ).innerHTML;
-        });
+         location.reload();
       })
       .catch(function (error) {
         console.error(error);
@@ -82,6 +73,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   });
 });
+
+
 
 //UPDATE PRODUCT
 document.addEventListener("DOMContentLoaded", function () {
@@ -214,31 +207,6 @@ document.addEventListener("click", function (event) {
 });
 
 //DELETE PRODUCT IMAGE
-// const btn = document.querySelectorAll(
-//   `#delete-image-button-${product._id}-${index}`
-// );
-// console.log(btn);
-// axios
-//   .delete(
-//     `/api/admin/product/delete-image?productId=${productId}&imageUrl=${imageUrl}`
-//   )
-//   .then(function (response) {
-//     // Reload the table
-//     axios.get(window.location.href).then(function (response) {
-//       const ordersTableContent = document.querySelector(
-//         "#product-table-tab-content"
-//       );
-//       const newContent = document.createElement("div");
-//       newContent.innerHTML = response.data;
-//       ordersTableContent.innerHTML = newContent.querySelector(
-//         "#product-table-tab-content"
-//       ).innerHTML;
-//     });
-//   })
-//   .catch(function (error) {
-//     console.error(error);
-//   });
-
 async function deleteImage(productId, imageUrl) {
   try {
     const response = await axios.delete(

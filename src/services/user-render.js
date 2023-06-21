@@ -1,8 +1,16 @@
-const  db  = require("../models/productSchema");
+const products = require("../models/productSchema");
+const categories = require("../models/categorySchema")
 
 exports.home = async(req, res) => { 
-    const superDeal =await db.find()
-  res.render('user/index', {user:req.session.user, superDeal})
+  const superDeal = await products.find().limit(8);
+  const dealOfDay = await products.find().limit(6);
+  const category = await categories.find(); 
+  res.render("user/index", {
+    user: req.session.user,
+    superDeal,
+    dealOfDay,
+    category, 
+  });
 }
 
 exports.login = (req, res) => {
@@ -40,21 +48,33 @@ exports.logout = (req, res) => {
 
 
 
-exports.aboutUs = (req, res) => {  
-  if (req.session.user) {
+  exports.aboutUs = async (req, res) => {  
+    const category = await categories.find(); 
     
+    res.render('user/about',
+      {
+        user: req.session.user,
+        category
+      })
   }
-  res.render('user/about',{user:req.session.user})
+
+exports.products = async (req, res) => { 
+  const product = await products.find();
+  const category = await categories.find();
+  res.render("user/product", {
+    user: req.session.user,
+    product,
+    category,
+  });
 }
 
-exports.products = (req, res) => { 
 
-  res.render('user/product',{user:req.session.user})
-}
-
-
-exports.contactUs = (req, res) => { 
-  res.render('user/contact',{user:req.session.user})
+exports.contactUs = async (req, res) => { 
+  const category = await categories.find()
+  res.render("user/contact", {
+    user: req.session.user,
+    category,
+  });
 }
 
   
@@ -63,11 +83,11 @@ exports.contactUs = (req, res) => {
 
 
 
-exports.checkout = (req, res) => {
+exports.checkout = (req, res) => {  ``
   res.render('user/checkout',)
 }
 
-exports.checkout = (req, res) => {
+exports.cart = (req, res) => {
   res.render('user/cart',)
 }
 

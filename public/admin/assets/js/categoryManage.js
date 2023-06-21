@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
-// DELETE USER WHEN CLICK DELETE
+// DELETE CATEGORY WHEN CLICK DELETE
 document.addEventListener("click", function (event) {
   if (event.target.id === "categoryDeleteBtn") {
     event.preventDefault();

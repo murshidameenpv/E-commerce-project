@@ -2,7 +2,7 @@
 const userDb = require("../models/userSchema");
 const productDb = require("../models/productSchema");
 const categoryDb = require("../models/categorySchema");
-
+ 
 exports.adminLogin = (req, res) => {
   let message = "";
   if (req.session.message) {
@@ -22,13 +22,11 @@ exports.adminUserManagement = async (req, res) => {
   }
 };
 
-
-
 exports.adminProductManagement = async (req, res) => {
   try {
-    const products = await productDb.find().exec();
+    const products = await productDb.find().populate("category").exec();
     const category = await categoryDb.find().exec();
-    res.render("admin/products", { products,category });
+    res.render("admin/products", { products, category });
   } catch (err) {
     console.error("Error fetching users from MongoDB", err);
     res.status(500).send("Internal Server Error");
