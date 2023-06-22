@@ -17,10 +17,9 @@ router.get('/signup', userRender.signup)
 router.get('/checkout', userRender.checkout)
 router.get('/cart', userRender.checkout)
 router.get('/login/otplogin', userRender.otplogin)
-
  
-router.get('/products/item/',
-    userController.productDetails
+router.get('/products/details/:id',
+    userRender.productDetails
 )
 
 //POST METHODS

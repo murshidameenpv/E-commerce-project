@@ -1,12 +1,4 @@
-/*
-Template Name: Eco Mart
-File: Layout CSS
-Author: TemplatesOnWeb
-Author URI: https://www.templateonweb.com/
-Licence: <a href="https://www.templateonweb.com/license">Website Template Licence</a>
-*/
 
-/*********************detail****************/
 .carousel-indicators {
 bottom:-50px;
 }
@@ -72,7 +64,16 @@ height:48px;
 .detail_5r .form_area{
 height:140px; 
  }
+.carousel-item {
+    justify-content: center;
+    align-items: center;
+    object-fit: contain;
 
+}
+.d-block-custom{
+    height: 600px;
+    width: 500px;
+}
 
 /*********************detail_end****************/
 

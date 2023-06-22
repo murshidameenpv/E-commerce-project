@@ -1,6 +1,7 @@
 const userDb = require("../models/userSchema");
 const productDb = require("../models/productSchema");
 const categoryDb = require("../models/categorySchema");
+const sharp = require("sharp");
 
 exports.adminLogin = (req, res) => {
   res.redirect(302, "/admin");
@@ -54,15 +55,32 @@ exports.adminDeleteUser = async (req, res) => {
 exports.adminAddProduct = async (req, res) => {
   try {
     const { productName, category, price, stock, description } = req.body;
-    const images = req.files.map((file) => file.filename);
+
+      const resizeImage = async (inputPath, outputPath, width, height) => {
+        await sharp(inputPath)
+          .resize(width, height, {
+            fit: "contain",
+            background: { r: 255, g: 255, b: 255, alpha: 1 },
+          })
+          .toFile(outputPath);
+      };
+    const images = req.files.map((file) => {
+      const inputPath = file.path;
+      const outputPath = "uploads/resized/" + file.filename;
+      resizeImage(inputPath, outputPath, 600, 600);
+      return file.filename;
+    });
+
     const newProduct = await productDb.create({
       productName: productName,
       category: category,
       price: price,
-      stock: stock, 
+      stock: stock,
       description: description,
       image: images,
+      listed:false
     });
+
     res.status(201).json(newProduct);
   } catch (err) {
     console.error("Error creating new product:", err);
@@ -70,13 +88,27 @@ exports.adminAddProduct = async (req, res) => {
   }
 };
 
-
-// ADMIN UPDATE PRODUCT
 exports.adminUpdateProduct = async (req, res) => {
   try {
     const productId = req.query.productId;
     const { productName, category, price, stock, description } = req.body;
-    const newImages = req.files.map((file) => file.filename);
+
+    const resizeImage = async (inputPath, outputPath, width, height) => {
+      await sharp(inputPath)
+        .resize(width, height, {
+          fit: "contain",
+          background: { r: 255, g: 255, b: 255, alpha: 1 },
+        })
+        .toFile(outputPath);
+    };
+
+    const newImages = req.files.map((file) => {
+      const inputPath = file.path;
+      const outputPath = 'uploads/resized/' + file.filename;
+      resizeImage(inputPath, outputPath, 500, 500);
+      return file.filename;
+    });
+
     const updatedProduct = await productDb.findByIdAndUpdate(
       productId,
       {
@@ -92,15 +124,13 @@ exports.adminUpdateProduct = async (req, res) => {
       },
       { new: true }
     );
+
     res.status(201).json(updatedProduct);
   } catch (err) {
-    console.error("Error creating new product:", err);
+    console.error("Error updating product:", err);
     res.status(500).send("Internal Server Error");
   }
 };
-
-
-
 
   //PRODUCT LISTED UNLISTED CONTROLLER
   exports.adminListProduct = async (req, res) => {

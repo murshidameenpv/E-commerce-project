@@ -1,6 +1,7 @@
 
 const bcrypt = require('bcrypt');
-var userDb = require('../models/userSchema')
+var userDb = require('../models/userSchema');
+const productDb = require('../models/productSchema');
 
 
 
@@ -24,15 +25,6 @@ exports.userSignUp = async (req, res) => {
   catch (err) {
     console.error('Error creating or checking user existence in MongoDB', err);
     res.status(500).send('Internal Server Error');
-  }
-}
-
-exports.productDetails = async (req, res) => {
-  const product = req.param
-  try {
-    
-  } catch (error) {
-    
   }
 }
 

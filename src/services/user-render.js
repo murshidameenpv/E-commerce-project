@@ -2,7 +2,7 @@ const products = require("../models/productSchema");
 const categories = require("../models/categorySchema")
 
 exports.home = async(req, res) => { 
-  const superDeal = await products.find().limit(8);
+  const superDeal = await products.find().limit(8).where({ listed :false});
   const dealOfDay = await products.find().limit(6);
   const category = await categories.find(); 
   res.render("user/index", {
@@ -89,7 +89,17 @@ exports.contactUs = async (req, res) => {
 }
 
   
-
+  exports.productDetails = async (req, res) => {
+    try {
+      const productId = req.params.id; // extract the product ID from the query string
+      const product = await products.findById({ _id: productId }); // find the product by ID using Mongoose
+      console.log(product);
+      res.render("user/details", { product }); // render the product-detail.ejs page and pass the product details
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  };
 
 
 

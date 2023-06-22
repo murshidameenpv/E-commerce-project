@@ -19,15 +19,23 @@
                         </a>
                         <ul class="dropdown-menu drop_cat" aria-labelledby="navbarDropdown">
                             <% if (locals.category) { %>
-                            <% category.forEach(Category=>{ %>
-                            <li><a class="dropdown-item" href="#"><i class="fa fa-female me-2 col_yell"></i>
-                                    <%= Category.category %></a>
-                            </li>
-                            <% }) %>
-                                
-                            <%} %>
-
-                           
+                                <% category.forEach(Category=> { %>
+                                    <li>
+                                        <a class="dropdown-item" href="#">
+                                            <% if (Category.category==='Smart Wearables') { %>
+                                            <i class="fa fa-times-circle-o me-2 col_yell"></i>
+                                             <% } else if (Category.category==='Health Wearables') { %>
+                                            <i class="fa fa-heartbeat me-2 col_yell"></i>
+                                            <% } else if (Category.category==='Speakers' ) { %>
+                                            <i class="fa fa-volume-up me-2 col_yell"></i>
+                                            <% } else if (Category.category==='Headphones' ) { %>
+                                            <i class="fa fa-headphones me-2 col_yell"></i>
+                                          <% } %>
+                                           <%= Category.category %>
+                                         </a>
+                                    </li>
+                                    <% }) %>
+                                        <% } %>
                         </ul>
                     </li>
                     <li class="nav-item">
