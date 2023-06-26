@@ -28,8 +28,6 @@ exports.sendOTP = async (req, res) => {
 
 exports.verifyOTP = async (req, res) => {
   const { phone, otp } = req.body;
-  console.log(phone,"oooooooooooo");
-  console.log(otp,"oooooopppppppppppoooooo");
   const userData = await userDb.findOne({ phone });
   try {
     const verificationResult = await client.verify

@@ -1,6 +1,8 @@
 const userDb = require("../models/userSchema");
 const productDb = require("../models/productSchema");
 const categoryDb = require("../models/categorySchema");
+const bannerDb = require('../models/bannerSchema')
+const brandDb = require('../models/brandSchema')
 const sharp = require("sharp");
 
 exports.adminLogin = (req, res) => {
@@ -53,45 +55,45 @@ exports.adminDeleteUser = async (req, res) => {
 
 // ADMIN NEW PRODUCT
 exports.adminAddProduct = async (req, res) => {
-  try {
-    const { productName, category, price, stock, description } = req.body;
+    try {
+      const { productName, category, price, stock, description, brandName } = req.body;
+        const resizeImage = async (inputPath, outputPath, width, height) => {
+          await sharp(inputPath)
+            .resize(width, height, {
+              fit: "contain",
+              background: { r: 255, g: 255, b: 255, alpha: 1 },
+            })
+            .toFile(outputPath);
+        };
+      const images = req.files.map((file) => {
+        const inputPath = file.path;
+        const outputPath = "uploads/resized/" + file.filename;
+        resizeImage(inputPath, outputPath, 600, 600);
+        return file.filename;
+      });
 
-      const resizeImage = async (inputPath, outputPath, width, height) => {
-        await sharp(inputPath)
-          .resize(width, height, {
-            fit: "contain",
-            background: { r: 255, g: 255, b: 255, alpha: 1 },
-          })
-          .toFile(outputPath);
-      };
-    const images = req.files.map((file) => {
-      const inputPath = file.path;
-      const outputPath = "uploads/resized/" + file.filename;
-      resizeImage(inputPath, outputPath, 600, 600);
-      return file.filename;
-    });
+      const newProduct = await productDb.create({
+        productName: productName,
+        category: category,
+        brand:brandName,
+        price: price,
+        stock: stock,
+        description: description,
+        image: images,
+        listed:false
+      });
 
-    const newProduct = await productDb.create({
-      productName: productName,
-      category: category,
-      price: price,
-      stock: stock,
-      description: description,
-      image: images,
-      listed:false
-    });
-
-    res.status(201).json(newProduct);
-  } catch (err) {
-    console.error("Error creating new product:", err);
-    res.status(500).send("Internal Server Error");
-  }
-};
-
+      res.status(201).json(newProduct);
+    } catch (err) {
+      console.error("Error creating new product:", err);
+      res.status(500).send("Internal Server Error");
+    }
+  };
+//ADMIN UPDATE PRODUCT
 exports.adminUpdateProduct = async (req, res) => {
   try {
     const productId = req.query.productId;
-    const { productName, category, price, stock, description } = req.body;
+    const { productName, category, price, stock, description, brandName } = req.body;
 
     const resizeImage = async (inputPath, outputPath, width, height) => {
       await sharp(inputPath)
@@ -116,6 +118,7 @@ exports.adminUpdateProduct = async (req, res) => {
         $set: {
           productName: productName,
           category: category,
+          brand: brandName,
           price: price,
           stock: stock,
           description: description,
@@ -198,7 +201,7 @@ exports.deleteCategory = async (req, res) => {
       //IF CATEGORY DELETED THEN BLOCK THE PRODUCT
      await productDb.updateMany({category:categoryId},{$set:{listed:true}})       
     }
-    await categoryDb.findByIdAndRemove(categoryId);
+    await categoryDb.findByIdAndDelete(categoryId);
     res.json({ success: true });
   } catch (err) {
     console.error("Error Deleting  data from Mongoose", err);
@@ -208,3 +211,82 @@ exports.deleteCategory = async (req, res) => {
 
 
 
+
+// ADMIN NEW BANNER
+exports.adminAddBanner = async (req, res) => {
+  try {
+    const { title } = req.body;
+    const resizeImage = async (inputPath, outputPath, width, height) => {
+      await sharp(inputPath)
+        .resize(width, height, {
+          fit: "contain",
+          background: { r: 255, g: 255, b: 255, alpha: 1 },
+        })
+        .toFile(outputPath);
+    };
+    const images = req.files.map((file) => {
+      const inputPath = file.path;
+      const outputPath = "uploads/resized/" + file.filename;
+      resizeImage(inputPath, outputPath, 1000, 500);
+      return file.filename;
+    });
+    const newBanner = await bannerDb.create({
+      title:title,
+      image: images,
+      
+    });
+    res.status(201).json(newBanner);
+  } catch (err) {
+    console.error("Error creating new Banner:", err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+//ADMIN DELETE BANNER
+exports.deleteBanner = async (req, res) => {
+  const bannerId = req.params.id
+  try {
+    await bannerDb.findByIdAndDelete(bannerId)
+    res.json({success:true})
+  } catch (err) {
+    console.error("Error deleting banner from mongDb ");
+    res.status(500).send("Internal Server Error")
+  }
+}
+
+
+//ADMIN ADD BRAND
+exports.adminAddBrand = async (req, res) => {
+  const { name, category } = req.body
+  try {
+    const newBrand = await brandDb.create({
+      brandName: name,
+      category: category,
+    });
+    console.log(newBrand);
+    res.json(newBrand)
+  } catch (err) {
+    console.error("Error adding new Brand in mongodb");
+    res.status(500).send("Internal Server Error")
+  }
+}
+
+//ADMIN DELETE BRAND 
+exports.deleteBrand = async (req, res) => {
+  const brandId = req.params.id;
+  try {
+      const brandExists = await productDb.find({ brand: brandId });
+      if (brandExists.length > 0) {
+        //IF CATEGORY DELETED THEN BLOCK THE PRODUCT
+        await productDb.updateMany(
+          { brand: brandId },
+          { $set: { listed: true } }
+        );
+      }
+    await brandDb.findByIdAndDelete(brandId);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Error deleting Brand from mongDb ");
+    res.status(500).send("Internal Server Error");
+  }
+}

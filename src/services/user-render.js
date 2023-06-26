@@ -1,17 +1,25 @@
-const products = require("../models/productSchema");
-const categories = require("../models/categorySchema")
+  const products = require("../models/productSchema");
+  const categories = require("../models/categorySchema")
+  const banners = require("../models/bannerSchema")
+  const brands = require("../models/brandSchema")
+  const user = require('../models/userSchema')
 
-exports.home = async(req, res) => { 
-  const superDeal = await products.find().limit(8).where({ listed :false});
-  const dealOfDay = await products.find().limit(6);
-  const category = await categories.find(); 
-  res.render("user/index", {
-    user: req.session.user,
-    superDeal,
-    dealOfDay,
-    category, 
-  });
-}
+  exports.home = async(req, res) => { 
+    const superDeal = await products.find().limit(8).where({ listed :false}).populate('brand').exec();
+    const dealOfDay = await products.find().limit(6).where({ listed :false}).populate("brand").exec();
+    const category = await categories.find().exec();
+    const todayOfferBanner = await banners.findOne({ title: "Fire Bolt" });
+    const topDealBanner = await banners.findOne({ title: "Top Deal" });
+    console.log(topDealBanner);
+    res.render("user/index", {
+      user: req.session.user,
+      superDeal,
+      dealOfDay,
+      category,
+      todayOfferBanner,
+      topDealBanner,
+    });
+  }
 
 exports.login = (req, res) => {
   if (req.session.user) {
@@ -49,8 +57,7 @@ exports.logout = (req, res) => {
 
 
   exports.aboutUs = async (req, res) => {  
-    const category = await categories.find(); 
-    
+    const category = await categories.find().exec(); 
     res.render('user/about',
       {
         user: req.session.user,
@@ -62,10 +69,10 @@ exports.products = async (req, res) => {
     const page = parseInt(req.params.page) || 1;
     const limit = 9;
     const skip = (page - 1) * limit;
-
     const productCount = await products.countDocuments();
-    const product = await products.find().skip(skip).limit(limit);
+    const product = await products.find().skip(skip).limit(limit).populate('brand').exec();
     const category = await categories.find();
+    const brand = await brands.find();
 
     res.render("user/product", {
       user: req.session.user,
@@ -73,6 +80,7 @@ exports.products = async (req, res) => {
       category,
       currentPage: page,
       totalPages: Math.ceil(productCount / limit),
+      brand
     });
   } catch (err) {
     console.error("Error fetching products from MongoDB", err);
@@ -104,12 +112,20 @@ exports.contactUs = async (req, res) => {
 
 
 
-exports.checkout = (req, res) => {  ``
-  res.render('user/checkout',)
+exports.checkout =async (req, res) => { 
+   const category = await categories.find()
+  res.render("user/checkout", {
+    user: req.session.user,
+    category
+  });
 }
 
-exports.cart = (req, res) => {
-  res.render('user/cart',)
+exports.cart = async (req, res) => {
+  const category = await categories.find()
+  res.render("user/cart", {
+    user: req.session.user,
+    category
+  });  
 }
 
 
@@ -122,3 +138,28 @@ exports.otplogin = (req, res) => {
   res.header('Expires', '0');
   res.render('user/login-otp',)
 }
+
+
+exports.forgotPassword = (req, res) => {
+  res.render('user/forgotPassword')
+}
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token } = req.query;
+    if (!token) {
+      return res.status(404).send("Page not found");
+    }
+    const userCredential = await user.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+    if (!userCredential) {
+      return res.status(404).send("Page not found");
+    }
+    res.render("user/resetPassword", { token });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+};

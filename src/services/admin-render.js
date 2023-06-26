@@ -2,6 +2,8 @@
 const userDb = require("../models/userSchema");
 const productDb = require("../models/productSchema");
 const categoryDb = require("../models/categorySchema");
+const bannerDb = require("../models/bannerSchema");
+const brandDb = require("../models/brandSchema");
  
 exports.adminLogin = (req, res) => {
   let message = "";
@@ -24,9 +26,10 @@ exports.adminUserManagement = async (req, res) => {
 
 exports.adminProductManagement = async (req, res) => {
   try {
-    const products = await productDb.find().populate("category").exec();
+    const products = await productDb.find().populate("category").populate("brand").exec();
     const category = await categoryDb.find().exec();
-    res.render("admin/products", { products, category });
+    const brand = await brandDb.find().exec();
+    res.render("admin/products", { products, category,brand });
   } catch (err) {
     console.error("Error fetching users from MongoDB", err);
     res.status(500).send("Internal Server Error");
@@ -53,6 +56,30 @@ exports.adminCategoryManagement = async (req, res) => {
   }
 };
 
+exports.adminBannerManagement = async (req, res) => {
+  try {
+    const banners = await bannerDb.find().exec()
+    res.render("admin/banners",{banners})
+  } catch (err) {
+    console.error("Error fetching banners from mongoDB", err);
+    res.status(500).send("Internal Server Error")
+  }
+}
+
+exports.adminBrandManagement = async (req, res) => {
+  try {
+    const brands = await brandDb.find().populate("category").exec();
+    const category = await categoryDb.find().exec()
+    res.render("admin/brands", { brands, category });
+  } catch (err) {
+    console.error("Error retrieving brands:", err);
+    res.status(500).send("Internal Server Error");
+  }
+};
+
+
+
 exports.adminChartManagement = (req, res) => {
   res.render("admin/charts");
+  
 };

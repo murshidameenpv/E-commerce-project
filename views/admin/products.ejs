@@ -13,7 +13,7 @@
                                     <div class="col-auto">
                                         <form class="table-search-form row gx-1 align-items-center">
                                             <div class="col-auto">
-                                                <input type="text" id="search-orders" name="searchorders"
+                                                <input type="text" id="search-orders" name="searchProducts"
                                                     class="form-control search-orders" placeholder="Search">
                                             </div>
                                             <div class="col-auto">
@@ -50,6 +50,7 @@
                                                 <tr>
                                                     <th class="cell">Product Name</th>
                                                     <th class="cell">Category</th>
+                                                    <th class="cell">Brand</th>
                                                     <th class="cell">Price</th>
                                                     <th class="cell">In Stock</th>
                                                     <th class="cell">Image</th>
@@ -66,6 +67,9 @@
                                                         </td>
                                                         <td class="cell">
                                                         <%= product.category?.category %>
+                                                        </td>
+                                                        <td class="cell">
+                                                        <%= product.brand?.brandName %>
                                                         </td>
                                                         <td class="cell">
                                                             <%= product.price %>
@@ -105,7 +109,6 @@
                                                                     <% } %>
                                                         </td>
                                                         </tr>
-                                                    </tr>
                                                     <% }) %>
                                             </tbody>
                                         </table>
@@ -155,6 +158,14 @@
                                     <select class="form-select" id="category" name="category">
                                         <% category.forEach((category)=>{ %>
                                         <option value="<%=category._id %>"><%=category.category %></option>
+                                        <% }) %>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="brand" class="form-label">Brand</label>
+                                    <select class="form-select" id="brand" name="brandName">
+                                        <% brand.forEach((brand)=>{ %>
+                                        <option value="<%=brand._id %>"><%=brand.brandName %></option>
                                         <% }) %>
                                     </select>
                                 </div>
@@ -220,8 +231,16 @@
                                     <label for="updateCategory" class="form-label">Category</label>
                                     <select class="form-select" id="updateCategory" name="category">
                                         <% category.forEach((category)=>{ %>
-                                            <option value="<%=category._id %>">
-                                            <%=category.category %>
+                                            <option value="<%=category._id %>"><%=category.category %></option>
+                                            <% }) %>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="brand" class="form-label">Brand</label>
+                                    <select class="form-select" id="brand" name="brandName">
+                                        <% brand.forEach((brand)=>{ %>
+                                            <option value="<%=brand._id %>">
+                                                <%=brand.brandName %>
                                             </option>
                                             <% }) %>
                                     </select>

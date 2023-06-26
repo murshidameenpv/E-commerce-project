@@ -1,0 +1,122 @@
+<%- include('includes/header') %>
+    <%- include('includes/sidebar') %>
+        <div class="app-wrapper">
+            <div class="app-content pt-3 p-md-3 p-lg-4">
+                <div class="container-xl">
+                    <div class="row g-3 mb-4 align-items-center justify-content-between">
+                        <div class="col">
+                            <h1 class="app-page-title mb-0">Categories</h1>
+                        </div>
+                        <div class="col-auto">
+                            <div class="page-utilities">
+                                <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                                    <div class="col-auto">
+                                        <form class="table-search-form row gx-1 align-items-center">
+                                            <div class="col-auto">
+                                                <input type="text" id="search-orders" name="searchorders"
+                                                    class="form-control search-orders" placeholder="Search">
+                                            </div>
+                                            <div class="col-auto">
+                                                <button type="submit" class="btn app-btn-secondary">Search</button>
+                                            </div>
+                                        </form>
+                                    </div><!--//col-auto-->
+                                    <div class="col-auto">
+                                        <span class="btn app-btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#addBrandModal" style="cursor:pointer">Add Brands</span>
+                                    </div>
+                                </div><!--//row-->
+                            </div><!--//table-utilities-->
+                        </div><!--//col-auto-->
+                    </div><!--//row-->
+
+                    <nav id="brand-table-tab"
+                        class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+                        <span class="flex-sm-fill text-sm-center nav-link active" id="categor-all-tab">All Brands</span>
+                    </nav>
+                    <div class="tab-content" id="brand-table-tab-content">
+                        <div class="tab-pane fade show active" id="orders-all" role="tabpanel"
+                            aria-labelledby="brand-all-tab">
+                            <div class="app-card app-card-orders-table shadow-sm mb-5">
+                                <div class="app-card-body">
+                                    <div class="table-responsive">
+                                        <table class="table app-table-hover mb-0 text-left right-aligned-column">
+                                            <thead>
+                                                <tr>
+                                                    <th class="cell">Brand</th>
+                                                    <th class="cell">Category</th>
+                                                    <th class="cell">Delete Brand</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                        <% brands.forEach((brand)=> { %>
+                                                    <tr>
+                                                        <td class="cell">
+                                                        <%= brand.brandName %>
+                                                        </td>
+                                                        <td class="cell">
+                                                        <%= brand.category.category %>
+                                                        </td>
+                                                        <td class="cell">
+                                                            <span class="btn-sm app-btn-danger delete-button"
+                                                                style="cursor: pointer;" id="brandDeleteBtn"
+                                                                data-id="<%= brand._id %>">Delete</span>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                            </tbody>
+                                        </table>
+                                    </div><!--//table-responsive-->
+                                </div><!--//app-card-body-->
+                            </div><!--//app-card-->
+                        </div><!--//tab-pane-->
+                    </div><!--//category-table-tab-content-->
+                </div><!--//container-xl-->
+            </div><!--//app-content-->
+
+
+            <!-- Category Modal -->
+            <div class="modal fade" id="addBrandModal" tabindex="-1" role="dialog"
+                aria-labelledby="addBrandModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addBrandModalLabel">New Brand</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="addBrandForm">
+                                <div class="mb-3">
+                                    <label for="brandInput" class="form-label">Brand Name</label>
+                                    <input type="text" class="form-control" id="brandInput" name="name"
+                                        placeholder="Enter Brand">
+                                </div>
+                                <div class="mb-3">
+                                 <label for="category" class="form-label">Category</label>
+                                <select class="form-select" id="category" name="category">
+                                        <% category.forEach((category)=>{ %>
+                                            <option value="<%=category._id %>">
+                                                <%=category.category %>
+                                            </option>
+                                            <% }) %>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-primary" id="addBrandBtn">Add
+                                        Brand</button>
+                                </div>
+                            </form>
+                            <div id="loadingSpinnerBrand" class="spinner-border text-primary" role="status"
+                                style="display: none;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div id="statusMessageBrand" class="alert" style="display: none;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <%- include('includes/footer') %>

@@ -7,73 +7,74 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Add event listener to reset modal fields when modal is closed
   const newProductModal = document.querySelector("#newProductModal");
-  newProductModal.addEventListener("hidden.bs.modal", function () {
+  newProductModal?.addEventListener("hidden.bs.modal", function () {
     // Reset form fields
     newProductForm.reset();
-
     // Hide status message
     messageStatus.style.display = "none";
   });
 
-  newProductForm.addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent default form submission
+  // Add event listener to submit form
+  newProductModal?.addEventListener("shown.bs.modal", function () {
+    newProductForm?.addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent default form submission
 
-    // Show loading spinner
-    loadingSpinner.style.display = "block";
+      // Show loading spinner
+      loadingSpinner.style.display = "block";
 
-    // Disable submit button
-    addProductBtn.disabled = true;
+      // Disable submit button
+      addProductBtn.disabled = true;
 
-    // Create FormData object with form data
-    const formData = new FormData(this);
+      // Create FormData object with form data
+      const formData = new FormData(this);
 
-    // Make Axios request
-    axios
-      .post("/api/admin/product/add-product", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then(function (response) {
-        // Hide loading spinner
-        loadingSpinner.style.display = "none";
+      // Make Axios request
+      axios
+        .post("/api/admin/product/add-product", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then(function (response) {
+          // Hide loading spinner
+          loadingSpinner.style.display = "none";
 
-        // Show success message on the modal
-        messageStatus.classList.add("alert-success");
-        messageStatus.classList.remove("alert-danger");
-        messageStatus.textContent = "Product added successfully";
-        messageStatus.style.display = "block";
-        setTimeout(function () {
-          messageStatus.style.display = "none";
-        }, 3000);
+          // Show success message on the modal
+          messageStatus.classList.add("alert-success");
+          messageStatus.classList.remove("alert-danger");
+          messageStatus.textContent = "Product added successfully";
+          messageStatus.style.display = "block";
+          setTimeout(function () {
+            messageStatus.style.display = "none";
+          }, 3000);
 
-        // Reset form fields
-        newProductForm.reset();
+          // Reset form fields
+          newProductForm.reset();
 
-        // Enable submit button
-        addProductBtn.disabled = false;
+          // Enable submit button
+          addProductBtn.disabled = false;
 
-        // Reload the table
-         location.reload();
-      })
-      .catch(function (error) {
-        console.error(error);
+          // Reload the table
+          location.reload();
+        })
+        .catch(function (error) {
+          console.error(error);
 
-        // Hide loading spinner
-        loadingSpinner.style.display = "none";
+          // Hide loading spinner
+          loadingSpinner.style.display = "none";
 
-        // Show error message on the modal
-        messageStatus.classList.add("alert-danger");
-        messageStatus.classList.remove("alert-success");
-        messageStatus.textContent = "Error adding product. Please try again.";
-        messageStatus.style.display = "block";
+          // Show error message on the modal
+          messageStatus.classList.add("alert-danger");
+          messageStatus.classList.remove("alert-success");
+          messageStatus.textContent = "Error adding product. Please try again.";
+          messageStatus.style.display = "block";
 
-        // Enable submit button
-        addProductBtn.disabled = false;
-      });
+          // Enable submit button
+          addProductBtn.disabled = false;
+        });
+    });
   });
 });
-
 
 
 //UPDATE PRODUCT

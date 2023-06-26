@@ -1,4 +1,3 @@
-//ADDING CATEGORY
 document.addEventListener("DOMContentLoaded", function () {
   const addCategoryForm = document.querySelector("#addCategoryForm");
   const loadingSpinner = document.querySelector("#loadingSpinnerCategory");
@@ -7,78 +6,77 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Add event listener to reset modal fields when modal is closed
   const addCategoryModal = document.querySelector("#addCategoryModal");
-  addCategoryModal.addEventListener("hidden.bs.modal", function () {
+  addCategoryModal?.addEventListener("hidden.bs.modal", function () {
     // Reset form fields
     addCategoryForm.reset();
-
     // Hide status message
     messageStatus.style.display = "none";
   });
 
-  addCategoryForm.addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent default form submission
+  // Add event listener to submit form
+  addCategoryModal?.addEventListener("shown.bs.modal", function () {
+    addCategoryForm.addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent default form submission
+      // Get current value of category input
+      const category = document.getElementById("categoryInput").value;
+      // Show loading spinner
+      loadingSpinner.style.display = "block";
+      // Disable submit button
+      addCategoryBtn.disabled = true;
 
-    // Get current value of category input
-    const category = document.getElementById("categoryInput").value;
+      // Make Axios request
+      axios
+        .post("/api/admin/category/add-category", { category })
+        .then(function (response) {
+          // Hide loading spinner
+          loadingSpinner.style.display = "none";
 
-    // Show loading spinner
-    loadingSpinner.style.display = "block";
+          // Show success message on the modal
+          messageStatus.classList.add("alert-success");
+          messageStatus.classList.remove("alert-danger");
+          messageStatus.textContent = "Category added successfully";
+          messageStatus.style.display = "block";
+          setTimeout(function () {
+            messageStatus.style.display = "none";
+          }, 3000);
 
-    // Disable submit button
-    addCategoryBtn.disabled = true;
+          // Reset form fields
+          addCategoryForm.reset();
 
-    // Make Axios request
-    axios
-      .post("/api/admin/category/add-category", { category })
-      .then(function (response) {
-        // Hide loading spinner
-        loadingSpinner.style.display = "none";
+          // Enable submit button
+          addCategoryBtn.disabled = false;
 
-        // Show success message on the modal
-        messageStatus.classList.add("alert-success");
-        messageStatus.classList.remove("alert-danger");
-        messageStatus.textContent = "Category added successfully";
-        messageStatus.style.display = "block";
-        setTimeout(function () {
-          messageStatus.style.display = "none";
-        }, 3000);
+          // Reload the table
+          axios.get(window.location.href).then(function (response) {
+            const categoryTableContent = document.querySelector(
+              "#category-table-tab-content"
+            );
+            const newContent = document.createElement("div");
+            newContent.innerHTML = response.data;
+            categoryTableContent.innerHTML = newContent.querySelector(
+              "#category-table-tab-content"
+            ).innerHTML;
+          });
+        })
+        .catch(function (error) {
+          console.error(error);
 
-        // Reset form fields
-        addCategoryForm.reset();
+          // Hide loading spinner
+          loadingSpinner.style.display = "none";
 
-        // Enable submit button
-        addCategoryBtn.disabled = false;
+          // Show error message on the modal
+          messageStatus.classList.add("alert-danger");
+          messageStatus.classList.remove("alert-success");
+          messageStatus.textContent =
+            "Error adding category. Please try again.";
+          messageStatus.style.display = "block";
 
-        // Reload the table
-        axios.get(window.location.href).then(function (response) {
-          const categoryTableContent = document.querySelector(
-            "#category-table-tab-content"
-          );
-          const newContent = document.createElement("div");
-          newContent.innerHTML = response.data;
-          categoryTableContent.innerHTML = newContent.querySelector(
-            "#category-table-tab-content"
-          ).innerHTML;
+          // Enable submit button
+          addCategoryBtn.disabled = false;
         });
-      })
-      .catch(function (error) {
-        console.error(error);
-
-        // Hide loading spinner
-        loadingSpinner.style.display = "none";
-
-        // Show error message on the modal
-        messageStatus.classList.add("alert-danger");
-        messageStatus.classList.remove("alert-success");
-        messageStatus.textContent = "Error adding category. Please try again.";
-        messageStatus.style.display = "block";
-
-        // Enable submit button
-        addCategoryBtn.disabled = false;
-      });
+    });
   });
 });
-
 
 // DELETE CATEGORY WHEN CLICK DELETE
 document.addEventListener("click", function (event) {

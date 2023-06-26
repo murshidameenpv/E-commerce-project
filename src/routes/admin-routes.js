@@ -37,6 +37,17 @@ router.get(
   adminRender.adminCategoryManagement
 );
 router.get(
+  "/admin/banners",
+checkSession.sessionExists,
+adminRender.adminBannerManagement
+);
+router.get(
+  "/admin/brands",
+  checkSession.sessionExists,
+  adminRender.adminBrandManagement
+)
+
+router.get(
   "/admin/charts",
   checkSession.sessionExists,
   adminRender.adminChartManagement
@@ -104,6 +115,25 @@ router.delete(
   checkSession.sessionExists,
   adminController.deleteCategory
 )
-
-
+router.post(
+  "/api/admin/product/add-banner",
+  checkSession.sessionExists,
+  upload.array("image"),
+  adminController.adminAddBanner
+);
+router.delete(
+  "/api/admin/banner/:id/delete",
+  checkSession.sessionExists,
+  adminController.deleteBanner
+);
+router.post(
+  "/api/admin/brand/add-brand",
+  checkSession.sessionExists,
+  adminController.adminAddBrand
+);
+router.delete(
+  "/api/admin/brand/:id/delete",
+  checkSession.sessionExists,
+  adminController.deleteBrand
+);
 module.exports = router;
