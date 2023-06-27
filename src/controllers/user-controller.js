@@ -50,7 +50,7 @@ exports.forgotPassword = async (req, res, next) => {
     } else {
       // generate unique token
       const token = crypto.randomBytes(20).toString("hex");
-      // set token expiration time to 2  minute from now
+      // set token expiration time to 3  minute from now
       const tokenExpiration = Date.now() + 300000;  ;
       // update user with token and expiration time
       existingUser.resetPasswordToken = token;
