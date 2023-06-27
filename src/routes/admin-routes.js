@@ -110,11 +110,12 @@ router.post(
   checkSession.sessionExists,
   adminController.adminAddCategory  
 );
-router.delete(
-  "/api/admin/category/:id/delete",
+router.put(
+  "/api/admin/category/update",
   checkSession.sessionExists,
-  adminController.deleteCategory
-)
+  adminController.adminUpdateCategory  
+);
+
 router.post(
   "/api/admin/product/add-banner",
   checkSession.sessionExists,

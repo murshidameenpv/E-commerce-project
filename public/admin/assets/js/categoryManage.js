@@ -75,26 +75,85 @@ document.addEventListener("DOMContentLoaded", function () {
           addCategoryBtn.disabled = false;
         });
     });
-  });
+  }); 
 });
 
-// DELETE CATEGORY WHEN CLICK DELETE
-document.addEventListener("click", function (event) {
-  if (event.target.id === "categoryDeleteBtn") {
-    event.preventDefault();
-    const categoryId = event.target.getAttribute("data-id");
 
-    axios
-      .delete(`/api/admin/category/${categoryId}/delete`)
-      .then(function (response) {
-        if (response.data.success) {
-          // Remove the deleted user element from the UI
-          const categoryRow = event.target.closest("tr");
-          categoryRow.parentNode.removeChild(categoryRow);
-        }
-      })
-      .catch(function (error) {
-        console.error(error);
-      });
-  }
+
+//UPDATE CATEGORY
+document.addEventListener("DOMContentLoaded", function () {
+  // Add a forEach loop to add an event listener to each form
+  document.querySelectorAll("[data-category-id]").forEach((form) => {
+    form.addEventListener("submit", function (event) {
+      event.preventDefault(); // Prevent default form submission
+      const loadingSpinner = document.querySelector(
+        `#loadingSpinnerUpdate-${this.dataset.categoryId}`
+      );
+      const updateCategoryBtn = document.querySelector(
+        `#updateCategoryBtn-${this.dataset.categoryId}`
+      );
+      const messageStatus = document.querySelector(
+        `#messageStatusUpdate-${this.dataset.categoryId}`
+      );
+      const categoryId = this.dataset.categoryId;
+
+      loadingSpinner.style.display = "block";
+      // Disable submit button
+      updateCategoryBtn.disabled = true;
+
+      // Get the updated category name from the input field
+      const updatedCategoryName = document.querySelector(
+        `#categoryNameUpdate-${categoryId}`
+      ).value;
+
+      axios
+        .put(`/api/admin/category/update?categoryId=${categoryId}`, {
+          category: updatedCategoryName,
+        })
+        .then(function (response) {
+          // Hide loading spinner
+          loadingSpinner.style.display = "none";
+
+          // Show success message on the modal
+          messageStatus.classList.add("alert-success");
+          messageStatus.classList.remove("alert-danger");
+          messageStatus.textContent = "Category updated successfully";
+          messageStatus.style.display = "block";
+          setTimeout(function () {
+            messageStatus.style.display = "none";
+          }, 3000);
+
+          // Enable submit button
+          updateCategoryBtn.disabled = false;
+
+          // Reload the table
+          axios.get(window.location.href).then(function (response) {
+            const categoryTableContent = document.querySelector(
+              "#category-table-tab-content"
+            );
+            const newContent = document.createElement("div");
+            newContent.innerHTML = response.data;
+            categoryTableContent.innerHTML = newContent.querySelector(
+              "#category-table-tab-content"
+            ).innerHTML;
+          });
+        })
+        .catch(function (error) {
+          console.error(error);
+
+          // Hide loading spinner
+          loadingSpinner.style.display = "none";
+
+          // Show error message on the modal
+          messageStatus.classList.remove("alert-success");
+          messageStatus.classList.add("alert-danger");
+          messageStatus.textContent =
+            "Error updating category. Please try again.";
+          messageStatus.style.display = "block";
+
+          // Enable submit button
+          updateCategoryBtn.disabled = false;
+        });
+    });
+  });
 });

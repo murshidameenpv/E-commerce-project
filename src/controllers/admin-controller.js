@@ -189,27 +189,27 @@ exports.adminAddCategory = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
-
-
-
-//DELETE CATEGORY
-exports.deleteCategory = async (req, res) => {
-  const categoryId = req.params.id;   
-  try {
-    const categoryExists = await productDb.find({ category: categoryId });
-    if (categoryExists.length > 0) {
-      //IF CATEGORY DELETED THEN BLOCK THE PRODUCT
-     await productDb.updateMany({category:categoryId},{$set:{listed:true}})       
+  //UPDATE CATEGORY
+  exports.adminUpdateCategory = async (req, res) => {
+    const categoryId = req.query.categoryId;
+    const { category } = req.body
+    try {
+      const updatedCategory = await categoryDb.findByIdAndUpdate(
+        categoryId,
+        {
+          $set: {
+            category: category,
+          },
+        },
+        { new: true }
+      );
+      console.log(updatedCategory,"0000000000000000000");
+      res.status(201).json(updatedCategory);
+    } catch (err) {
+      console.error("Error Updating Category:", err);
+      res.status(500).send("Internal Server Error");
     }
-    await categoryDb.findByIdAndDelete(categoryId);
-    res.json({ success: true });
-  } catch (err) {
-    console.error("Error Deleting  data from Mongoose", err);
-    res.status(500).send("Internal Server Error");
   }
-};
-
-
 
 
 // ADMIN NEW BANNER

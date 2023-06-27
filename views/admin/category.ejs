@@ -49,19 +49,21 @@
                                                     <th class="cell">Delete Category</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <% categories.forEach((category)=> { %>
+                                        <tbody>
+                                            <% categories.forEach((category)=> { %>
                                                 <tr>
-                                                    <td class="cell"><%=category.category%></td>
+                                                    <td class="cell">
+                                                        <%= category.category %>
+                                                    </td>
                                                     <td></td>
                                                     <td class="cell">
-                                                        <span class="btn-sm app-btn-danger delete-button"
-                                                            style="cursor: pointer;"
-                                                            id="categoryDeleteBtn" data-id="<%=category._id%>">Delete</span>
+                                                        <span style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#editCategoryModal-<%= category.id %>">
+                                                            <i class="fa fa-edit"></i> Edit
+                                                        </span>
                                                     </td>
                                                 </tr>
                                                 <% }) %>
-                                            </tbody>
+                                        </tbody>
                                         </table>
                                     </div><!--//table-responsive-->
                                 </div><!--//app-card-body-->
@@ -72,7 +74,7 @@
             </div><!--//app-content-->
 
 
-            <!-- Category Modal -->
+            <!-- ADD Category Modal -->
             <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog" role="document">
@@ -103,5 +105,40 @@
                     </div>
                 </div>
             </div>
-          
+
+        <% categories.forEach((category)=> { %>
+            <div class="modal fade" id="editCategoryModal-<%= category.id %>" tabindex="-1" aria-labelledby="editModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editModalLabel">Edit Category</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form id="updateCategoryForm-<%= category._id %>" data-category-id="<%= category._id %>">
+                                <div class="mb-3">
+                                    <label for="categoryNameUpdate-<%= category._id %>" class="form-label">Category Name</label>
+                                    <input type="text" class="form-control" id="categoryNameUpdate-<%= category._id %>"
+                                        value="<%= category.category %>" name="category">
+                                </div>
+                                <div class="mb-3">
+                                    <button type="submit" class="btn btn-primary"
+                                        id="updateCategoryBtn-<%= category._id %>">Update</button>
+                                </div>
+                            </form>
+                            <div id="loadingSpinnerUpdate-<%= category._id %>" class="spinner-border text-primary" role="status"
+                                style="display: none;">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <div id="messageStatusUpdate-<%= category._id %>" class="alert" style="display: none;"></div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% }) %>
+
         <%- include('includes/footer') %>
