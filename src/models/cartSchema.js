@@ -5,18 +5,18 @@ const cartSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "customers",
     },
-    products: [
-      {
-        productId:mongoose.Schema.Types.ObjectId,
+    products: [{
+      productId: {
+        type: mongoose.Schema.Types.ObjectId,
         ref: "products",
-        required: true,      
-        },
-        {
-            type: Number,
-            required: true,
-            default:1
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        required: true,
+        default: 1
       }
-        ],
+    }],
      //indicates whether the cart is active or not.
     active: {
       type: Boolean,
@@ -38,4 +38,5 @@ const cartSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-module.exports = mongoose.model("cart", cartSchema);
+const cartDb = mongoose.model("carts", cartSchema);
+module.exports = cartDb

@@ -163,11 +163,13 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="brand" class="form-label">Brand</label>
-                                    <select class="form-select" id="brand" name="brandName">
-                                        <% brand.forEach((brand)=>{ %>
-                                        <option value="<%=brand._id %>"><%=brand.brandName %></option>
+                                <select class="form-select" id="brand" name="brandName">
+                                    <% brand.forEach((brand)=>{ %>
+                                        <option value="<%=brand._id %>" data-category="<%=brand.category %>">
+                                            <%=brand.brandName %>
+                                        </option>
                                         <% }) %>
-                                    </select>
+                                </select>
                                 </div>
                                 <div class="mb-3">
                                     <label for="price" class="form-label">Price</label>
@@ -229,17 +231,19 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="updateCategory" class="form-label">Category</label>
-                                    <select class="form-select" id="updateCategory" name="category">
-                                        <% category.forEach((category)=>{ %>
-                                            <option value="<%=category._id %>"><%=category.category %></option>
-                                            <% }) %>
-                                    </select>
+                                <select class="form-select updateCategory" id="updateCategory" name="category">
+                                    <% category.forEach((category)=>{ %>
+                                        <option value="<%=category._id %>">
+                                            <%=category.category %>
+                                        </option>
+                                        <% }) %>
+                                </select>
                                 </div>
                                 <div class="mb-3">
                                     <label for="brand" class="form-label">Brand</label>
-                                    <select class="form-select" id="brand" name="brandName">
+                                    <select class="form-select updateBrand" id="updateBrand" name="brandName">
                                         <% brand.forEach((brand)=>{ %>
-                                            <option value="<%=brand._id %>">
+                                            <option value="<%=brand._id %>" data-category="<%=brand.category %>">
                                                 <%=brand.brandName %>
                                             </option>
                                             <% }) %>

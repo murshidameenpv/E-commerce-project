@@ -55,9 +55,9 @@
                     <h4 class="mt-3"><span class="col_yell me-3">$<%=product.price %></span> <span
                             class="font_14  text-decoration-line-through col_light">$78.00</span></h4>
                     <p style="white-space: pre-wrap;"><%=product.description %></p>
-                    <input type="number" min="1" value="1" class="form-control mt-2" placeholder="Qty"
+                    <input type="number" min="1" value="1" class="form-control mt-2" placeholder="Qty" id="productQuantity"
                         style="width: 140px; height:50px; margin-right:10px; float:left;">
-                    <h6 class="text-uppercase mt-4"><a class="button" href="#">Add to Cart</a></h6>
+                    <h6 class="text-uppercase mt-4"><a class="button" id="addToCartBtn" style="cursor: pointer;">Add to Cart</a></h6>
                     <h6 class="mt-4"><a href="#"><i class="fa fa-heart-o col_yell me-1"></i> Add To Wishlist</a></h6>
                     <hr>
                 </div>
@@ -126,6 +126,5 @@
         </div>
     </div>
 </section>
-
 
 <%-include('includes/footer')%>

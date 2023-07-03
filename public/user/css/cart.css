@@ -6,6 +6,7 @@ Author URI: https://www.templateonweb.com/
 Licence: <a href="https://www.templateonweb.com/license">Website Template Licence</a>
 */
 /*********************cart****************/
+
 .cart_3l h6 {
     background: #fafafa;
     padding: 10px 20px;
@@ -74,7 +75,30 @@ Licence: <a href="https://www.templateonweb.com/license">Website Template Licenc
     padding-top: 10px;
     padding-bottom: 10px;
 }
+#cart_page {
+    min-height: 550px;
+}
+@keyframes blink {
+    0% {
+        opacity: 1;
+    }
 
+    50% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.empty-cart-message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    animation: blink 1s linear infinite;
+}
 /*********************cart_end****************/
 
 

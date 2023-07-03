@@ -68,98 +68,33 @@
                 <div class="col-md-3 ms-auto d-flex align-items-center justify-content-end">
                     <ul class="list-inline mb-0">
                         <li class="list-inline-item me-4">
-                            <a href="index.html"><i class="fa fa-refresh fs-5"></i></a>
+                            <a onclick="location.reload()" style="cursor: pointer;"><i class="fa fa-refresh fs-5"></i></a>
                         </li>
+                        <% if(locals.user){ %>
                         <li class="list-inline-item me-4">
-                            <a href="wishlist.html"><i class="fa fa-heart-o fs-5"></i></a>
+                            <a href="/whishlist"><i class="fa fa-heart-o fs-5"></i></a>
                         </li>
-                        <li class="list-inline-item dropdown">
-                            <a class="dropdown-toggle col_dark nav_hide" href="#" id="navbarDropdown" role="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fa fa-shopping-bag fa-2x me-1 col_yell"></i> My Cart
+                        <% }else{ %>
+                            <li class="list-inline-item me-4">
+                                <a href="/login "><i class="fa fa-heart-o fs-5"></i></a>
+                            </li>
+                            <% } %>
+                        <% if(locals.user){ %>
+                        <li class="list-inline-item">
+                                <a href="/cart" class="fa fa-shopping-bag fa-2x me-1 col_yell"></a>
                             </a>
-                            <ul class="dropdown-menu drop_cart" aria-labelledby="navbarDropdown">
-                                <li>
-                                    <div class="drop_1i row">
-                                        <div class="col-md-6 col-6">
-                                            <div class="drop_1il">
-                                                <h5>2 ITEMS</h5>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-6">
-                                            <div class="drop_1il text-end">
-                                                <h5><a href="cart.html">VIEW CART</a></h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="drop_1i1 row">
-                                        <div class="col-md-6 col-6">
-                                            <div class="drop_1i1l">
-                                                <h6><a href="#">Nulla Quis</a> <br> <span
-                                                        class="fw-normal d-inline-block mt-1">1x -
-                                                        $89.00</span>
-                                                </h6>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-4">
-                                            <div class="drop_1i1r"><a href="#"><img src="/user/img/1.jpg" class="w-100"
-                                                        alt="abc"></a></div>
-                                        </div>
-                                        <div class="col-md-2 col-2">
-                                            <div class="drop_1i1l text-end">
-                                                <h6> <span><i class="fa fa-trash"></i></span></h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="drop_1i1 row">
-                                        <div class="col-md-6 col-6">
-                                            <div class="drop_1i1l">
-                                                <h6><a href="#">Eget Nulla</a> <br> <span
-                                                        class="fw-normal d-inline-block mt-1">1x -
-                                                        $49.00</span>
-                                                </h6>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-4 col-4">
-                                            <div class="drop_1i1r"><a href="#"><img src="/user/img/2.jpg" class="w-100"
-                                                        alt="abc"></a></div>
-                                        </div>
-                                        <div class="col-md-2 col-2">
-                                            <div class="drop_1i1l text-end">
-                                                <h6> <span><i class="fa fa-trash"></i></span></h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="drop_1i2 row">
-                                        <div class="col-md-6 col-6">
-                                            <div class="drop_1il">
-                                                <h5>TOTAL</h5>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6 col-6">
-                                            <div class="drop_1il text-end">
-                                                <h5>$138.00</h5>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="drop_1i3 text-center row">
-                                        <div class="col-md-12 col-12">
-                                            <h6><a class="button_1 d-block" href="checkout.html">SHOPPING CART</a>
-                                            </h6>
-                                        </div>
-                                    </div>
-                                    <div class="drop_1i3 text-center row">
-                                        <div class="col-md-12 col-12">
-                                            <h6><a class="button d-block" href="checkout.html">CHECKOUT</a></h6>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
                         </li>
+                        <% }else{ %>
+                            <li class="list-inline-item">
+                                <a  href="/login" class="fa fa-shopping-bag fa-2x me-1 col_yell"></a>
+                                </a>
+                            </li>
+                            <% } %>
                     </ul>
                 </div>
             </div>
         </div>
     </nav>
 </section>
+
 <!-- nav bar -->

@@ -102,5 +102,12 @@ router.post("/login/forgotPassword",
 );
 router.post("/login/resetPassword",
   userController.resetPassword);
- 
+
+router.post("/product/addToCart",
+  userController.addToCart);
+
+router.post("/cart/product/remove",
+  userController.deleteFromCart);
+
+
 module.exports = router;

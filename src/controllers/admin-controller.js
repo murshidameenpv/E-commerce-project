@@ -263,7 +263,6 @@ exports.adminAddBrand = async (req, res) => {
       brandName: name,
       category: category,
     });
-    console.log(newBrand);
     res.json(newBrand)
   } catch (err) {
     console.error("Error adding new Brand in mongodb");

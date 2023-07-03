@@ -231,3 +231,47 @@ async function deleteImage(productId, imageUrl) {
     }
   }
 }
+
+//ADD PRODUCT MODAL CATEGORY AND BRAND ADJUSTMENT WHEN SELECTING THEM
+    const categorySelect = document.querySelector('#category');
+    const brandSelect = document.querySelector('#brand');
+        brandSelect.selectedIndex = -1;
+    categorySelect.addEventListener('change', () => {
+        const selectedCategory = categorySelect.value;
+        const options = brandSelect.querySelectorAll('option');
+        options.forEach(option => {
+            const optionCategory = option.getAttribute('data-category');
+            if (optionCategory === selectedCategory) {
+                option.style.display = 'block';
+            } else {
+                option.style.display = 'none';
+            }
+        });
+    });
+    categorySelect.addEventListener('click', () => {
+        brandSelect.selectedIndex = -1;
+    });
+//UPDATE PRODUCT MODAL CATEGORY AND BRAND ADJUSTMENT WHEN SELECTING THEM
+    const updateCategorySelects = document.querySelectorAll('.updateCategory');
+     const updateBrandSelects = document.querySelectorAll('.updateBrand');
+    updateCategorySelects.forEach((updateCategorySelect, index) => {
+      const updateBrandSelect = updateBrandSelects[index];
+          updateBrandSelect.selectedIndex = -1;
+        updateCategorySelect.addEventListener('change', () => {
+            const selectedCategory = updateCategorySelect.value;
+            const options = updateBrandSelect.querySelectorAll('option');
+
+            options.forEach(option => {
+                const optionCategory = option.getAttribute('data-category');
+                if (optionCategory === selectedCategory) {
+                    option.style.display = 'block';
+                } else {
+                    option.style.display = 'none';
+                }
+            });
+        });
+        updateCategorySelect.addEventListener('click', () => {
+            updateBrandSelect.selectedIndex = -1;
+        });
+    });
+

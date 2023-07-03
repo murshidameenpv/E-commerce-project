@@ -199,6 +199,8 @@ box-shadow:none;
 border-color:#f7ba0121;
 left:auto!important;
 right:0!important;
+height:350px;
+overflow-y: auto;
  }
 .drop_1i{
 border-bottom:1px solid #f7ba0121;

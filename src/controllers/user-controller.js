@@ -1,8 +1,8 @@
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
-var userDb = require("../models/userSchema");
-const productDb = require("../models/productSchema");
-const { log } = require("console");
+const userDb = require("../models/userSchema");
+const cartDb = require("../models/cartSchema");
+const { error } = require("console");
 
 //USER SIGNUP
 exports.userSignUp = async (req, res) => {
@@ -51,7 +51,7 @@ exports.forgotPassword = async (req, res, next) => {
       // generate unique token
       const token = crypto.randomBytes(20).toString("hex");
       // set token expiration time to 3  minute from now
-      const tokenExpiration = Date.now() + 300000;  ;
+      const tokenExpiration = Date.now() + 30000;  ;
       // update user with token and expiration time
       existingUser.resetPasswordToken = token;
       existingUser.resetPasswordExpires = tokenExpiration;
@@ -89,3 +89,52 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
+
+//ADD TO CART
+exports.addToCart = async (req, res) => {
+  try {
+    const { productId, quantity } = req.body;
+    const userId = req.session.user._id;
+    let cart = await cartDb.findOne({ userId });
+    if (!cart) {
+      // If the cart doesn't exist, create a new one and add the product
+      cart = new cartDb({ userId, products: [{ productId, quantity }] });
+    } else {
+      // Check if the product is already in the cart
+      const productIndex = cart.products.findIndex(
+        (product) => product.productId.toString() === productId
+      );
+      if (productIndex !== -1) {
+        // The product is already in the cart, update its quantity
+        cart.products[productIndex].quantity += quantity;
+      } else {
+        // The product is not in the cart, add it
+        cart.products.push({ productId, quantity });
+      }
+    }
+    await cart.save();
+   res.json({
+     message: "Added to Cart",
+     cart: cart,
+   });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error adding product to the cart");
+  }
+};
+
+//DELETE FROM CART
+exports.deleteFromCart = async (req, res) => {
+  try {
+    const userId = req.session.user._id;
+    const { productId } = req.body;
+    await cartDb.findOneAndUpdate(
+      { userId },
+      { $pull: { products: { productId } } }
+    );
+    res.json({ message: "Removed from Cart" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error deleting from cart");
+  }
+};

@@ -3,7 +3,7 @@
   const banners = require("../models/bannerSchema")
   const brands = require("../models/brandSchema")
   const user = require('../models/userSchema')
-
+  const cart = require('../models/cartSchema')
   exports.home = async(req, res) => { 
     const superDeal = await products.find().limit(8).where({ listed :false}).populate('brand').exec();
     const dealOfDay = await products.find().limit(6).where({ listed :false}).populate("brand").exec();
@@ -99,34 +99,46 @@ exports.contactUs = async (req, res) => {
   
   exports.productDetails = async (req, res) => {
     try {
+      console.log(req.session.user);
       const productId = req.params.id; // extract the product ID from the query string
       const product = await products.findById({ _id: productId }); // find the product by ID using Mongoose
-      console.log(product);
-      res.render("user/details", { product }); // render the product-detail.ejs page and pass the product details
+      res.render("user/details", { product ,user:req.session.user}); // render the product-detail.ejs page and pass the product details
     } catch (error) {
       console.error(error);
       res.status(500).send("Server Error");
     }
   };
 
-
-
-
 exports.checkout =async (req, res) => { 
    const category = await categories.find()
-  res.render("user/checkout", {
+  res.render("user/checkout", { 
     user: req.session.user,
     category
   });
 }
 
 exports.cart = async (req, res) => {
-  const category = await categories.find()
-  res.render("user/cart", {
-    user: req.session.user,
-    category
-  });  
-}
+  try {
+    const category = await categories.find();
+    const userId = req.session.user._id;
+    const cartItems = await cart.findOne({ userId }).populate("products.productId");
+    // Calculate the total amount of the products in the cart
+    let total = 0;
+    cartItems.products.forEach((product) => {
+      total += product.productId.price * product.quantity;
+    });
+    res.render("user/cart", {
+      user: req.session.user,
+      category,
+      cartItems,
+      total
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error retrieving cart data");
+  }
+};
+
 
 
 
