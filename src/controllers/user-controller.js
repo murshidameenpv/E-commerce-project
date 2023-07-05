@@ -2,7 +2,6 @@ const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const userDb = require("../models/userSchema");
 const cartDb = require("../models/cartSchema");
-const { error } = require("console");
 
 //USER SIGNUP
 exports.userSignUp = async (req, res) => {
@@ -138,3 +137,38 @@ exports.deleteFromCart = async (req, res) => {
     res.status(500).send("Error deleting from cart");
   }
 };
+
+
+//CHECKS PRODUCTS IN CART FOR INVENTORY MANAGEMENT
+  exports.checkCart = async (req, res) => {
+    try {
+      // Get the product ID from the request query parameters
+      const { productId } = req.query;
+      // Get the userId from the session
+      const userId = req.session.user._id;
+      // Find the cart for the logged-in user
+      const userCart = await cartDb.findOne({ userId });
+      // Find the product in the cart
+      const productIndex = userCart.products.findIndex(
+        (product) => product.productId.toString() === productId
+      );
+      if (productIndex !== -1) {
+        // Product exists in the cart
+        const product = userCart.products[productIndex];
+        res.status(200).json({
+          inCart: true,
+          cartQuantity: product.quantity,
+        });
+      } else {
+        // Product does not exist in the cart
+        res.status(200).json({
+          inCart: false,
+          cartQuantity: 0,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error checking cart data");
+    }
+  };
+

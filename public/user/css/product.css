@@ -57,7 +57,32 @@ color:#fff;
 .prod_2im{
 box-shadow:none; 
  }
+ .swal2-modal {
+     width: 300px;
+ }
 
+ .swal2-title {
+     font-size: 20px;
+     margin-bottom: 20px;
+ }
+
+ .swal2-html-container {
+     text-align: left;
+ }
+
+ .swal2-html-container a,
+ .swal2-html-container button {
+     display: block;
+     margin-bottom: 10px;
+     font-size: 18px;
+     text-decoration: none;
+     color: #333;
+ }
+
+ .swal2-html-container a:hover,
+ .swal2-html-container button:hover {
+     color: #555;
+ }
 /*********************product_end****************/
 
 

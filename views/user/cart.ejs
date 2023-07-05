@@ -38,7 +38,7 @@
                                         <h6 class="font_12 mt-3 mb-3">Quantity</h6>
                                     </div>
                                     <div class="cart_3l1i2">
-                                        <input type="number" min="1" value="<%= product.quantity %>"
+                                        <input type="number" min="1" max="<%= product.productId.stock %>" value="<%= product.quantity %>"
                                             class="form-control" placeholder="Qty">
                                     </div>
                                     <div>

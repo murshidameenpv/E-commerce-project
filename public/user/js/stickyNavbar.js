@@ -13,4 +13,4 @@
             navbar_sticky.classList.remove("sticky");
             document.body.style.paddingTop = '0'
         }
-    }
+    }   

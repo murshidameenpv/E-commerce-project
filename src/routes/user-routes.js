@@ -13,19 +13,33 @@ router.get('/',
 router.get("/home",
   checkSession.sessionExists,
   checkSession.checkUserBlocked,
-  userRender.home);   
+  userRender.home);  
 router.get(
-  "/aboutUs",
-  checkSession.sessionExists,
-  checkSession.checkUserBlocked,
-  userRender.aboutUs
-);
+    "/products",
+    checkSession.sessionExists,
+    checkSession.checkUserBlocked,
+    userRender.products
+  ); 
 router.get(
-  "/products/:page?",
+  "/products/page/:page?",
   checkSession.sessionExists,
   checkSession.checkUserBlocked,
   userRender.products
 );
+router.get("/products/category",
+  checkSession.sessionExists,
+  checkSession.checkUserBlocked,
+  userRender.filterCategory);
+  
+router.get("/products/brands",
+  checkSession.sessionExists,
+  checkSession.checkUserBlocked,
+  userRender.filterBrands);
+// router.get("/products/price",
+//   checkSession.sessionExists,
+//   checkSession.checkUserBlocked,
+//   userRender.filterPrice);
+  
 router.get(
   "/contactUs",
   checkSession.sessionExists,
@@ -53,6 +67,12 @@ router.get(
   checkSession.checkUserBlocked,
   userRender.cart
 );
+router.get(
+  "/product/checkCart",
+  checkSession.sessionExists,
+  checkSession.checkUserBlocked,
+  userController.checkCart
+);
 router.get('/login/otplogin',
   userRender.otplogin)
  
@@ -67,7 +87,6 @@ router.get('/products/details/:id',
 )
 
 //POST METHODS
-
 router.post('/signup',
     validation.checkEmailExists,
     validation.passwordRegex,
@@ -108,6 +127,5 @@ router.post("/product/addToCart",
 
 router.post("/cart/product/remove",
   userController.deleteFromCart);
-
 
 module.exports = router;

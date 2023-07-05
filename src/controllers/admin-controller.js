@@ -189,6 +189,7 @@ exports.adminAddCategory = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
   //UPDATE CATEGORY
   exports.adminUpdateCategory = async (req, res) => {
     const categoryId = req.query.categoryId;
@@ -203,7 +204,6 @@ exports.adminAddCategory = async (req, res) => {
         },
         { new: true }
       );
-      console.log(updatedCategory,"0000000000000000000");
       res.status(201).json(updatedCategory);
     } catch (err) {
       console.error("Error Updating Category:", err);

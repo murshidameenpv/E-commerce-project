@@ -94,6 +94,9 @@ color: #909090;
 .col_dark{
 color: #000!important; 
  }
+ .bg_red{
+  background-color: red;
+ }
 .bg_yell{
 background-color: #f7ba01!important; 
  }

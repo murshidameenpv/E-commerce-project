@@ -74,6 +74,12 @@ height:140px;
     height: 600px;
     width: 500px;
 }
+.quantity-box-custom{
+    width: 140px;
+        height: 50px;
+        margin-right: 10px;
+        float: left;
+}
 
 /*********************detail_end****************/
 

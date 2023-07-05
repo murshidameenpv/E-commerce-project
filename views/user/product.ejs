@@ -1,5 +1,4 @@
 <%-include('includes/header')%>
-
 <%-include('includes/navbar')%>
 
 
@@ -7,99 +6,64 @@
     <div class="container-xl">
         <div class="row center_o1 text-center">
             <div class="col-md-12">
-                <h1>ALL PRODUCTS    </h1>
-                <h6 class="d-inline-block  font_14 col_yell bg-white"><a class="col_light" href="#">Home</a> <span
-                        class="me-2 ms-2">/</span> ALL PRODUCTS</h6>
+                <h1>PRODUCTS</h1>
+                <h6 class="d-inline-block  font_14 col_yell bg-white"><a class="col_light" href="#">Home</a><span class="me-2 ms-2">/</span>PRODUCTS</h6>
             </div>
         </div>
     </div>
 </section>
-
 <section id="prod_pg" class="pt-4 pb-4 bg_light_1">
     <div class="container-fluid">
         <div class="row prod_pg1">
             <div class="col-md-12 col-lg-3">
                 <div class="prod_pg1l">
                     <div class="prod_pg1l1 bg-white p-4">
-                        <h6 class="mb-3">PRODUCT CATEGORIES</h6>
-                        <% category.forEach(Category =>{ %>
-                        <div class="prod_pg1l1i row">
-                            <div class="col-md-10 col-10">
-                            <div class="prod_pg1l1il">
-                                <h6 class="font_14 fw-normal mt-1">
-                                    <label>
-                                        <input type="checkbox" class="me-1" />
-                                        <%= Category.category %>
-                                    </label>
-                                </h6>
-                            </div>
-
-                            </div>
-                            <div class="col-md-2 col-2">
-                                <div class="prod_pg1l1ir text-end">
-                                    <h6 class="d-inline-block bg_light font_13">23</h6>
-                                </div>
-                            </div>
-                        </div>
-                        <% }) %>
-
-                    </div>
-                <div class="prod_pg1l1 bg-white p-4 mt-4">
-                    <h6 class="mb-3">FILTER BY PRICE</h6>
-                    <input type="range" class="form-range" id="customRange1" min="0" max="10000">
-                    <h6 class="mb-0 col_light font_13 mt-3">PRICE: $<span id="minPrice">0</span> - $<span id="maxPrice">10000</span>
+<% category.forEach(Category=>{ %>
+  <div class="prod_pg1l1i row">
+    <div class="col-md-10 col-10">
+      <div class="prod_pg1l1il">
+        <h6 class="font_14 fw-normal mt-1">
+          <label>
+            <input type="radio" name="category" value="<%= Category._id %>"
+              onclick="location.href='/products/category?category_id=<%= Category._id %>&sortOption=' + document.querySelector('select[name=categories]').value"
+              <%=Category._id.toString()===selectedCategory.toString() ? 'checked' : '' %>>
+            <%= Category.category %>
+          </label>
+        </h6>
+      </div>
+    </div>
+    <div class="col-md-2 col-2">
+      <div class="prod_pg1l1ir text-end">
+    <h6 class="d-inline-block bg_light font_13">
+        <%= (categoryCounts.find(c=> c.categoryId.toString() === Category._id.toString()) || {}).count || 0 %>
+    </h6>
+      </div>
+    </div>
+  </div>
+<% }) %>
+<% if (selectedCategory || selectedBrand) { %>
+    <div class="prod_pg1l1 bg-white p-4 mt-4">
+        <h6 class="mb-3">PRODUCT BRANDS</h6>
+        <% brand.forEach(Brand=>{ %>
+            <div class="prod_pg1l1il">
+                <div class="row">
+                    <h6 class="font_14 fw-normal col-lg-12 col-md-6 col-sm-6">
+                        <label>
+                            <input type="radio" name="brands" value="<%= Brand._id %>"
+                            onclick="location.href='/products/brands?brand_id=<%= Brand._id %>&page=1&sortOption=' +
+                                document.querySelector('select[name=categories]').value"
+                                <%=Brand._id.toString()===selectedBrand.toString() ? 'checked' : '' %>>
+                            <%= Brand.brandName %>
+                        </label>
                     </h6>
-                </div>      
-                    <div class="prod_pg1l1 bg-white p-4 mt-4">
-                        <h6 class="mb-3">PRODUCT BRAND</h6>
-                        <% brand.forEach(Brand=>{ %>
-                    <div class="prod_pg1l1il">
-                        <div class="row">
-                            <h6 class="font_14 fw-normal col-lg-12 col-md-6 col-sm-6">
-                                <label>
-                                    <input type="checkbox" class="me-1" />
-                                    <%= Brand.brandName %>
-                                </label>
-                            </h6>
-                        </div>
-                        <hr>
-                    </div>
-                        <% }) %>
-                        <hr>
-                        <!-- <h6 class="mb-3">FILTER COLOR</h6> -->
-                        <!-- <div class="row m-0">
-                            <div class="form-check col-md-6 col-6 col-lg-12">
-                                <input type="checkbox" class="form-check-input" id="customCheck1">
-                                <label class="form-check-label" for="customCheck1"><a href="detail.html">Red
-                                        (3)</a></label>
-                            </div>
-                            <div class="form-check col-md-6 col-6 col-lg-12 mt-2">
-                                <input type="checkbox" class="form-check-input" id="customCheck2">
-                                <label class="form-check-label" for="customCheck2"><a href="detail.html">Black
-                                        (2)</a></label>
-                            </div>
-                            <div class="form-check col-md-6 col-6 col-lg-12 mt-2">
-                                <input type="checkbox" class="form-check-input" id="customCheck3">
-                                <label class="form-check-label" for="customCheck3"><a href="detail.html">Blue
-                                        (4)</a></label>
-                            </div>
-                            <div class="form-check col-md-6 col-6 col-lg-12 mt-2">
-                                <input type="checkbox" class="form-check-input" id="customCheck4">
-                                <label class="form-check-label" for="customCheck1"><a href="detail.html">Yellow
-                                        (5)</a></label>
-                            </div>
-                            <div class="form-check col-md-6 col-6 col-lg-12 mt-2">
-                                <input type="checkbox" class="form-check-input" id="customCheck1">
-                                <label class="form-check-label" for="customCheck4"><a href="detail.html">Brown
-                                        (6)</a></label>
-                            </div>
-                            <div class="form-check col-md-6 col-6 col-lg-12 mt-2">
-                                <input type="checkbox" class="form-check-input" id="customCheck5">
-                                <label class="form-check-label" for="customCheck6"><a href="detail.html">Pink
-                                        (9)</a></label>
-                            </div>
-                        </div> -->
-                    </div>
+                </div>
+                <hr>
+            </div>
+            <% }) %>
+                <hr>
+    </div>
+    <% } %>
+        </div>
                 </div>
             </div>
             <div class="col-md-12 col-lg-9">
@@ -107,21 +71,21 @@
                     <div class="prod_pg1r1 row">
                         <div class="col-md-9">
                             <div class="prod_pg1r1l">
-                                <p class="mt-3 mb-0">Showing Products 1-9 Of 10 Result</p>
+                <p class="mt-3 mb-0">Showing Products <%= (page - 1) * limit + 1 %>-<%= Math.min(page * limit, productCount) %> Of <%=productCount %> Result</p>
                             </div>
                         </div>
-                        <div class="col-md-3">
-                            <div class="prod_pg1r1r">
-                                <select name="categories" style="height:50px;" class="form-select" required="">
-                                    <option value="">Relevance</option>
-                                    <option>Best sellers</option>
-                                    <option>Name, A to Z</option>
-                                    <option>Name, Z to A</option>
-                                    <option>Price, high to low</option>
-                                    <option>Price, low to high</option>
-                                </select>
+                            <div class="col-md-3">
+                                <div class="prod_pg1r1r">
+                                    <select name="categories" style="height:50px;" class="form-select" required="" onchange="sortProducts(this.value)">
+                                        <option <%=sortOption==='Relevance' ? 'selected' : '' %>>Relevance</option>
+                                        <option <%=sortOption==='Name, A to Z' ? 'selected' : '' %>>Name, A to Z</option>
+                                        <option <%=sortOption==='Name, Z to A' ? 'selected' : '' %>>Name, Z to A</option>
+                                        <option <%=sortOption==='Price, high to low' ? 'selected' : '' %>>Price, high to low</option>
+                                        <option <%=sortOption==='Price, low to high' ? 'selected' : '' %>>Price, low to high</option>
+                                    </select>
+
+                                </div>
                             </div>
-                        </div>
                     </div>
                     <div class="prod_pg1r2 mt-4 row">
                         <% product.forEach((product)=> { %>
@@ -132,7 +96,7 @@
                                     <div class="prod_2i1 clearfix">
                                         <div class="grid clearfix">
                                             <figure class="effect-jazz mb-0" style="background-color: rgb(255, 255, 255);">
-                                                <a href="/products/details/<%= product._id %>"><img src="<%= product.image[product.image.length-1] %>" class="w-50"
+                                                <a href="/products/details/<%= product._id %>"><img src="/<%= product.image[product.image.length-1] %>" class="w-50"
                                                         alt="abc"></a>
                                             </figure>
                                         </div>
@@ -146,7 +110,7 @@
                                     </div>
                                     <div class="prod_2in clearfix position-absolute bg-light w-100 p-3 text-center">
                                         <ul class="mb-0">
-                                            <li class="d-inline-block me-3"><a href="detail.html"><i
+                                            <li class="d-inline-block me-3"><a class="share-link" data-url="http://localhost:8000/products/details/<%= product._id %>" style="cursor: pointer;"><i
                                                         class="fa fa-share-alt"></i></a></li>
                                             <li class="d-inline-block me-3"><a href="detail.html"><i
                                                         class="fa fa-heart"></i></a></li>
@@ -164,7 +128,7 @@
                                         <i class="fa fa-star-half-o"></i>
                                     </span>
                                     <h6 class="mt-3"><%= product.brand.brandName %></h6>
-                                    <h6 class="mt-2"><a href="detail.html"><%= product.productName %></a></h6>
+                                    <h6 class="mt-2"><a href="/products/details/<%= product._id %>"><%= product.productName %></a></h6>
                                     <h6 class="font_13"><a class="col_light" href="detail.html">New Product</a></h6>
                                     <hr>
                                     <h6 class="fw-normal mb-0"><span
@@ -175,35 +139,43 @@
                         </div>
                         <% } %>
                             <% }); %>
-                    </div>
-                 
-
-
-
-                        
-                    <div class="pages mt-4 row text-center bg_light ms-0 me-0 pt-4 pb-4">
-                        <div class="col-md-12">
-                            <ul class="mb-0">
-                                <li><a href="detail.html"><i class="fa fa-chevron-left"></i></a></li>
-                                <li class="act"><a href="detail.html">1</a></li>
-                                <li><a href="detail.html">2</a></li>
-                                <li><a href="detail.html">3</a></li>
-                                <li><a href="detail.html">4</a></li>
-                                <li><a href="detail.html">5</a></li>
-                                <li><a href="detail.html">6</a></li>
-                                <li><a href="detail.html"><i class="fa fa-chevron-right"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
+                    </div>       
                 </div>
             </div>
         </div>
     </div>
+    
 </section>
-
-<script>
-     document.getElementById("customRange1").addEventListener("input", function () {
-            document.getElementById("minPrice").textContent = this.value;
-        });
-</script>
+<section>
+    <div class="pages mt-4 row text-center bg_light ms-0 me-0 pt-4 pb-4">
+        <div class="col-md-12">
+            <ul class="mb-0">
+                <% if (currentPage> 1) { %>
+                    <li>
+                        <a
+                            href="/products/<%= selectedBrand ? 'brands' : 'category' %>?<%= selectedBrand ? 'brand_id' : 'category_id' %>=<%= selectedBrand || selectedCategory %>&page=<%= currentPage - 1 %>&sortOption=<%= sortOption %>">
+                            <i class="fa fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    <% } %>
+                        <% for (let i=1; i <=totalPages; i++) { %>
+                            <li class="<%= i === currentPage ? 'act' : '' %>">
+                                <a
+                                    href="/products/<%= selectedBrand ? 'brands' : 'category' %>?<%= selectedBrand ? 'brand_id' : 'category_id' %>=<%= selectedBrand || selectedCategory %>&page=<%= i %>&sortOption=<%= sortOption %>">
+                                    <%= i %>
+                                </a>
+                            </li>
+                            <% } %>
+                                <% if (currentPage < totalPages) { %>
+                                    <li>
+                                        <a
+                                            href="/products/<%= selectedBrand ? 'brands' : 'category' %>?<%= selectedBrand ? 'brand_id' : 'category_id' %>=<%= selectedBrand || selectedCategory %>&page=<%= currentPage + 1 %>&sortOption=<%= sortOption %>">
+                                            <i class="fa fa-chevron-right"></i>
+                                        </a>
+                                </li>
+                        <% } %>
+            </ul>
+        </div>
+    </div>
+</section>
 <%-include('includes/footer')%>

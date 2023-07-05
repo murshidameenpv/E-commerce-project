@@ -1,3 +1,4 @@
+//ADD CATEGORY
 document.addEventListener("DOMContentLoaded", function () {
   const addCategoryForm = document.querySelector("#addCategoryForm");
   const loadingSpinner = document.querySelector("#loadingSpinnerCategory");

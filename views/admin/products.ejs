@@ -232,12 +232,14 @@
                                 <div class="mb-3">
                                     <label for="updateCategory" class="form-label">Category</label>
                                 <select class="form-select updateCategory" id="updateCategory" name="category">
+                                    <option value=""></option>
                                     <% category.forEach((category)=>{ %>
                                         <option value="<%=category._id %>">
                                             <%=category.category %>
                                         </option>
                                         <% }) %>
                                 </select>
+
                                 </div>
                                 <div class="mb-3">
                                     <label for="brand" class="form-label">Brand</label>
