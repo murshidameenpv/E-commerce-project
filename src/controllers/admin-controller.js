@@ -71,7 +71,6 @@ exports.adminAddProduct = async (req, res) => {
         resizeImage(inputPath, outputPath, 600, 600);
         return file.filename;
       });
-
       const newProduct = await productDb.create({
         productName: productName,
         category: category,
@@ -82,7 +81,6 @@ exports.adminAddProduct = async (req, res) => {
         image: images,
         listed:false
       });
-
       res.status(201).json(newProduct);
     } catch (err) {
       console.error("Error creating new product:", err);

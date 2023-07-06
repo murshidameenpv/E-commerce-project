@@ -17,7 +17,7 @@ router.get(
   adminRender.adminDashboard
 );
 router.get(
-  "/admin/products",
+  "/admin/products/:page?",
   checkSession.sessionExists,
   adminRender.adminProductManagement
 );
@@ -27,7 +27,7 @@ router.get(
   adminRender.adminOrderManagement
 );
 router.get(
-  "/admin/users",
+  "/admin/users/:page?",
   checkSession.sessionExists,
   adminRender.adminUserManagement
 );

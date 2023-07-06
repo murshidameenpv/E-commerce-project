@@ -14,32 +14,14 @@ router.get("/home",
   checkSession.sessionExists,
   checkSession.checkUserBlocked,
   userRender.home);  
+ 
 router.get(
-    "/products",
-    checkSession.sessionExists,
-    checkSession.checkUserBlocked,
-    userRender.products
-  ); 
-router.get(
-  "/products/page/:page?",
+  "/products",
   checkSession.sessionExists,
   checkSession.checkUserBlocked,
   userRender.products
 );
-router.get("/products/category",
-  checkSession.sessionExists,
-  checkSession.checkUserBlocked,
-  userRender.filterCategory);
-  
-router.get("/products/brands",
-  checkSession.sessionExists,
-  checkSession.checkUserBlocked,
-  userRender.filterBrands);
-// router.get("/products/price",
-//   checkSession.sessionExists,
-//   checkSession.checkUserBlocked,
-//   userRender.filterPrice);
-  
+    
 router.get(
   "/contactUs",
   checkSession.sessionExists,
@@ -87,6 +69,7 @@ router.get('/products/details/:id',
 )
 
 //POST METHODS
+
 router.post('/signup',
     validation.checkEmailExists,
     validation.passwordRegex,

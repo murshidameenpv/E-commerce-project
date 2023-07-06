@@ -27,22 +27,23 @@
             <div class="row header_top1">
                 <div class="col-md-3">
                     <div class="header_top1l">
-                        <h3 class="mb-0"><a class="col_dark" href="index.html"><i
+                        <h3 class="mb-0"><a class="col_dark" href="/home"><i
                                     class="fa fa-shopping-basket col_yell"></i> GadgetsOn</a></h3>
                     </div>
                 </div>
-                <div class="col-md-6">
-                    <div class="header_top1m">
-                        <div class="input-group">
-                            <input type="text" class="form-control border-start-0" placeholder="Search for your item">
-                            <span class="input-group-btn">
-                                <button class="btn btn-primary bg_yell" type="button">
-                                    <i class="fa fa-search"></i>
-                                </button>
-                            </span>
-                        </div>
-                    </div>
-                </div>
+<div class="col-md-6">
+    <div class="header_top1m">
+    <form action="/products" method="GET" class="input-group">
+        <input type="text" name="query" class="form-control border-start-0" placeholder="Search for your item">
+        <span class="input-group-btn">
+            <button class="btn btn-primary bg_yell" type="submit">
+                <i class="fa fa-search"></i>
+            </button>
+        </span>
+    </form>
+    </div>
+</div>
+
 <% if (locals.user) { %>
 <div class="col-md-3 text-end">
     <div class="header_top1r">

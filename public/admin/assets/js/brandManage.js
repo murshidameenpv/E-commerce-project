@@ -3,79 +3,65 @@ document.addEventListener("DOMContentLoaded", function () {
   const loadingSpinner = document.querySelector("#loadingSpinnerBrand");
   const addBrandBtn = document.querySelector("#addBrandBtn");
   const messageStatus = document.querySelector("#statusMessageBrand");
-
-  // Add event listener to reset modal fields when modal is closed
   const addBrandModal = document.querySelector("#addBrandModal");
+
+  // Reset modal fields when modal is closed
   addBrandModal?.addEventListener("hidden.bs.modal", function () {
-    // Reset form fields
     addBrandForm.reset();
-    // Hide status message
     messageStatus.style.display = "none";
   });
 
-  // Add event listener to submit form
-  addBrandModal?.addEventListener("shown.bs.modal", function () {
-    addBrandForm.addEventListener("submit", function (event) {
-      event.preventDefault();
-        const formData = new FormData(addBrandForm);
-         const name = formData.get("name");
-        const category = formData.get("category"); 
-      loadingSpinner.style.display = "block";
-      addBrandBtn.disabled = true;
-      // Make Axios request
-      axios
-        .post("/api/admin/brand/add-brand", {name,category})
-        .then(function (response) {
-          // Hide loading spinner
-          loadingSpinner.style.display = "none";
+  // Submit form event listener
+  addBrandForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+    const formData = new FormData(addBrandForm);
+    const name = formData.get("name");
+    const category = formData.get("category");
 
-          // Show success message on the modal
-          messageStatus.classList.add("alert-success");
-          messageStatus.classList.remove("alert-danger");
-          messageStatus.textContent = "Brand added successfully";
-          messageStatus.style.display = "block";
-          setTimeout(function () {
-            messageStatus.style.display = "none";
-          }, 3000);
+    loadingSpinner.style.display = "block";
+    addBrandBtn.disabled = true;
 
-          // Reset form fields
-          addBrandForm.reset();
+    axios
+      .post("/api/admin/brand/add-brand", { name, category })
+      .then(function (response) {
+        loadingSpinner.style.display = "none";
 
-          // Enable submit button
-          addBrandBtn.disabled = false;
+        messageStatus.classList.add("alert-success");
+        messageStatus.classList.remove("alert-danger");
+        messageStatus.textContent = "Brand added successfully";
+        messageStatus.style.display = "block";
+        setTimeout(function () {
+          messageStatus.style.display = "none";
+        }, 3000);
 
-          // Reload the table
-          axios.get(window.location.href).then(function (response) {
-            const brandTableContent = document.querySelector(
-              "#brand-table-tab-content"
-            );
-            const newContent = document.createElement("div");
-            newContent.innerHTML = response.data;
-            brandTableContent.innerHTML = newContent.querySelector(
-              "#brand-table-tab-content"
-            ).innerHTML;
-          });
-        })
-        .catch(function (error) {
-          console.error(error);
+        addBrandForm.reset();
+        addBrandBtn.disabled = false;
 
-          // Hide loading spinner
-          loadingSpinner.style.display = "none";
-
-          // Show error message on the modal
-          messageStatus.classList.add("alert-danger");
-          messageStatus.classList.remove("alert-success");
-          messageStatus.textContent =
-            "Error adding category. Please try again.";
-          messageStatus.style.display = "block";
-
-          // Enable submit button
-          addBrandBtn.disabled = false;
+        axios.get(window.location.href).then(function (response) {
+          const brandTableContent = document.querySelector(
+            "#brand-table-tab-content"
+          );
+          const newContent = document.createElement("div");
+          newContent.innerHTML = response.data;
+          brandTableContent.innerHTML = newContent.querySelector(
+            "#brand-table-tab-content"
+          ).innerHTML;
         });
-    });
+      })
+      .catch(function (error) {
+        console.error(error);
+
+        loadingSpinner.style.display = "none";
+
+        messageStatus.classList.add("alert-danger");
+        messageStatus.classList.remove("alert-success");
+        messageStatus.textContent = "Error adding brand. Please try again.";
+        messageStatus.style.display = "block";
+
+        addBrandBtn.disabled = false;
+      });
   });
 });
-
 
 // DELETE BRAND WHEN CLICK DELETE
 document.addEventListener("click", function (event) {

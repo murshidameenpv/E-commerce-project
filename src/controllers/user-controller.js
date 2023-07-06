@@ -148,6 +148,7 @@ exports.deleteFromCart = async (req, res) => {
       const userId = req.session.user._id;
       // Find the cart for the logged-in user
       const userCart = await cartDb.findOne({ userId });
+
       // Find the product in the cart
       const productIndex = userCart.products.findIndex(
         (product) => product.productId.toString() === productId

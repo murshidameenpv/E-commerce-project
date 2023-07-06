@@ -5,22 +5,21 @@
   const user = require('../models/userSchema')
   const cart = require('../models/cartSchema')
   //RENDER HOME
-  exports.home = async(req, res) => { 
-    const superDeal = await products.find().limit(8).where({ listed :false}).populate('brand').exec();
-    const dealOfDay = await products.find().limit(6).where({ listed :false}).populate("brand").exec();
-    const category = await categories.find().exec();
-    const todayOfferBanner = await banners.findOne({ title: "Fire Bolt" });
-    const topDealBanner = await banners.findOne({ title: "Top Deal" });
-    console.log(topDealBanner);
-    res.render("user/index", {
-      user: req.session.user,
-      superDeal,
-      dealOfDay,
-      category,
-      todayOfferBanner,
-      topDealBanner,
-    });
-  }
+    exports.home = async(req, res) => { 
+      const superDeal = await products.find().limit(8).where({ listed :false}).populate('brand').exec();
+      const dealOfDay = await products.find().limit(6).where({ listed :false}).populate("brand").exec();
+      const category = await categories.find().exec();
+      const todayOfferBanner = await banners.findOne({ title: "Fire Bolt" });
+      const topDealBanner = await banners.findOne({ title: "Top Deal" });
+      res.render("user/index", {
+        user: req.session.user,
+        superDeal,
+        dealOfDay,
+        category,
+        todayOfferBanner,
+        topDealBanner,
+      });
+    }
 //RENDER LOGIN
 exports.login = (req, res) => {
   if (req.session.user) {
@@ -54,15 +53,24 @@ exports.logout = (req, res) => {
     res.redirect('/home');
   });
 }
-//RENDER ALL PRODUCTS AND PAGINATION
+// RENDER PRODUCTS BASED ON QUERY
 exports.products = async (req, res) => {
   try {
-    const page = parseInt(req.params.page) || 1;
+    const searchQuery = req.query.query;
+    const page = parseInt(req.query.page) || 1;
     const limit = 9;
     const skip = (page - 1) * limit;
-    const productCount = await products.countDocuments();
+    let selectedCategory = "";
+    if (req.query.category_id) {
+      selectedCategory = req.query.category_id;
+    }
+    let selectedBrand = "";
+    if (req.query.brand_id) {
+      selectedBrand = req.query.brand_id;
+    }
     const sortOption = req.query.sortOption;
     let sortQuery = {};
+
     if (sortOption === "Name, A to Z") {
       sortQuery = { productName: 1 };
     } else if (sortOption === "Name, Z to A") {
@@ -72,17 +80,65 @@ exports.products = async (req, res) => {
     } else if (sortOption === "Price, low to high") {
       sortQuery = { price: 1 };
     }
-    const product = await products.find().sort(sortQuery).skip(skip).limit(limit).populate('brand').exec();
+
+    let query = {};
+    if (req.query.category_id) {
+      query.category = req.query.category_id;
+    }
+    if (req.query.brand_id) {
+      query.brand = req.query.brand_id;
+    }
+    if (searchQuery) {
+      const categoryMatch = await categories.findOne({
+        category: new RegExp(searchQuery, "i"),
+      });
+
+      const brandMatch = await brands.findOne({
+        brandName: new RegExp(searchQuery, "i"),
+      });
+
+      if (categoryMatch) {
+        query.category = categoryMatch._id;
+        selectedCategory = categoryMatch._id.toString();
+
+        // Find brands with the selected category
+        const brandsWithCategory = await brands.find({ category: categoryMatch._id });
+        const brandIds = brandsWithCategory.map((brand) => brand._id);
+        query.brand = { $in: brandIds };
+      } else if (brandMatch) {
+        query.brand = brandMatch._id;
+        selectedBrand = brandMatch._id.toString();
+
+        // Find the category of the selected brand
+        if (brandMatch.category) {
+          selectedCategory = brandMatch.category.toString();
+        }
+      } else {
+        query.productName = new RegExp(searchQuery, "i");
+      }
+    }
+
+    const productCount = await products.countDocuments(query);
+    const product = await products
+      .find(query)
+      .sort(sortQuery)
+      .skip(skip)
+      .limit(limit)
+      .populate("brand")
+      .exec();
+
     const category = await categories.find();
-    const brand = await brands.find();
+    let brand = [];
+   if (selectedCategory) {
+    brand = await brands.find({ category: selectedCategory });
+   }
     const categoryCounts = await Promise.all(
       category.map(async (Category) => {
         const count = await products.countDocuments({ category: Category._id });
         return { categoryId: Category._id, count };
       })
     );
-    const selectedCategory = ""
-    const selectedBrand =""
+
     res.render("user/product", {
       user: req.session.user,
       product,
@@ -97,216 +153,13 @@ exports.products = async (req, res) => {
       limit,
       sortOption,
       categoryCounts,
+      searchQuery,
     });
   } catch (err) {
     console.error("Error fetching products from MongoDB", err);
     res.status(500).send("Internal Server Error");
   }
 };
-
-  //RENDER ALL PRODUCTS FILTERED BY CATEGORY 
-  exports.filterCategory = async (req, res) => {
-    try {
-      const selectedCategory = req.query.category_id;
-      const page = parseInt(req.query.page) || 1;
-      const limit = 9;
-      const skip = (page - 1) * limit;
-      const selectedBrand = "";
-      const sortOption = req.query.sortOption;
-      let sortQuery = {};
-      if (sortOption === "Name, A to Z") {
-        sortQuery = { productName: 1 };
-      } else if (sortOption === "Name, Z to A") {
-        sortQuery = { productName: -1 };
-      } else if (sortOption === "Price, high to low") {
-        sortQuery = { price: -1 };
-      } else if (sortOption === "Price, low to high") {
-        sortQuery = { price: 1 };
-      }
-      // Filter products by category if selectedCategory is not empty
-      let query = {};
-      if (selectedCategory) {
-        query.category = selectedCategory;
-      }
-      const category = await categories.find();
-      const categoryCounts = await Promise.all(
-        category.map(async (Category) => {
-          const count = await products.countDocuments({ category: Category._id });
-          return { categoryId: Category._id, count };
-        })
-      );
-      const productCount = await products.countDocuments(query);
-      const product = await products
-        .find(query)
-        .sort(sortQuery)
-        .skip(skip)
-        .limit(limit)
-        .populate("brand")
-        .exec();
-      const allCategories = await categories.find();
-      let allBrands = await brands.find();
-
-      if (selectedCategory) {
-        allBrands = allBrands.filter(
-          (brand) => brand.category.toString() === selectedCategory
-        );
-      }
-      res.render("user/product", {
-        user: req.session.user,
-        product,
-        category: allCategories,
-        currentPage: page,
-        totalPages: Math.ceil(productCount / limit),
-        brand: allBrands,
-        selectedCategory,
-        selectedBrand,
-        productCount,
-        page,
-        limit,
-        sortOption,
-        categoryCounts,
-      });
-    } catch (err) {
-      console.error("Error filtering by category of products from MongoDB", err);
-      res.status(500).send("Internal Server Error");
-    }
-  };
-
-//RENDER ALL PRODUCTS FILTERED BY BRAND 
-exports.filterBrands = async (req, res) => {
-  try {
-    const selectedBrand = req.query.brand_id;
-    const page = parseInt(req.query.page) || 1;
-    const limit = 9;
-    const skip = (page - 1) * limit;
-    let selectedCategory = "";
-    const sortOption = req.query.sortOption;
-    let sortQuery = {};
-    if (sortOption === "Name, A to Z") {
-      sortQuery = { productName: 1 };
-    } else if (sortOption === "Name, Z to A") {
-      sortQuery = { productName: -1 };
-    } else if (sortOption === "Price, high to low") {
-      sortQuery = { price: -1 };
-    } else if (sortOption === "Price, low to high") {
-      sortQuery = { price: 1 };
-    }
-    // Filter products by brand if selectedBrand is not empty
-    let query = {};
-    if (selectedBrand) {
-      query.brand = selectedBrand;
-      // Find the category of the selected brand
-      const brand = await brands.findById(selectedBrand);
-      if (brand) {
-        selectedCategory = brand.category.toString();
-      }
-    }
-    const category = await categories.find();
-    const categoryCounts = await Promise.all(
-      category.map(async (Category) => {
-        const count = await products.countDocuments({ category: Category._id });
-        return { categoryId: Category._id, count };
-      })
-    );
-    const productCount = await products.countDocuments(query);
-    const product = await products
-      .find(query)
-      .sort(sortQuery)
-      .skip(skip)
-      .limit(limit)
-      .populate("brand")
-      .exec();
-    const allCategories = await categories.find();
-    let allBrands = await brands.find();
-    if (selectedCategory) {
-      allBrands = allBrands.filter(
-        (brand) => brand.category.toString() === selectedCategory
-      );
-    }
-    res.render("user/product", {
-      user: req.session.user,
-      product,
-      category: allCategories,
-      currentPage: page,
-      totalPages: Math.ceil(productCount / limit),
-      brand: allBrands,
-      selectedCategory,
-      selectedBrand,
-      productCount,
-      page,
-      limit,
-      sortOption,
-      categoryCounts,
-    });
-  } catch (err) {
-    console.error("Error filtering by category of products from MongoDB", err);
-    res.status(500).send("Internal Server Error");
-  }
-}
-// //RENDER ALL PRODUCTS BY PRICE
-// exports.filterPrice = async (req, res) => {
-//   try {
-//     const page = parseInt(req.query.page) || 1;
-//     const limit = 9;
-//     const skip = (page - 1) * limit;
-//     const minPrice = parseInt(req.query.minPrice);
-//     const maxPrice = parseInt(req.query.maxPrice);
-//     const sortOption = req.query.sortOption;
-//     let sortQuery = {};
-//     if (sortOption === "Name, A to Z") {
-//       sortQuery = { productName: 1 };
-//     } else if (sortOption === "Name, Z to A") {
-//       sortQuery = { productName: -1 };
-//     } else if (sortOption === "Price, high to low") {
-//       sortQuery = { price: -1 };
-//     } else if (sortOption === "Price, low to high") {
-//       sortQuery = { price: 1 };
-//     }
-//     let query = {};
-//     if (!isNaN(minPrice) && !isNaN(maxPrice)) {
-//       query.price = { $gte: minPrice, $lte: maxPrice };
-//     }
-//     const category = await categories.find();
-//     const categoryCounts = await Promise.all(
-//       category.map(async (Category) => {
-//         const count = await products.countDocuments({ category: Category._id });
-//         return { categoryId: Category._id, count };
-//       })
-//     );
-//     const productCount = await products.countDocuments(query);
-//     const product = await products
-//       .find(query)
-//       .sort(sortQuery)
-//       .skip(skip)
-//       .limit(limit)
-//       .populate("brand")
-//       .exec();
-//     const allCategories = await categories.find();
-//     let allBrands = await brands.find();
-    
-//     res.render("user/product", {
-//       user: req.session.user,
-//       product,
-//       category: allCategories,
-//       currentPage: page,
-//       totalPages: Math.ceil(productCount / limit),
-//       brand: allBrands,
-//       selectedCategory: "",
-//       selectedBrand: "",
-//       productCount,
-//       page,
-//       limit,
-//       sortOption,
-//       categoryCounts,
-//       minPrice,
-//       maxPrice
-//     });
-//   } catch (err) {
-//     console.error("Error filtering by price of products from MongoDB", err);
-//     res.status(500).send("Internal Server Error");
-//   }
-// };
-
 
 
 //RENDER CONTACT US
@@ -361,6 +214,40 @@ exports.cart = async (req, res) => {
     res.status(500).send("Error retrieving cart data");
   }
 };
+
+//CHECKS PRODUCTS IN CART FOR INVENTORY MANAGEMENT
+  exports.checkCart = async (req, res) => {
+    try {
+      // Get the product ID from the request query parameters
+      const { productId } = req.query;
+      // Get the userId from the session
+      const userId = req.session.user._id;
+      // Find the cart for the logged-in user
+      const userCart = await cart.findOne({ userId });
+
+      // Find the product in the cart
+      const productIndex = userCart.products.findIndex(
+        (product) => product.productId.toString() === productId
+      );
+      if (productIndex !== -1) {
+        // Product exists in the cart
+        const product = userCart.products[productIndex];
+        res.status(200).json({
+          inCart: true,
+          cartQuantity: product.quantity,
+        });
+      } else {
+        // Product does not exist in the cart
+        res.status(200).json({
+          inCart: false,
+          cartQuantity: 0,
+        });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Error checking cart data");
+    }
+  };
 
 //RENDER OTP LOGIN
 exports.otplogin = (req, res) => {
