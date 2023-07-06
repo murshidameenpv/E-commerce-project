@@ -53,34 +53,28 @@ exports.logout = (req, res) => {
     res.redirect('/home');
   });
 }
-// RENDER PRODUCTS BASED ON QUERY
 exports.products = async (req, res) => {
   try {
     const searchQuery = req.query.query;
     const page = parseInt(req.query.page) || 1;
     const limit = 9;
     const skip = (page - 1) * limit;
-    let selectedCategory = "";
-    if (req.query.category_id) {
-      selectedCategory = req.query.category_id;
-    }
-    let selectedBrand = "";
-    if (req.query.brand_id) {
-      selectedBrand = req.query.brand_id;
-    }
-    const sortOption = req.query.sortOption;
+    let selectedCategory = req.query.category_id || "";
+    let selectedBrand = req.query.brand_id || "";
+    let sortOption = req.query.sortOption;
+    
     let sortQuery = {};
-
-    if (sortOption === "Name, A to Z") {
-      sortQuery = { productName: 1 };
-    } else if (sortOption === "Name, Z to A") {
-      sortQuery = { productName: -1 };
-    } else if (sortOption === "Price, high to low") {
-      sortQuery = { price: -1 };
-    } else if (sortOption === "Price, low to high") {
-      sortQuery = { price: 1 };
+    if (sortOption) {
+      if (sortOption === "Name, A to Z") {
+        sortQuery = { productName: 1 };
+      } else if (sortOption === "Name, Z to A") {
+        sortQuery = { productName: -1 };
+      } else if (sortOption === "Price, high to low") {
+        sortQuery = { price: -1 };
+      } else if (sortOption === "Price, low to high") {
+        sortQuery = { price: 1 };
+      }
     }
-
     let query = {};
     if (req.query.category_id) {
       query.category = req.query.category_id;
@@ -89,32 +83,38 @@ exports.products = async (req, res) => {
       query.brand = req.query.brand_id;
     }
     if (searchQuery) {
-      const categoryMatch = await categories.findOne({
-        category: new RegExp(searchQuery, "i"),
-      });
+      try {
+        const categoryMatch = await categories.findOne({
+          category: new RegExp(searchQuery, "i"),
+        });
 
-      const brandMatch = await brands.findOne({
-        brandName: new RegExp(searchQuery, "i"),
-      });
+        const brandMatch = await brands.findOne({
+          brandName: new RegExp(searchQuery, "i"),
+        });
 
-      if (categoryMatch) {
-        query.category = categoryMatch._id;
-        selectedCategory = categoryMatch._id.toString();
+        if (categoryMatch) {
+          query.category = categoryMatch._id;
+          selectedCategory = categoryMatch._id.toString();
 
-        // Find brands with the selected category
-        const brandsWithCategory = await brands.find({ category: categoryMatch._id });
-        const brandIds = brandsWithCategory.map((brand) => brand._id);
-        query.brand = { $in: brandIds };
-      } else if (brandMatch) {
-        query.brand = brandMatch._id;
-        selectedBrand = brandMatch._id.toString();
+          // Find brands with the selected category
+          const brandsWithCategory = await brands.find({
+            category: categoryMatch._id,
+          });
+          const brandIds = brandsWithCategory.map((brand) => brand._id);
+          query.brand = { $in: brandIds };
+        } else if (brandMatch) {
+          query.brand = brandMatch._id;
+          selectedBrand = brandMatch._id.toString();
 
-        // Find the category of the selected brand
-        if (brandMatch.category) {
-          selectedCategory = brandMatch.category.toString();
+          // Find the category of the selected brand
+          if (brandMatch.category) {
+            selectedCategory = brandMatch.category.toString();
+          }
+        } else {
+          query.productName = new RegExp(searchQuery, "i");
         }
-      } else {
-        query.productName = new RegExp(searchQuery, "i");
+      } catch (err) {
+        console.error("Error fetching categories and brands from MongoDB", err);
       }
     }
 
@@ -129,15 +129,26 @@ exports.products = async (req, res) => {
 
     const category = await categories.find();
     let brand = [];
-   if (selectedCategory) {
-    brand = await brands.find({ category: selectedCategory });
-   }
-    const categoryCounts = await Promise.all(
-      category.map(async (Category) => {
-        const count = await products.countDocuments({ category: Category._id });
-        return { categoryId: Category._id, count };
-      })
-    );
+    if (selectedCategory) {
+      try {
+        brand = await brands.find({ category: selectedCategory });
+      } catch (err) {
+        console.error("Error fetching brands from MongoDB", err);
+      }
+    }
+    let categoryCounts;
+    try {
+      categoryCounts = await Promise.all(
+        category.map(async (Category) => {
+          const count = await products.countDocuments({
+            category: Category._id,
+          });
+          return { categoryId: Category._id, count };
+        })
+      );
+    } catch (err) {
+      console.error("Error fetching product counts from MongoDB", err);
+    }
 
     res.render("user/product", {
       user: req.session.user,
@@ -160,6 +171,7 @@ exports.products = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 
 //RENDER CONTACT US
