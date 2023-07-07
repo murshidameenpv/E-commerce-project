@@ -4,6 +4,7 @@
   const brands = require("../models/brandSchema")
   const user = require('../models/userSchema')
   const cart = require('../models/cartSchema')
+  const wishlist = require('../models/wishlistSchema')
   //RENDER HOME
     exports.home = async(req, res) => { 
       const superDeal = await products.find().limit(8).where({ listed :false}).populate('brand').exec();
@@ -53,6 +54,8 @@ exports.logout = (req, res) => {
     res.redirect('/home');
   });
 }
+
+//render products based on search,filter,sort,pagination
 exports.products = async (req, res) => {
   try {
     const searchQuery = req.query.query;
@@ -186,13 +189,12 @@ exports.contactUs = async (req, res) => {
   //RENDER PRODUCT DETAILS
   exports.productDetails = async (req, res) => {
     try {
-      console.log(req.session.user);
       const productId = req.params.id; // extract the product ID from the query string
       const product = await products.findById({ _id: productId }); // find the product by ID using Mongoose
       res.render("user/details", { product ,user:req.session.user}); // render the product-detail.ejs page and pass the product details
     } catch (error) {
       console.error(error);
-      res.status(500).send("Server Error");
+      res.status(500).send("Internal Server Error");
     }
   };
 
@@ -227,39 +229,29 @@ exports.cart = async (req, res) => {
   }
 };
 
-//CHECKS PRODUCTS IN CART FOR INVENTORY MANAGEMENT
-  exports.checkCart = async (req, res) => {
-    try {
-      // Get the product ID from the request query parameters
-      const { productId } = req.query;
-      // Get the userId from the session
-      const userId = req.session.user._id;
-      // Find the cart for the logged-in user
-      const userCart = await cart.findOne({ userId });
 
-      // Find the product in the cart
-      const productIndex = userCart.products.findIndex(
-        (product) => product.productId.toString() === productId
-      );
-      if (productIndex !== -1) {
-        // Product exists in the cart
-        const product = userCart.products[productIndex];
-        res.status(200).json({
-          inCart: true,
-          cartQuantity: product.quantity,
-        });
-      } else {
-        // Product does not exist in the cart
-        res.status(200).json({
-          inCart: false,
-          cartQuantity: 0,
-        });
-      }
-    } catch (error) {
-      console.error(error);
-      res.status(500).send("Error checking cart data");
-    }
-  };
+exports.wishlist = async (req, res) => {
+  try {
+    // Get the user ID from the session
+    const userId = req.session.user._id;
+    const Wishlist = await wishlist.findOne({ userId });
+    // Find the products in the wishlist
+    const productIds = Wishlist.products.map(
+      (product) => product.productId
+    );
+    const wishlistProducts = await products.find({ _id: { $in: productIds } });
+    // Pass the products to the EJS template
+    res.render("user/wishlist", {
+      wishlistProducts,
+      user: req.session.user,
+      Wishlist,
+    });
+  } catch (err) {
+    // Handle errors
+    console.error(err);
+    res.status(500).send("Internal Server Error");
+  }
+};
 
 //RENDER OTP LOGIN
 exports.otplogin = (req, res) => {

@@ -20,20 +20,82 @@
     <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300&display=swap" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
 </head>
-<body>
-    <!-- header -->
-    <section id="header_top" class="pt-4 pb-4">
+
+    <section id="top">
         <div class="container-fluid">
-            <div class="row header_top1">
-                <div class="col-md-3">
-                    <div class="header_top1l">
-                        <h3 class="mb-0"><a class="col_dark" href="/home"><i
-                                    class="fa fa-shopping-basket col_yell"></i> GadgetsOn</a></h3>
+            <div class="row top_1">
+                <div class="col-md-8">
+                    <div class="top_1i">
+                        <ul class="mb-0">
+                            <li class="nav-item text-light d-inline-block font_13 me-2 pe-2">
+                                Ship to
+                            </li>
+    
+                            <li class="nav-item dropdown d-inline-block me-2 pe-2">
+                                <a class="dropdown-toggle text-light font_13" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-flag col_yell me-1"></i> US/USD
+                                </a>
+                                <ul class="dropdown-menu drop_1" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="#"> € EUR</a></li>
+                                    <li><a class="dropdown-item" href="#"> $ USD</a></li>
+                                </ul>
+                            </li>
+    
+                            <li class="nav-item text-light d-inline-block font_13 me-2 pe-2">
+                                Quick Guide
+                            </li>
+    
+                            <li class="nav-item dropdown d-inline-block me-4 pe-2">
+                                <a class="dropdown-toggle text-light font_13" href="#" id="navbarDropdown" role="button"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    Help
+                                </a>
+                                <ul class="dropdown-menu drop_1" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="#"> Returns</a></li>
+                                    <li><a class="dropdown-item" href="#"> Privacy</a></li>
+                                    <li><a class="dropdown-item" href="#"> Terms</a></li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
                 </div>
-<div class="col-md-6">
-    <div class="header_top1m">
-    <form action="/products" method="GET" class="input-group">
+                <% if(locals.user){ %>
+                <div class="col-md-4">
+                    <div class="top_1i text-end">
+                        <ul class="mb-0">
+                            <li class="nav-item dropdown d-inline-block font_13 border-0">
+                                <a class="dropdown-toggle text-light font_13" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
+                                    aria-expanded="false"><i class="fa fa-user col_yell me-1"></i><%=locals.user.name %></a>
+                                    <ul class="dropdown-menu drop_1" aria-labelledby="navbarDropdown">
+                                        <li><a class="dropdown-item" href="#">Address</a></li>
+                                        <li><a class="dropdown-item" href="#">Orders</a></li>
+                                        <li><a class="dropdown-item" href="#">Wallet</a></li>
+                                        <li><a class="dropdown-item" href="#">Returns</a></li>
+                                        <li><form action="/logout" method="POST" id="logoutForm">
+                                            <button type="submit" class="dropdown-item">Logout</button>
+                                        </form></li>
+                                  </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <% }else{ %>
+                <div class="col-md-4">
+                    <div class="top_1i text-end">
+                        <ul class="mb-0">
+                            <li class="nav-item  d-inline-block font_13 me-2 pe-2">
+                                <a class="text-light" href="/login"><i class="fa fa-sign-in col_yell me-1"></i> Sign In</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </section>
+    <section>   
+         <form action="/products" method="GET" class="input-group">
         <input type="text" name="query" class="form-control border-start-0" placeholder="Search for your item">
         <span class="input-group-btn">
             <button class="btn btn-primary bg_yell" type="submit">
@@ -41,52 +103,7 @@
             </button>
         </span>
     </form>
-    </div>
-</div>
-
-<% if (locals.user) { %>
-<div class="col-md-3 text-end">
-    <div class="header_top1r">
-        <div class="dropdown">
-            <a class="col_dark" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                <strong><span style="font-family: 'Rubik', sans-serif; font-size: 20px;"><%= locals.user.name %></span></strong>
-            </a>
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                <li><a class="dropdown-item" href="#">My Profile</a></li>
-                <li><a class="dropdown-item" href="#">Orders</a></li>
-                <li><a class="dropdown-item" href="#">Wishlist</a></li>
-                <li><form action="/logout" method="POST" id="logoutForm">
-                    <button type="submit" class="dropdown-item">Logout</button>
-                </form></li>
-            </ul>
-        </div>
-    </div>
-</div>
-    <% } else { %>
-        <div class="col-md-3 text-end">
-            <div class="header_top1r">
-                <a class="col_dark" href="/login"><i class=" fa fa-sign-in fs-2 align-middle me-1 col_yell"
-                        style="color: #f7ba01;"></i>
-                    Log In</a>
-            </div>
-        </div>
-        <% } %>
-            </div>
-        </div>
-    </section>
-    <!-- header -->
-
-
-    <!-- blue container section -->
-    <section id="top">
-        <div class="container-fluid">
-            <div class="row top_1">
-
-            </div>
-        </div>
-    </section>
-    <!-- blue container section -->
+<section>
 
 
     

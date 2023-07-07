@@ -62,12 +62,17 @@
                     <h6 class="mb-2">Stock:<%=product.stock %></h6>
                     <input type="number" min="1" max="<%= product.stock %>" value="1" class="form-control mt-2 quantity-box-custom" id="productQuantity">
                     <% if (product.stock> 0) { %>
-                        <h6 class="text-uppercase mt-4"><a class="button" id="addToCartBtn" style="cursor: pointer;"  data-stock="<%= product.stock %>">Add to Cart</a></h6>
+                    <h6 class="text-uppercase mt-4"><a class="button" id="addToCartBtn" data-product-id="<%= product._id %>"
+                            style="cursor: pointer;">Add to Cart</a></h6>
                         <% } else { %>
                             <h6 class="text-uppercase mt-4"><a class="button disabled" style="cursor: not-allowed; opacity: 0.5;">Add to
                                     Cart</a></h6>
                             <% } %>
-                    <h6 class="mt-4"><a href="#"><i class="fa fa-heart-o col_yell me-1"></i> Add To Wishlist</a></h6>
+                <h6 class="mt-4">
+                    <a href="#" id="addToWishlistBtn" data-product-id="<%= product._id %>">
+                        <i class="fa fa-heart-o col_yell me-1"></i> Add To Wishlist
+                    </a>
+                </h6>
                     <hr>
                 </div>
             </div>

@@ -172,13 +172,13 @@ border-color:#ebebeb;
 width:70%;
  }
 .header_top1m .input-group .form-control{
-height:45px;
+height:37px;
 font-size:13px;
  }
 .header_top1m .input-group .btn{
 border-color:#f7ba01;
 border-radius:0px 5px 5px 0px;
-padding:8px 20px;
+padding:4px 20px;
 font-size:18px;
 font-weight:bold;
  }
@@ -571,12 +571,8 @@ margin-right:auto;
 .drop_cat {
 min-width:100%;
 }
-
-#top{
-display:none; 
- }
 #header_top{
-display:none; 
+display:block; 
  }
 #header .navbar-brand{
 display:block;

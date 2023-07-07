@@ -42,7 +42,7 @@
                                             class="form-control" placeholder="Qty">
                                     </div>
                                     <div>
-                                        <h6><a class="button_1 remove-button"
+                                        <h6><a class="button_1 remove-cart-button"
                                                 data-product-id="<%= product.productId._id %>"
                                                 style="cursor: pointer;">REMOVE</a></h6>
                                     </div>
@@ -53,7 +53,7 @@
                     <div class="col-md-4">
                         <div class="cart_3r">
                             <h6 class="head_1">SUBTOTAL</h6>
-                            <h5 class="text-center col_yell mt-3">$<%= total %>
+                            <h5 class="text-center col_yell mt-3" id="subTotal">$<%= total %>
                             </h5>
                             <hr>
                             <h6 class="text-center mt-3"><a class="button" href="/checkout">PROCEED TO CHECKOUT</a></h6>

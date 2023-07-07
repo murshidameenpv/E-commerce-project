@@ -11,50 +11,39 @@ router.get('/',
     checkSession.sessionExists,
     userRender.home);
 router.get("/home",
-  checkSession.sessionExists,
-  checkSession.checkUserBlocked,
   userRender.home);  
  
-router.get(
-  "/products",
-  checkSession.sessionExists,
-  checkSession.checkUserBlocked,
+router.get( "/products",
   userRender.products
 );
-    
-router.get(
-  "/contactUs",
-  checkSession.sessionExists,
-  checkSession.checkUserBlocked,
+
+
+router.get("/contactUs",
   userRender.contactUs
 );
-router.get(
-  "/login", 
+router.get("/login", 
   userRender.login
 );
-router.get(
-  "/signup",
+router.get("/signup",
   checkSession.checkUserBlocked,
   userRender.signup
 );
-router.get(
-  "/checkout",
+router.get("/checkout",
   checkSession.sessionExists,
   checkSession.checkUserBlocked,
   userRender.checkout
 );
-router.get(
-  "/cart",
+router.get("/cart",
   checkSession.sessionExists,
   checkSession.checkUserBlocked,
   userRender.cart
 );
-router.get(
-  "/product/checkCart",
+
+router.get('/wishlist',
   checkSession.sessionExists,
   checkSession.checkUserBlocked,
-  userController.checkCart
-);
+  userRender.wishlist
+)
 router.get('/login/otplogin',
   userRender.otplogin)
  
@@ -90,8 +79,7 @@ router.post(
 
 //twilio apis
 
-router.post(
-  "/send-otp",
+router.post("/send-otp",
   validation.checkPhoneNumberExistOtp,
   twilio.sendOTP
 );
@@ -109,6 +97,13 @@ router.post("/product/addToCart",
   userController.addToCart);
 
 router.post("/cart/product/remove",
-  userController.deleteFromCart);
+  userController.removeFromCart);
+
+router.post("/wishlist/product/addtowishlist",
+  userController.addToWishlist);
+
+router.post("/wishlist/product/remove",
+  userController.removeFromWishlist
+);
 
 module.exports = router;

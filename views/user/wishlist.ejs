@@ -1,0 +1,55 @@
+<%-include('includes/header')%>
+    <%-include('includes/navbar')%>
+
+        <section id="cart_page" class="cart pt-4 pb-4">
+            <div class="container-xl">
+                <div class="cart_2 row">
+                    <div class="col-md-6">
+                        <h5>WISHLIST</h5>
+                    </div>
+                        </div>
+                        <% if(Wishlist.products.length===0) {%>
+                            <div class="empty-cart-message">
+                                <h2>Wishlist is empty</h2>
+                            </div>
+                            <% } else { %>
+                        <div class="cart_3 row mt-3">
+                            <div class="col-md-8">
+                                <div class="cart_3l">
+                                    <h6>PRODUCTS</h6>
+                                </div>
+                                <div class="cart_3l1 mt-3 row ms-0 me-0">
+                                <% wishlistProducts.forEach((product)=> { %>
+                                    <div class="col-md-3 ps-0 col-3">
+                                        <div class="cart_3l1i">
+                                            <a href="/products/details/<%= product._id %>">
+                                                <img src="<%= product.image.slice(-1)[0] %>" alt="abc" class="w-100">
+                                            </a>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9 col-9">
+                                        <div class="cart_3l1i1">
+                                            <h6 class="fw-bold">
+                                                <a href="/products/details/<%= product._id %>">
+                                                    <%= product.productName %>
+                                                </a>
+                                            </h6>
+                                            <h5 class="col_yell mt-3">$<%= product.price %>
+                                            </h5>
+                                        </div>
+                                        <div>
+                                            <h6>
+                                                <a class="button_1 remove-wishlist-product" data-wishlist-product-id="<%= product._id %>"
+                                                    >REMOVE</a>
+                                            </h6>
+                                        </div>
+                                    </div>
+                                    <% }) %>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
+               </div>
+        </section>
+
+        <%-include('includes/footer')%>
