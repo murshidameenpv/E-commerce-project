@@ -1,17 +1,17 @@
-  const products = require("../models/productSchema");
-  const categories = require("../models/categorySchema");
-  const banners = require("../models/bannerSchema")
-  const brands = require("../models/brandSchema")
-  const user = require('../models/userSchema')
-  const cart = require('../models/cartSchema')
-  const wishlist = require('../models/wishlistSchema')
+  const productDb = require("../models/productSchema");
+  const categoryDb = require("../models/categorySchema");
+  const bannerDb = require("../models/bannerSchema")
+  const brandDb = require("../models/brandSchema")
+  const userDb = require('../models/userSchema')
+  const cartDb = require('../models/cartSchema')
+  const wishlistDb = require('../models/wishlistSchema')
   //RENDER HOME
     exports.home = async(req, res) => { 
-      const superDeal = await products.find().limit(8).where({ listed :false}).populate('brand').exec();
-      const dealOfDay = await products.find().limit(6).where({ listed :false}).populate("brand").exec();
-      const category = await categories.find().exec();
-      const todayOfferBanner = await banners.findOne({ title: "Fire Bolt" });
-      const topDealBanner = await banners.findOne({ title: "Top Deal" });
+      const superDeal = await productDb.find().limit(8).where({ listed :false}).populate('brand').exec();
+      const dealOfDay = await productDb.find().limit(6).where({ listed :false}).populate("brand").exec();
+      const category = await categoryDb.find().exec();
+      const todayOfferBanner = await bannerDb.findOne({ title: "Fire Bolt" });
+      const topDealBanner = await bannerDb.findOne({ title: "Top Deal" });
       res.render("user/index", {
         user: req.session.user,
         superDeal,
@@ -20,7 +20,9 @@
         todayOfferBanner,
         topDealBanner,
       });
-    }
+}
+    
+
 //RENDER LOGIN
 exports.login = (req, res) => {
   if (req.session.user) {
@@ -34,6 +36,7 @@ exports.login = (req, res) => {
   res.render('user/login', { message }); // Pass the message to the user-signup view
   }
 
+
 //RENDER SIGNUP
 exports.signup = async (req, res) => {
   let message = ""; 
@@ -43,6 +46,7 @@ exports.signup = async (req, res) => {
   }
   res.render('user/signup', { message });
 };
+
 
 //RENDER LOGOUT
 exports.logout = (req, res) => {
@@ -54,6 +58,7 @@ exports.logout = (req, res) => {
     res.redirect('/home');
   });
 }
+
 
 //render products based on search,filter,sort,pagination
 exports.products = async (req, res) => {
@@ -78,6 +83,7 @@ exports.products = async (req, res) => {
         sortQuery = { price: 1 };
       }
     }
+    
     let query = {};
     if (req.query.category_id) {
       query.category = req.query.category_id;
@@ -87,22 +93,13 @@ exports.products = async (req, res) => {
     }
     if (searchQuery) {
       try {
-        const categoryMatch = await categories.findOne({
-          category: new RegExp(searchQuery, "i"),
-        });
-
-        const brandMatch = await brands.findOne({
-          brandName: new RegExp(searchQuery, "i"),
-        });
-
-        if (categoryMatch) {
+        const categoryMatch = await categoryDb.findOne({category: new RegExp(searchQuery, "i"),});
+        const brandMatch = await brandDb.findOne({brandName: new RegExp(searchQuery, "i"),});
+         if (categoryMatch) {
           query.category = categoryMatch._id;
           selectedCategory = categoryMatch._id.toString();
-
           // Find brands with the selected category
-          const brandsWithCategory = await brands.find({
-            category: categoryMatch._id,
-          });
+          const brandsWithCategory = await brandDb.find({ category: categoryMatch._id,});
           const brandIds = brandsWithCategory.map((brand) => brand._id);
           query.brand = { $in: brandIds };
         } else if (brandMatch) {
@@ -120,9 +117,8 @@ exports.products = async (req, res) => {
         console.error("Error fetching categories and brands from MongoDB", err);
       }
     }
-
-    const productCount = await products.countDocuments(query);
-    const product = await products
+    const productCount = await productDb.countDocuments(query);
+    const product = await productDb
       .find(query)
       .sort(sortQuery)
       .skip(skip)
@@ -130,11 +126,11 @@ exports.products = async (req, res) => {
       .populate("brand")
       .exec();
 
-    const category = await categories.find();
+    const category = await categoryDb.find();
     let brand = [];
     if (selectedCategory) {
       try {
-        brand = await brands.find({ category: selectedCategory });
+        brand = await brandDb.find({ category: selectedCategory });
       } catch (err) {
         console.error("Error fetching brands from MongoDB", err);
       }
@@ -143,7 +139,7 @@ exports.products = async (req, res) => {
     try {
       categoryCounts = await Promise.all(
         category.map(async (Category) => {
-          const count = await products.countDocuments({
+          const count = await productDb.countDocuments({
             category: Category._id,
           });
           return { categoryId: Category._id, count };
@@ -152,7 +148,6 @@ exports.products = async (req, res) => {
     } catch (err) {
       console.error("Error fetching product counts from MongoDB", err);
     }
-
     res.render("user/product", {
       user: req.session.user,
       product,
@@ -179,7 +174,7 @@ exports.products = async (req, res) => {
 
 //RENDER CONTACT US
 exports.contactUs = async (req, res) => { 
-  const category = await categories.find()
+  const category = await categoryDb.find()
   res.render("user/contact", {
     user: req.session.user,
     category,
@@ -190,7 +185,7 @@ exports.contactUs = async (req, res) => {
   exports.productDetails = async (req, res) => {
     try {
       const productId = req.params.id; // extract the product ID from the query string
-      const product = await products.findById({ _id: productId }); // find the product by ID using Mongoose
+      const product = await productDb.findById({ _id: productId }); // find the product by ID using Mongoose
       res.render("user/details", { product ,user:req.session.user}); // render the product-detail.ejs page and pass the product details
     } catch (error) {
       console.error(error);
@@ -200,28 +195,31 @@ exports.contactUs = async (req, res) => {
 
   //RENDER CHECKOUT
 exports.checkout =async (req, res) => { 
-   const category = await categories.find()
+   const category = await categoryDb.find()
   res.render("user/checkout", { 
     user: req.session.user,
     category
   });
 }
-//RENDER CART
 exports.cart = async (req, res) => {
   try {
-    const category = await categories.find();
+    const category = await categoryDb.find();
     const userId = req.session.user._id;
-    const cartItems = await cart.findOne({ userId }).populate("products.productId");
+    const userCart = await cartDb
+      .findOne({ userId })
+      .populate("products.productId");
     // Calculate the total amount of the products in the cart
     let total = 0;
-    cartItems.products.forEach((product) => {
-      total += product.productId.price * product.quantity;
-    });
+    if (userCart) {
+      userCart.products.forEach((product) => {
+        total += product.productId.price * product.quantity;
+      });
+    }
     res.render("user/cart", {
       user: req.session.user,
-      category,
-      cartItems,
-      total
+      category: category ? category : undefined,
+      userCart: userCart ? userCart : undefined,
+      total,
     });
   } catch (error) {
     console.error(error);
@@ -230,21 +228,23 @@ exports.cart = async (req, res) => {
 };
 
 
+
 exports.wishlist = async (req, res) => {
   try {
     // Get the user ID from the session
     const userId = req.session.user._id;
-    const Wishlist = await wishlist.findOne({ userId });
+    const Wishlist = await wishlistDb.findOne({ userId });
     // Find the products in the wishlist
-    const productIds = Wishlist.products.map(
-      (product) => product.productId
-    );
-    const wishlistProducts = await products.find({ _id: { $in: productIds } });
+    let wishlistProducts;
+    if (Wishlist) {
+      const productIds = Wishlist.products.map((product) => product.productId);
+      wishlistProducts = await productDb.find({ _id: { $in: productIds } });
+    }
     // Pass the products to the EJS template
     res.render("user/wishlist", {
-      wishlistProducts,
+      wishlistProducts: wishlistProducts ? wishlistProducts : undefined,
       user: req.session.user,
-      Wishlist,
+      Wishlist: Wishlist ? Wishlist : undefined,
     });
   } catch (err) {
     // Handle errors
@@ -252,6 +252,7 @@ exports.wishlist = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 };
+
 
 //RENDER OTP LOGIN
 exports.otplogin = (req, res) => {
@@ -265,6 +266,8 @@ exports.otplogin = (req, res) => {
 exports.forgotPassword = (req, res) => {
   res.render('user/forgotPassword')
 }
+
+
 //RENDER RESET PASWORD
 exports.resetPassword = async (req, res) => {
   try {
@@ -272,7 +275,7 @@ exports.resetPassword = async (req, res) => {
     if (!token) {
       return res.status(404).send("Page not found");
     }
-    const userCredential = await user.findOne({
+    const userCredential = await userDb.findOne({
       resetPasswordToken: token,
       resetPasswordExpires: { $gt: Date.now() },
     });
@@ -283,5 +286,25 @@ exports.resetPassword = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
+  }
+};
+
+
+//add delivery address address 
+const formatAddress = (address) => {
+  return `${address.firstName} ${address.lastName},${address.addressLine},${address.locality}, ${address.city}, ${address.state}-${address.postalCode},${address.phoneNumber},${address.emailAddress}`;
+};
+exports.addressDetails = async (req, res) => {
+  const userId = req.session.user._id;
+  try {
+    const { address } = await userDb.findById(userId);
+    res.render("user/address", {
+      user: req.session.user,
+      addressData: address.length > 0 ? address.map(formatAddress) : undefined,
+      addressId: address ? address.map((address) => address._id) : undefined,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error retrieving addresses");
   }
 };

@@ -1,9 +1,11 @@
+const mongoose = require("mongoose")
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const userDb = require("../models/userSchema");
 const cartDb = require("../models/cartSchema");
 const wishlistDb = require("../models/wishlistSchema");
 const productDb = require("../models/productSchema");
+const { log } = require("console");
 
 
 //USER SIGNUP
@@ -248,5 +250,131 @@ exports.removeFromWishlist = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send(" Error Removing product from wishlist");
+  }
+};
+
+exports.showCurrentAddress = async (req, res) => {
+  const userId = req.session.user._id;
+  const addressId = req.body.addressId;
+   try {
+    const result = await userDb.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(userId) } },
+      { $unwind: "$address" },
+      { $match: { "address._id": new mongoose.Types.ObjectId(addressId) } },
+      { $replaceRoot: { newRoot: "$address" } },
+    ]);
+     const address = result[0];
+    res.json(address);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error fetching address");
+  }
+}
+
+exports.addAddress = async (req, res) => {
+  const userId = req.session.user._id;
+  const {
+    firstName,
+    lastName,
+    postalCode,
+    locality,
+    city,
+    state,
+    addressLine,
+    landmark,
+    phoneNumber,
+    emailAddress,
+  } = req.body;
+  try {
+    const user = await userDb.findById(userId);
+    user.address.push({
+      firstName,
+      lastName,
+      postalCode,
+      locality,
+      city,
+      state,
+      addressLine,
+      landmark,
+      phoneNumber,
+      emailAddress,
+    });
+    await user.save();
+    res.json(
+      {
+        title: "Success!",
+        message: "Address added",
+        icon: "success",
+      }
+    );
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error adding address");
+  }
+};
+
+exports.deleteAddress = async (req, res) => {
+  const userId = req.session.user._id;
+  const addressId = req.params.addressId;
+  try {
+    // Update the user's address array
+    await userDb.updateOne(
+      { _id: userId },
+      { $pull: { address: { _id: addressId } } }
+    );
+    // Send a success response
+    res.status(200).json({
+      title: "Success!",
+      message: "Address deleted successfully",
+      icon: "success",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error deleting address");
+  }
+};
+exports.updateAddress = async (req, res) => {
+  const userId = req.session.user._id;
+  const addressId = req.params.addressId;
+  const {
+    firstName,
+    lastName,
+    postalCode,
+    locality,
+    city,
+    state,
+    addressLine,
+    landmark,
+    phoneNumber,
+    emailAddress,
+  } = req.body;
+  try {
+    // Update the user's address array
+    await userDb.updateOne(
+      { _id: userId, "address._id": addressId },
+      {
+        $set: {
+          "address.$.firstName": firstName,
+          "address.$.lastName": lastName,
+          "address.$.postalCode": postalCode,
+          "address.$.locality": locality,
+          "address.$.city": city,
+          "address.$.state": state,
+          "address.$.addressLine": addressLine,
+          "address.$.landmark": landmark,
+          "address.$.phoneNumber": phoneNumber,
+          "address.$.emailAddress": emailAddress,
+        },
+      }
+    );
+    // Send a success response
+    res.status(200).json({
+      title: "Success!",
+      message: "Address updated successfully",
+      icon: "success",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error updating address");
   }
 };

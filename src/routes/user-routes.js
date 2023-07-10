@@ -17,7 +17,6 @@ router.get( "/products",
   userRender.products
 );
 
-
 router.get("/contactUs",
   userRender.contactUs
 );
@@ -56,6 +55,11 @@ router.get("/login/resetPassword",
 router.get('/products/details/:id',
     userRender.productDetails
 )
+router.get("/address",
+  checkSession.sessionExists,
+  checkSession.checkUserBlocked,
+  userRender.addressDetails
+);
 
 //POST METHODS
 
@@ -103,7 +107,22 @@ router.post("/wishlist/product/addtowishlist",
   userController.addToWishlist);
 
 router.post("/wishlist/product/remove",
-  userController.removeFromWishlist
+  userController.removeFromWishlist);
+
+router.post(
+  "/address",
+  checkSession.sessionExists,
+  checkSession.checkUserBlocked,
+  userController.showCurrentAddress
 );
+
+router.post("/address/add",
+  userController.addAddress);
+
+router.delete("/address/delete/:addressId",
+  userController.deleteAddress);
+
+router.put("/address/update/:addressId",
+  userController.updateAddress);
 
 module.exports = router;

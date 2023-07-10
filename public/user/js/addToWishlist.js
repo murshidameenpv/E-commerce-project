@@ -1,9 +1,9 @@
 document.addEventListener("DOMContentLoaded", () => {
-  const addToWishlistBtn = document.querySelector("#addToWishlistBtn");
-    if (addToWishlistBtn) {
+  const addToWishlistBtns = document.querySelectorAll(".add-to-wishlist-btn");
+  addToWishlistBtns.forEach((addToWishlistBtn) => {
     addToWishlistBtn.addEventListener("click", async () => {
-      const productId =
-        document.querySelector("#addToWishlistBtn").dataset.productId;
+      event.preventDefault();
+      const productId = addToWishlistBtn.dataset.productId;
       const result = await Swal.fire({
         title: "Are you sure?",
         text: "Do you want to add this item to your wishlist?",
@@ -34,5 +34,5 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     });
-  }
+  });
 });

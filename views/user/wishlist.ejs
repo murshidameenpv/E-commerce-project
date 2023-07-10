@@ -8,7 +8,7 @@
                         <h5>WISHLIST</h5>
                     </div>
                         </div>
-                        <% if(Wishlist.products.length===0) {%>
+                        <% if(!Wishlist || Wishlist.products.length===0) {%>
                             <div class="empty-cart-message">
                                 <h2>Wishlist is empty</h2>
                             </div>

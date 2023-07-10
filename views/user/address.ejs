@@ -1,0 +1,114 @@
+<%-include('includes/header')%>
+<%-include('includes/navbar')%>
+<section id="center" class="center_o pt-4 pb-4 bg-light">
+    <div class="container-xl">
+        <div class="row center_o1 text-center">
+            <div class="col-md-12">
+                <h1>My Address</h1>
+                <h6 class="d-inline-block  font_14 col_yell bg-white"><a class="col_light" href="/home">Home</a> <span
+                        class="me-2 ms-2">/</span>My address</h6>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+<section id="address">
+    <div class="container-xl">
+        <div class="checkout_1 row">
+            <div class="col-md-8">
+                <div class="checkout_1l">
+                    <h5>Add delivery address</h5>
+                    <hr class="line">
+                </div>
+                <div class="checkout_1l1 row">
+                    <div class="col-md-6 ps-0">
+                        <h6 class="font_13 fw-bold">First Name <span>*</span></h6>
+                        <input class="form-control" id="first-name" type="text">
+                    </div>
+                    <div class="col-md-6 ps-0">
+                        <h6 class="font_13 fw-bold">Last Name <span>*</span></h6>
+                        <input class="form-control" id="last-name" type="text">
+                    </div>
+                </div>
+                <div class="checkout_1l1 row">
+                    <div class="col-md-6 ps-0">
+                        <h6 class="font_13 fw-bold">Postal Code <span>*</span></h6>
+                        <input class="form-control" id="postal-code" type="text">
+                    </div>
+                    <div class="col-md-6 ps-0">
+                        <h6 class="font_13 fw-bold">Locality<span>*</span></h6>
+                        <input class="form-control" id="locality" type="text">
+                    </div>
+                </div>
+                <div class="checkout_1l1 row">
+                    <div class="col-md-6 ps-0">
+                        <h6 class="font_13 fw-bold">Town / City / District<span>*</span></h6>
+                        <input class="form-control" id="city" type="text">
+                    </div>
+                    <div class="col-md-6 ps-0">
+                        <h6 class="font_13 fw-bold">State / Division<span>*</span></h6>
+                        <select class="form-select" id="state" name="state">
+                            <option value="" disabled selected>Select State</option>
+                            <option>Kerala</option>
+                            <option>Tamil Nadu</option>
+                            <option>Karnataka</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="checkout_1l1 row">
+                    <div class="col-md-6 ps-0">
+                        <h6 class="font_13 fw-bold">Address Line <span>*</span></h6>
+                        <input class="form-control" id="address-line" type="text">
+                    </div>
+                    <div class="col-md-6 ps-0">
+                        <h6 class="font_13 fw-bold">Land Mark <span>*</span></h6>
+                        <input class="form-control" id="landmark" type="text">
+                    </div>
+                </div>
+                <div class="checkout_1l1 row">
+                    <div class="col-md-6 ps-0">
+                        <h6 class="font_13 fw-bold">Email<span>*</span></h6>
+                        <input class="form-control" id="address-email" type="text">
+                    </div>
+                    <div class="col-md-6 ps-0">
+                        <h6 class="font_13 fw-bold">Phone number<span>*</span></h6>
+                        <input class="form-control" id="address-phone" type="text">
+                    </div>
+                </div>
+                <div class="checkout_1l1-row mt-3">
+                    <div class="text-center">
+                        <h6><a class="button_1" style="cursor: pointer;" onclick="addAddress()">Add new address</a></h6>
+                    </div>
+                </div>
+            </div>
+<% if (addressData && addressData.length> 0) { %>
+    <div class="col-md-4">
+        <div class="checkout_1r">
+            <h5>My Address</h5>
+            <hr class="line">
+            <% addressData.forEach((address, index)=> { %>
+                <div class="address-box">
+                    <p>Address <%= index + 1 %>
+                    </p>
+                    <textarea class="custom_textarea" readonly><%= address %></textarea>
+                    <button class="btn btn-primary" data-address-id="<%= addressId[index] %>"
+                        onclick="showAddress(event)">Edit</button>
+                    <button class="btn btn-danger" data-address-id="<%= addressId[index] %>"
+                        onclick="deleteAddress(event)">Delete</button>
+                </div>
+                <% }) %>
+        </div>
+    </div>
+    <% } %>
+
+
+        </div>
+    </div>
+</section>
+
+
+<%-include('includes/footer')%>

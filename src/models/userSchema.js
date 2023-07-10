@@ -25,12 +25,16 @@ var userSchema = new mongoose.Schema({
   },
   address: [
     {
-      name: String,
-      address: String,
-      phone: Number,
-      pincode: Number,
+      firstName: String,
+      lastName: String,
+      postalCode: Number,
+      locality: String,
       city: String,
       state: String,
+      addressLine: String,
+      landmark: String,
+      phoneNumber: Number,
+      emailAddress:String
     },
   ],
   createdAt: {

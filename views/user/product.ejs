@@ -127,6 +127,11 @@
                                                                     data-url="http://localhost:8000/products/details/<%= product._id %>"
                                                                     style="cursor: pointer;"><i
                                                                         class="fa fa-share-alt"></i></a></li>
+                                                            <% if(locals.user) { %>
+                                                                <li class="d-inline-block me-3"><a href="#" class="add-to-wishlist-btn" data-product-id="<%= product._id %>"><i class="fa fa-heart"></i></a></li>
+                                                                <% }else{ %>
+                                                                    <li class="d-inline-block me-3"><a href="/login"><i class="fa fa-heart"></i></a></li>
+                                                                 <% } %>
                                                             <li class="d-inline-block"><a
                                                                     href="/products/details/<%= product._id %>"><i
                                                                         class="fa fa-eye"></i></a></li>
@@ -181,6 +186,11 @@
                                                                 <li class="d-inline-block me-3"><a class="share-link"
                                                                         data-url="http://localhost:8000/products/details/<%= product._id %>"
                                                                         style="cursor: pointer;"><i class="fa fa-share-alt"></i></a></li>
+                                                                <% if(locals.user) { %>
+                                                                <li class="d-inline-block me-3"><a href="#" class="add-to-wishlist-btn" data-product-id="<%= product._id %>"><i class="fa fa-heart"></i></a></li>
+                                                                <% }else{ %>
+                                                                    <li class="d-inline-block me-3"><a href="/login"><i class="fa fa-heart"></i></a></li>
+                                                                 <% } %>
                                                                 <li class="d-inline-block"><a href="/products/details/<%= product._id %>"><i
                                                                             class="fa fa-eye"></i></a></li>
                                                             </ul>

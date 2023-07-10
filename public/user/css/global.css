@@ -715,3 +715,6 @@ margin-right:70px!important;
  .custom-icon {
    font-size: 20em;
  }
+ input[type="text"]::placeholder {
+   text-align: center;
+ }
