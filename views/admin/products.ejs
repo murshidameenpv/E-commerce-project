@@ -89,7 +89,6 @@
                                                         <td class="cell">
                                                             <span style="cursor: pointer" data-bs-toggle="modal"
                                                                 data-bs-target="#updateProductModal-<%= product._id %>"
-
                                                                 data-product-id="<%= product._id %>">
                                                                 <i class="fa fa-edit"></i> Edit
                                                             </span>
@@ -170,51 +169,47 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="newProductForm" enctype="multipart/form-data">
-                                <div class="mb-3">
-                                    <label for="productName" class="form-label">Product Name</label>
-                                    <input type="text" class="form-control" id="productName" name="productName"
-                                        placeholder="Enter product name">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="category" class="form-label">Category</label>
-                                    <select class="form-select" id="category" name="category">
-                                        <% category.forEach((category)=>{ %>
-                                        <option value="<%=category._id %>"><%=category.category %></option>
+                            <div class="mb-3">
+                                <label for="productName">Product Name:</label>
+                                <input type="text" class="form-control" id="productName" name="productName" placeholder="Enter product name">
+                            </div>
+                            <div class="mb-3">
+                                <label for="category">Category:</label>
+                                <select class="form-select" id="category" name="category">
+                                    <% categories.forEach((category)=>{ %>
+                                        <option value="<%=category._id %>">
+                                            <%=category.category %>
+                                        </option>
                                         <% }) %>
-                                    </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="brand" class="form-label">Brand</label>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="brand">Brand:</label>
                                 <select class="form-select" id="brand" name="brandName">
-                                    <% brand.forEach((brand)=>{ %>
-                                        <option value="<%=brand._id %>" data-category="<%=brand.category %>">
+                                    <% brands.forEach((brand)=>{ %>
+                                        <option value="<%=brand._id %>">
                                             <%=brand.brandName %>
                                         </option>
                                         <% }) %>
                                 </select>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="price" class="form-label">Price</label>
-                                    <input type="number" class="form-control" id="price" name="price"
-                                        placeholder="Enter product price">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="stock" class="form-label">Quantity</label>
-                                    <input type="number" class="form-control" id="stock" name="stock"
-                                        placeholder="Enter product stock quantity">
-                                </div>
-                                <div class="mb-3">
-                                    <label for="description" class="form-label">Description</label>
-                                    <textarea class="form-control" id="description" name="description"
-                                        placeholder="Enter product description"></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="image" class="form-label">Upload Image</label>
-                                    <input type="file" class="form-control" id="image" name="image" multiple>
-                                </div>
-                                <button type="submit" class="btn btn-primary" id="addProductBtn">Add Product</button>
-                            </form>
+                            </div>
+                            <div class="mb-3">
+                                <label for="price">Price:</label>
+                                <input type="number" class="form-control" id="price" name="price" placeholder="Enter product price">
+                            </div>
+                            <div class="mb-3">
+                                <label for="stock">Stock Quantity:</label>
+                                <input type="number" class="form-control" id="stock" name="stock" placeholder="Enter product stock quantity">
+                            </div>
+                            <div class="mb-3">
+                                <label for="description">Description:</label>
+                                <textarea class="form-control" id="description" name="description"
+                                    placeholder="Enter product description"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="image">Image:</label>
+                                <input type="file" class="form-control" id="image" name="image" multiple accept=".png, .jpg, .jpeg">
+                            </div>
                             <div id="loadingSpinnerAdd" class="spinner-border text-primary" role="status"
                                 style="display: none;">
                                 <span class="visually-hidden">Loading...</span>
@@ -222,6 +217,7 @@
                             <div id="statusMessageAdd" class="alert" style="display: none;"></div>
                         </div>
                         <div class="modal-footer">
+                            <a class="btn btn-primary" id="addProductBtn" onclick="addProduct()">Add Product</a>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
 
                         </div>
@@ -254,21 +250,20 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="updateCategory" class="form-label">Category</label>
-                                <select class="form-select updateCategory" id="updateCategory" name="category">
-                                    <option value=""></option>
-                                    <% category.forEach((category)=>{ %>
-                                        <option value="<%=category._id %>">
-                                            <%=category.category %>
-                                        </option>
-                                        <% }) %>
-                                </select>
+                                    <select class="form-select" id="updateCategory" name="category">
+                                        <% categories.forEach((category)=>{ %>
+                                            <option value="<%=category._id %>">
+                                                <%=category.category %>
+                                            </option>
+                                            <% }) %>
+                                    </select>
 
                                 </div>
                                 <div class="mb-3">
-                                    <label for="brand" class="form-label">Brand</label>
-                                    <select class="form-select updateBrand" id="updateBrand" name="brandName">
-                                        <% brand.forEach((brand)=>{ %>
-                                            <option value="<%=brand._id %>" data-category="<%=brand.category %>">
+                                    <label for="updateBrand" class="form-label">Brand</label>
+                                    <select class="form-select" id="updateBrand" name="brandName">
+                                        <% brands.forEach((brand)=>{ %>
+                                            <option value="<%=brand._id %>">
                                                 <%=brand.brandName %>
                                             </option>
                                             <% }) %>
@@ -297,7 +292,7 @@
                                 </div>
                                 <div class="mb-3">
                                     <label for="updateImage" class="form-label">Upload Image</label>
-                                    <input type="file" class="form-control" id="updateImage" name="image" multiple>
+                                    <input type="file" class="form-control" id="updateImage" name="image" multiple accept=".png, .jpg, .jpeg">
                                 </div>
                                 <button type="submit" class="btn btn-primary" id="updateProductBtn-<%= product._id %>">Update
                                     Product</button>
@@ -314,5 +309,67 @@
             <% }) %>
             <!-- Update Product Modal -->
             
+
+            
         </div><!--//app-wrapper-->
+
+
+
+            <script>//ADD PRODUCT
+         const addProduct = async () => {
+        // Get all the input values from the form
+        const productName = document.getElementById("productName").value;
+        const category = document.getElementById("category").value;
+        const brandName = document.getElementById("brand").value;
+        const price = document.getElementById("price").value;
+        const stock = document.getElementById("stock").value;
+        const description = document.getElementById("description").value;
+        const image = document.getElementById("image").files;
+
+        // Create a FormData object and append the form data to it
+        const formData = new FormData();
+        formData.append("productName", productName);
+        formData.append("category", category);
+        formData.append("brandName", brandName);
+        formData.append("price", price);
+        formData.append("stock", stock);
+        formData.append("description", description);
+        for (let i = 0; i < image.length; i++) {
+            formData.append("image", image[i]);
+        }
+
+        // Disable the "Add Product" button and show the loading spinner
+        const addProductBtn = document.getElementById("addProductBtn");
+        addProductBtn.disabled = true;
+        const loadingSpinner = document.getElementById("loadingSpinnerAdd");
+        loadingSpinner.style.display = "inline-block";
+
+        try {
+            const response = await axios.post("/api/admin/product/add-product", formData);
+            // Show the response message
+            const statusMessageAdd = document.getElementById("statusMessageAdd");
+            statusMessageAdd.classList.remove('alert-danger');
+            statusMessageAdd.classList.add('alert-success');
+            statusMessageAdd.textContent = response.data.message;
+            statusMessageAdd.style.display = "block";
+
+            // Close the modal and reload the page
+            $('#newProductModal').modal('hide');
+            location.reload();
+        } catch (err) {
+            // Show the error message
+            const statusMessageAdd = document.getElementById("statusMessageAdd");
+            statusMessageAdd.classList.remove('alert-success');
+            statusMessageAdd.classList.add('alert-danger');
+            statusMessageAdd.textContent = err.response.data.message || 'An error occurred';
+            statusMessageAdd.style.display = "block";
+        } finally {
+            // Enable the "Add Product" button and hide the loading spinner
+            addProductBtn.disabled = false;
+            loadingSpinner.style.display = "none";
+        }
+    }
+
+        
+    </script>
         <%-include('includes/footer')%>

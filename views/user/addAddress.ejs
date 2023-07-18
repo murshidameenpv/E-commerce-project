@@ -12,14 +12,10 @@
     </div>
 </section>
 
-
-
-
-
 <section id="address">
     <div class="container-xl">
-        <div class="checkout_1 row">
-            <div class="col-md-8">
+
+            <div class="col-md-12">
                 <div class="checkout_1l">
                     <h5>Add delivery address</h5>
                     <hr class="line">
@@ -65,7 +61,7 @@
                         <input class="form-control" id="address-line" type="text">
                     </div>
                     <div class="col-md-6 ps-0">
-                        <h6 class="font_13 fw-bold">Land Mark <span>*</span></h6>
+                          <h6 class="font_13 fw-bold">Land Mark <span>*</span></h6>
                         <input class="form-control" id="landmark" type="text">
                     </div>
                 </div>
@@ -85,30 +81,10 @@
                     </div>
                 </div>
             </div>
-<% if (addressData && addressData.length> 0) { %>
-    <div class="col-md-4">
-        <div class="checkout_1r">
-            <h5>My Address</h5>
-            <hr class="line">
-            <% addressData.forEach((address, index)=> { %>
-                <div class="address-box">
-                    <p>Address <%= index + 1 %>
-                    </p>
-                    <textarea class="custom_textarea" readonly><%= address %></textarea>
-                    <button class="btn btn-primary" data-address-id="<%= addressId[index] %>"
-                        onclick="showAddress(event)">Edit</button>
-                    <button class="btn btn-danger" data-address-id="<%= addressId[index] %>"
-                        onclick="deleteAddress(event)">Delete</button>
-                </div>
-                <% }) %>
-        </div>
-    </div>
-    <% } %>
-
-
-        </div>
+        
     </div>
 </section>
 
 
 <%-include('includes/footer')%>
+

@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // Submit form event listener
-  addBrandForm.addEventListener("submit", function (event) {
+  addBrandForm?.addEventListener("submit", function (event) {
     event.preventDefault();
     const formData = new FormData(addBrandForm);
     const name = formData.get("name");

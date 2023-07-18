@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
   const addToWishlistBtns = document.querySelectorAll(".add-to-wishlist-btn");
   addToWishlistBtns.forEach((addToWishlistBtn) => {
-    addToWishlistBtn.addEventListener("click", async () => {
+    addToWishlistBtn.addEventListener("click", async (event) => {
       event.preventDefault();
       const productId = addToWishlistBtn.dataset.productId;
       const result = await Swal.fire({

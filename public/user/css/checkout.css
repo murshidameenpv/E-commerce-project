@@ -89,6 +89,10 @@ margin-right:0
 .checkout_1r label {
 font-size: 12px;
 }
+.custom_textarea {
+  resize: none;
+  overflow: hidden;
+}
 /*********************checkout_end****************/
 
 

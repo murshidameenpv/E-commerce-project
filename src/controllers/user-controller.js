@@ -5,8 +5,8 @@ const userDb = require("../models/userSchema");
 const cartDb = require("../models/cartSchema");
 const wishlistDb = require("../models/wishlistSchema");
 const productDb = require("../models/productSchema");
-const { log } = require("console");
-
+const couponDb = require("../models/couponSchema")
+const orderDb = require('../models/orderSchema')
 
 //USER SIGNUP
 exports.userSignUp = async (req, res) => {
@@ -270,7 +270,6 @@ exports.showCurrentAddress = async (req, res) => {
     res.status(500).send("Error fetching address");
   }
 }
-
 exports.addAddress = async (req, res) => {
   const userId = req.session.user._id;
   const {
@@ -287,6 +286,14 @@ exports.addAddress = async (req, res) => {
   } = req.body;
   try {
     const user = await userDb.findById(userId);
+    if (user.address.length >= 2) {
+      res.json({
+        title: "Error!",
+        message: "You can only have a maximum of two addresses",
+        icon: "error",
+      });
+      return;
+    }
     user.address.push({
       firstName,
       lastName,
@@ -300,13 +307,11 @@ exports.addAddress = async (req, res) => {
       emailAddress,
     });
     await user.save();
-    res.json(
-      {
-        title: "Success!",
-        message: "Address added",
-        icon: "success",
-      }
-    );
+    res.json({
+      title: "Success!",
+      message: "Address added",
+      icon: "success",
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Error adding address");
@@ -333,8 +338,12 @@ exports.deleteAddress = async (req, res) => {
     res.status(500).send("Error deleting address");
   }
 };
+
+
 exports.updateAddress = async (req, res) => {
+  console.log("api call")
   const userId = req.session.user._id;
+  console.log(req.query.addressId);
   const addressId = req.params.addressId;
   const {
     firstName,
@@ -378,3 +387,113 @@ exports.updateAddress = async (req, res) => {
     res.status(500).send("Error updating address");
   }
 };
+
+
+//APPLY COUPON
+exports.applyCouponCode = async (req, res) => {
+  const { couponCode, total } = req.body;
+  const userId = req.session.user._id;
+  try {
+    // Check if the entered coupon code exists in the database
+    const coupon = await couponDb.findOne({ code: couponCode });
+    if (!coupon) {
+      return res
+        .status(200)
+        .json({ success: false, message: "Invalid Coupon" });
+    }
+    // Check if the total purchase amount is less than the minimum amount required to apply the coupon
+    if (total < coupon.minAmount) {
+      return res.status(200).json({
+        success: false,
+        message: `Minimum purchase amount is ${coupon.minAmount}`
+      });
+    }
+    const userCart = await cartDb.findOne({ userId }).populate("coupon");
+    if (userCart.coupon) {
+      if (!coupon.isActive) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Invalid Coupon" });
+      } else if (userCart.coupon.code === couponCode) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Coupon already applied" });
+      } else if (coupon.expiryDate < new Date()) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Coupon Expired" });
+      } else {
+        await cartDb.findOneAndUpdate({ userId }, { coupon: coupon._id });
+        res.status(200).json({
+          success: true,
+          message: "Coupon applied successfully",
+          discountAmount: coupon.discount,
+        });
+      }
+    } else {
+      // Check if the coupon is activated before adding it to the user's cart
+      if (!coupon.isActive) {
+        return res
+          .status(200)
+          .json({ success: false, message: "Invalid Coupon" });
+      }
+      await cartDb.findOneAndUpdate({ userId }, { coupon: coupon._id });
+      res.status(200).json({
+        success: true,
+        message: "Coupon applied successfully",
+        discountAmount: coupon.discount,
+      });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      success: false,
+      message: "Error Occurred",
+    });
+  }
+};
+
+exports.placeOrder = async (req, res) => {
+  try {
+    // Extract the body data from the request
+    const { paymentMethod, addressId, netAmount } = req.body;
+    // Extract userId from req.session.user._id
+    const userId = req.session.user._id;
+    // Create an order
+    const order = new orderDb({
+      user: userId,
+      total: netAmount,
+      status: "placed",
+      payment_method: paymentMethod,
+      address: addressId,
+    });
+    // Find the products in the cart using userId
+    const cart = await cartDb.findOne({ userId });
+    // Populate the quantity and add that product reference and quantity in cartDb to that items array
+    for (const item of cart.products) {
+      // Find the product price from product db using populate
+      const product = await productDb.findById(item.productId);
+      order.items.push({
+        product: item.productId,
+        quantity: item.quantity,
+        price: item.quantity * product.price,
+      });
+      // Decrease the stock of the product by the quantity ordered
+      product.stock -= item.quantity;
+      await product.save();
+    }
+    // Save the order
+    await order.save();
+    // Delete the user's cart
+    await cartDb.findOneAndDelete({ userId });
+    res.status(200).json({
+      success: true,
+      message: "Order Placed Successfully",
+      icon: "success",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error Placing Order");
+  }
+};
+

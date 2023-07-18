@@ -1,80 +1,4 @@
-//ADD PRODUCT
-document.addEventListener("DOMContentLoaded", function () {
-  const newProductForm = document.querySelector("#newProductForm");
-  const loadingSpinner = document.querySelector("#loadingSpinnerAdd");
-  const addProductBtn = document.querySelector("#addProductBtn");
-  const messageStatus = document.querySelector("#statusMessageAdd");
 
-  // Add event listener to reset modal fields when modal is closed
-  const newProductModal = document.querySelector("#newProductModal");
-  newProductModal?.addEventListener("hidden.bs.modal", function () {
-    // Reset form fields
-    newProductForm.reset();
-    // Hide status message
-    messageStatus.style.display = "none";
-  });
-
-  // Add event listener to submit form
-  newProductModal?.addEventListener("shown.bs.modal", function () {
-    newProductForm?.addEventListener("submit", function (event) {
-      event.preventDefault(); // Prevent default form submission
-
-      // Show loading spinner
-      loadingSpinner.style.display = "block";
-
-      // Disable submit button
-      addProductBtn.disabled = true;
-
-      // Create FormData object with form data
-      const formData = new FormData(this);
-
-      // Make Axios request
-      axios
-        .post("/api/admin/product/add-product", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then(function (response) {
-          // Hide loading spinner
-          loadingSpinner.style.display = "none";
-
-          // Show success message on the modal
-          messageStatus.classList.add("alert-success");
-          messageStatus.classList.remove("alert-danger");
-          messageStatus.textContent = "Product added successfully";
-          messageStatus.style.display = "block";
-          setTimeout(function () {
-            messageStatus.style.display = "none";
-          }, 3000);
-
-          // Reset form fields
-          newProductForm.reset();
-
-          // Enable submit button
-          addProductBtn.disabled = false;
-
-          // Reload the table
-          location.reload();
-        })
-        .catch(function (error) {
-          console.error(error);
-
-          // Hide loading spinner
-          loadingSpinner.style.display = "none";
-
-          // Show error message on the modal
-          messageStatus.classList.add("alert-danger");
-          messageStatus.classList.remove("alert-success");
-          messageStatus.textContent = "Error adding product. Please try again.";
-          messageStatus.style.display = "block";
-
-          // Enable submit button
-          addProductBtn.disabled = false;
-        });
-    });
-  });
-});
 
 
 //UPDATE PRODUCT
@@ -169,7 +93,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
-//BLOCK UN BLOCK PRODUCT
+
 // Handle block/unblock button click
 document.addEventListener("click", function (event) {
   if (event.target.id === "listBtn" || event.target.id === "unListBtn") {
@@ -207,71 +131,27 @@ document.addEventListener("click", function (event) {
   }
 });
 
-//DELETE PRODUCT IMAGE
-async function deleteImage(productId, imageUrl) {
-  if (confirm("Are you sure you want to delete this image?")) {
-    try {
-      const response = await axios.delete(
-        `/api/admin/product/delete-image?productId=${productId}&imageUrl=${imageUrl}`
-      );
-      if (response.data.success) {
-        console.log("product image deleted successfully");
-        // Remove image from table
-        const images = document.querySelectorAll("img");
-        images.forEach((img) => {
-          if (img.src.includes(imageUrl)) {
-            img.remove();
-          }
-        });
-      } else {
-        console.log("product image not deleted");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  }
-}
-
-//ADD PRODUCT MODAL CATEGORY AND BRAND ADJUSTMENT WHEN SELECTING THEM
-    const categorySelect = document.querySelector('#category');
-    const brandSelect = document.querySelector('#brand');
-        brandSelect.selectedIndex = -1;
-        categorySelect.selectedIndex = -1;
-    categorySelect.addEventListener('change', () => {
-        const selectedCategory = categorySelect.value;
-        const options = brandSelect.querySelectorAll('option');
-        options.forEach(option => {
-            const optionCategory = option.getAttribute('data-category');
-            if (optionCategory === selectedCategory) {
-                option.style.display = 'block';
-            } else {
-                option.style.display = 'none';
-            }
-        });
-    });
-    categorySelect.addEventListener('click', () => {
-        brandSelect.selectedIndex = -1;
-    });
-//UPDATE PRODUCT MODAL CATEGORY AND BRAND ADJUSTMENT WHEN SELECTING THEM
-    const updateCategorySelects = document.querySelectorAll('.updateCategory');
-     const updateBrandSelects = document.querySelectorAll('.updateBrand');  
-    updateCategorySelects.forEach((updateCategorySelect, index) => {
-      const updateBrandSelect = updateBrandSelects[index];
-          updateBrandSelect.selectedIndex = -1;
-        updateCategorySelect.addEventListener('change', () => {
-            const selectedCategory = updateCategorySelect.value;
-            const options = updateBrandSelect.querySelectorAll('option');
-            options.forEach(option => {
-                const optionCategory = option.getAttribute('data-category');
-                if (optionCategory === selectedCategory) {
-                    option.style.display = 'block';
-                } else {
-                    option.style.display = 'none';
+ //DELETE PRODUCT IMAGE
+                async function deleteImage(productId, imageUrl) {
+                    if (confirm("Are you sure you want to delete this image?")) {
+                        try {
+                            const response = await axios.delete(
+                                `/api/admin/product/delete-image?productId=${productId}&imageUrl=${imageUrl}`
+                            );
+                            if (response.data.success) {
+                                console.log("product image deleted successfully");
+                                // Remove image from table
+                                const images = document.querySelectorAll("img");
+                                images.forEach((img) => {
+                                    if (img.src.includes(imageUrl)) {
+                                        img.remove();
+                                    }
+                                });
+                            } else {
+                                console.log("product image not deleted");
+                            }
+                        } catch (err) {
+                            console.log(err);
+                        }
+                    }
                 }
-            });
-        });
-        updateCategorySelect.addEventListener('click', () => {
-            updateBrandSelect.selectedIndex = -1;
-        });
-    });
-

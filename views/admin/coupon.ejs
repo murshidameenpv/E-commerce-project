@@ -1,0 +1,170 @@
+<%- include('includes/header') %>
+    <%- include('includes/sidebar') %>
+        <div class="app-wrapper">
+            <div class="app-content pt-3 p-md-3 p-lg-4">
+                <div class="container-xl">
+                    <div class="row g-3 mb-4 align-items-center justify-content-between">
+                        <div class="col-auto">
+                            <h1 class="app-page-title mb-0">Coupon List</h1>
+                        </div>
+                        <div class="col-auto">
+                            <div class="page-utilities">
+                                <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                                    <div class="col-auto">
+                                        <form class="table-search-form row gx-1 align-items-center">
+                                            <div class="col-auto">
+                                                <input type="text" id="search-coupons" name="searchCoupons"
+                                                    class="form-control search-orders" placeholder="Search">
+                                            </div>
+                                            <div class="col-auto">
+                                                <button type="submit" class="btn app-btn-secondary">Search</button>
+                                            </div>
+                                        </form>
+                                    </div><!--//col-->
+                                    <div class="col-auto">
+                                        <span class="btn app-btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#newCouponModal" style="cursor:pointer">New Coupon</span>
+                                    </div>
+                                </div><!--//row-->
+                            </div><!--//table-utilities-->
+                        </div><!--//col-auto-->
+                    </div><!--//row-->
+
+                    <nav id="coupons-table-tab"
+                        class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
+                        <span class="flex-sm-fill text-sm-center nav-link active" id="coupons-all-tab">All
+                            Coupons</span>
+                    </nav>
+
+                    <div class="tab-content" id="coupon-table-tab-content">
+                        <div class="tab-pane fade show active" id="coupon-all" role="tabpanel"
+                            aria-labelledby="coupons-all-tab">
+                            <div class="app-card app-card-orders-table shadow-sm mb-5">
+                                <div class="app-card-body" id="couponTable">
+                                    <div class="table-responsive">
+                                    <table class="table app-table-hover mb-0 text-left">
+                                        <thead>
+                                            <tr>
+                                                <th class="cell">Coupon Code</th>
+                                                <th class="cell">Description</th>
+                                                <th class="cell">Min. Amount</th>
+                                                <th class="cell">Discount (%)</th>
+                                                <th class="cell">Max Discount</th>
+                                                <th class="cell">Expiry Date</th>
+                                                <th class="cell">Status</th>
+                                                <th class="cell">Action</th>
+                                                <th class="cell">Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <% coupons.forEach(coupon=> { %>
+                                                <tr>
+                                                    <td class="cell">
+                                                        <%= coupon.code %>
+                                                    </td>
+                                                    <td class="cell">
+                                                        <%= coupon.description %>
+                                                    </td>
+                                                    <td class="cell">
+                                                        $<%= coupon.minAmount %>
+                                                    </td>
+                                                    <td class="cell">
+                                                        <%= coupon.discount %>%
+                                                    </td>
+                                                    <td class="cell">
+                                                        $<%= coupon.maxAmount %>
+                                                    </td>
+                                                    <td class="cell">
+                                                    <%= new Date(coupon.expiryDate).toLocaleDateString() %>
+                                                    </td>
+                                                    <td class="cell">
+                                                        <% if (coupon.isActive) { %>
+                                                            <span class="badge bg-success">Active</span>
+                                                            <% } else { %>
+                                                                <span class="badge bg-danger">Inactive</span>
+                                                                <% } %>
+                                                    </td>
+                                                    <td class="cell">
+                                                        <% if (coupon.isActive) { %>
+                                                            <span class="btn-sm app-btn-secondary"  data-id="<%= coupon._id %>" id="deactivateBtn" style="cursor:pointer;">Deactivate</span>
+                                                            <% } else { %>
+                                                                <span class="btn-sm app-btn-secondary" data-id="<%= coupon._id %>" id="activateBtn" style="cursor: pointer;">Activate</span>
+                                                                <% } %>
+                                                    </td>
+                                                    <td class="cell">
+                                                        <span class="btn-sm app-btn-danger delete-button" style="cursor: pointer;"
+                                                           data-id="<%= coupon._id %>"  id="couponDeleteBtn">Delete</span>
+                                                    </td>
+                                                </tr>
+                                                <% }) %>
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+
+                            <!-- Modal Add Coupon-->
+                            <div class="modal fade" id="newCouponModal" tabindex="-1"
+                                aria-labelledby="newCouponModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="newCouponModalLabel">New Coupon</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <form id="newCouponForm">
+                                                <div class="mb-3">
+                                                    <label for="couponCode" class="form-label">Coupon Code</label>
+                                                    <input type="text" class="form-control" id="couponCode"
+                                                        name="code" placeholder="Enter Coupon Code">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="coupon_discription" class="form-label">Coupon description</label>
+                                                    <input type="text" class="form-control" id="coupon_description" name="description" placeholder="Enter coupon description">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="coupon_minAmount" class="form-label">Min.Amount</label>
+                                                    <input type="number" class="form-control" id="coupon_minAmount" name="minAmount" placeholder="Enter the minimum purchase amount">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="coupon_discount" class="form-label">Discount (%) </label>
+                                                    <input type="number" class="form-control" id="coupon_discount" name="discount" placeholder="Enter discount percentage">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="coupon_maxAmount" class="form-label">Min.Amount</label>
+                                                    <input type="number" class="form-control" id="coupon_maxAmount" name="maxAmount"
+                                                        placeholder="Enter the maximum discount amount">
+                                                </div>
+                                                <div class="mb-3">
+                                                    <label for="coupon_expiry" class="form-label">Expiry Date</label>
+                                                    <input type="date" class="form-control" id="coupon_expiry" name="expiryDate" placeholder="Expiry date">
+                                                </div>
+                                                <button type="submit" class="btn btn-primary" id="addCouponBtn">Add Coupon</button>
+                                            </form>
+                                            <div id="loadingSpinnerCoupon" class="spinner-border text-primary"
+                                                role="status" style="display: none;">
+                                                <span class="visually-hidden">Loading...</span>
+                                            </div>
+                                            <div id="statusMessageCoupon" class="alert" style="display: none;"></div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Cancel</button>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Modal Add Coupon-->
+
+                            <%- include('includes/footer') %>

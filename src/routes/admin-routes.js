@@ -27,6 +27,11 @@ router.get(
   adminRender.adminOrderManagement
 );
 router.get(
+  "/admin/orders/details",
+  checkSession.sessionExists,
+  adminRender.adminViewOrderDetails
+)
+router.get(
   "/admin/users/:page?",
   checkSession.sessionExists,
   adminRender.adminUserManagement
@@ -46,7 +51,11 @@ router.get(
   checkSession.sessionExists,
   adminRender.adminBrandManagement
 )
-
+router.get(
+  "/admin/coupons",
+  checkSession.sessionExists,
+  adminRender.adminCouponManagement
+)
 router.get(
   "/admin/charts",
   checkSession.sessionExists,
@@ -137,4 +146,22 @@ router.delete(
   checkSession.sessionExists,
   adminController.deleteBrand
 );
+
+router.post(
+  "/api/admin/coupon/add-coupon",
+checkSession.sessionExists,
+adminController.addCoupon);
+
+router.put(
+  "/api/admin/coupon/:id/:action",
+  checkSession.sessionExists,
+  adminController.adminActivationCoupon
+);
+router.delete(
+  "/api/admin/coupon/:id/delete",
+  checkSession.sessionExists,
+  adminController.adminDeleteCoupon
+);
+
+
 module.exports = router;

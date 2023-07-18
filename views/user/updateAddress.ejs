@@ -1,0 +1,89 @@
+<%-include('includes/header')%>
+    <%-include('includes/navbar')%>
+        <section id="center" class="center_o pt-4 pb-4 bg-light">
+            <div class="container-xl">
+                <div class="row center_o1 text-center">
+                    <div class="col-md-12">
+                        <h1>My Address</h1>
+                        <h6 class="d-inline-block  font_14 col_yell bg-white"><a class="col_light" href="/home">Home</a>
+                            <span class="me-2 ms-2">/</span>My address</h6>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="address">
+            <div class="container-xl">
+                <div class="col-md-12">
+                    <div class="checkout_1l">
+                        <h5>Update delivery address</h5>
+                        <hr class="line">
+                    </div>
+                    <div class="checkout_1l1 row">
+                        <div class="col-md-6 ps-0">
+                            <h6 class="font_13 fw-bold">First Name <span>*</span></h6>
+                            <input class="form-control" id="first-name_update" type="text" value="<%= addressData ? addressData.firstName : '' %>">
+                        </div>
+                        <div class="col-md-6 ps-0">
+                            <h6 class="font_13 fw-bold">Last Name <span>*</span></h6>
+                            <input class="form-control" id="last-name_update" type="text" value="<%= addressData ? addressData.lastName : '' %>">
+                        </div>
+                    </div>
+                    <div class="checkout_1l1 row">
+                        <div class="col-md-6 ps-0">
+                            <h6 class="font_13 fw-bold">Postal Code <span>*</span></h6>
+                        <input class="form-control" id="postal-code_update" type="text" value="<%= addressData ? addressData.postalCode : '' %>">
+                        </div>
+                        <div class="col-md-6 ps-0">
+                            <h6 class="font_13 fw-bold">Locality<span>*</span></h6>
+                            <input class="form-control" id="locality_update" type="text" value="<%= addressData ? addressData.locality : '' %>">
+                        </div>
+                    </div>
+                    <div class="checkout_1l1 row">
+                        <div class="col-md-6 ps-0">
+                            <h6 class="font_13 fw-bold">Town / City / District<span>*</span></h6>
+                        <input class="form-control" id="city_update" type="text" value="<%= addressData ? addressData.city : '' %>">
+                        </div>
+                        <div class="col-md-6 ps-0">
+                            <h6 class="font_13 fw-bold">State / Division<span>*</span></h6>
+                        <select class="form-select" id="state_update" name="state">
+                            <option value="" disabled selected>Select State</option>
+                            <option <%=addressData && addressData.state==='Kerala' ? 'selected' : '' %>>Kerala</option>
+                            <option <%=addressData && addressData.state==='Tamil Nadu' ? 'selected' : '' %>>Tamil Nadu</option>
+                            <option <%=addressData && addressData.state==='Karnataka' ? 'selected' : '' %>>Karnataka</option>
+                        </select>
+                        </div>
+                    </div>
+                    <div class="checkout_1l1 row">
+                        <div class="col-md-6 ps-0">
+                            <h6 class="font_13 fw-bold">Address Line <span>*</span></h6>
+                            <input class="form-control" id="address-line_update" type="text" value="<%= addressData ? addressData.addressLine : '' %>">
+                        </div>
+                        <div class="col-md-6 ps-0">
+                            <h6 class="font_13 fw-bold">Land Mark <span>*</span></h6>
+                           <input class="form-control" id="landmark_update" type="text" value="<%= addressData ? addressData.landmark : '' %>">
+                        </div>
+                    </div>
+                    <div class="checkout_1l1 row">
+                        <div class="col-md-6 ps-0">
+                            <h6 class="font_13 fw-bold">Email<span>*</span></h6>
+                        <input class="form-control" id="address-email_update" type="text" value="<%= addressData ? addressData.emailAddress : '' %>">
+                        </div>
+                        <div class="col-md-6 ps-0">
+                            <h6 class="font_13 fw-bold">Phone number<span>*</span></h6>
+                        <input class="form-control" id="address-phone_update" type="text" value="<%= addressData ? addressData.phoneNumber : '' %>">
+                        </div>
+                    </div>
+                    <div class="checkout_1l1-row mt-3">
+                        <div class="text-center">
+                            <h6><a class="button_1" style="cursor: pointer"; onclick="updateAddress('<%=addressData._id%>')">Update address</a>
+                            </h6>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+
+        <%-include('includes/footer')%>

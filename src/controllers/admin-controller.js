@@ -3,6 +3,7 @@ const productDb = require("../models/productSchema");
 const categoryDb = require("../models/categorySchema");
 const bannerDb = require('../models/bannerSchema')
 const brandDb = require('../models/brandSchema')
+const couponDb = require('../models/couponSchema')
 const sharp = require("sharp");
 
 exports.adminLogin = (req, res) => {
@@ -71,7 +72,7 @@ exports.adminAddProduct = async (req, res) => {
         resizeImage(inputPath, outputPath, 600, 600);
         return file.filename;
       });
-      const newProduct = await productDb.create({
+      await productDb.create({
         productName: productName,
         category: category,
         brand:brandName,
@@ -81,12 +82,14 @@ exports.adminAddProduct = async (req, res) => {
         image: images,
         listed:false
       });
-      res.status(201).json(newProduct);
+      res.json({success:true ,message:"Product added successfully"});
     } catch (err) {
       console.error("Error creating new product:", err);
-      res.status(500).send("Internal Server Error");
+      res.status(500).send('Internal server error');
     }
-  };
+};
+  
+
 //ADMIN UPDATE PRODUCT
 exports.adminUpdateProduct = async (req, res) => {
   try {
@@ -174,19 +177,32 @@ exports.adminUpdateProduct = async (req, res) => {
   }
 
 
-
 //ADD CATEGORY
 exports.adminAddCategory = async (req, res) => {
   const { category } = req.body;
   try {
-    const newCategory = await categoryDb.create({ category })
-    res.status(201).json(newCategory);
-  }
-  catch (err) {
+    // Convert the entered category name to lowercase and remove spaces
+    const formattedCategory = category.toLowerCase().replace(/\s+/g, "");
+
+    // Find all categories in the database
+    const categories = await categoryDb.find().exec();
+
+    // Check if a category with the same name already exists in the database
+    const existingCategory = categories.find((cat) =>
+      cat.category.toLowerCase().replace(/\s+/g, "") === formattedCategory
+    );
+    if (existingCategory) {
+      return res.status(400).json({ message: "Category already exists" });
+    }
+
+    const newCategory = await categoryDb.create({ category });
+    res.status(201).json({ category: newCategory, message: "Category added successfully" });
+  } catch (err) {
     console.error("Error creating new Category:", err);
     res.status(500).send("Internal Server Error");
   }
 };
+
 
   //UPDATE CATEGORY
   exports.adminUpdateCategory = async (req, res) => {
@@ -287,3 +303,62 @@ exports.deleteBrand = async (req, res) => {
     res.status(500).send("Internal Server Error");
   }
 }
+//ADMIN ADD COUPON
+exports.addCoupon = async (req, res) => {
+  try {
+    const { code, discount, description, expiryDate,minAmount,maxAmount } = req.body;
+
+    // Validate expiry date
+    if (new Date(expiryDate) < new Date()) {
+      return res.status(400).json({ message: "Enter valid expiry date" });
+    }
+    // Validate discount amount
+    if (discount < 0) {
+      return res.status(400).json({ message: "Enter valid discount amount" });
+    }
+    await couponDb.create({
+      code,
+      discount,
+      description,
+      expiryDate,
+      minAmount,
+      maxAmount,
+    });
+
+    // Send success response
+    res.status(201).json({ message: "Coupon added successfully" });
+  } catch (error) {
+    console.error(error);
+
+    // Send error response
+    res.status(500).json({ message: "Error adding coupon. Please try again." });
+  }
+};
+
+
+// Activate or deactivate coupon
+exports.adminActivationCoupon = async (req, res) => {
+  try {
+    const couponId = req.params.id;
+    const action = req.params.action;
+    // Determine the value to set for isActive based on the action
+    const isActive = action === "activate";
+    await couponDb.updateOne({ _id: couponId }, { isActive });
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server error");
+  }
+};
+
+// Delete coupon
+exports.adminDeleteCoupon = async (req, res) => {
+  try {
+    const couponId = req.params.id;
+    await couponDb.findByIdAndDelete(couponId);
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server error");
+  }
+};

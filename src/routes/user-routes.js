@@ -32,6 +32,18 @@ router.get("/checkout",
   checkSession.checkUserBlocked,
   userRender.checkout
 );
+  router.get(
+    "/address/add",
+    checkSession.sessionExists,
+    checkSession.checkUserBlocked,
+    userRender.addAddressPage
+  );
+router.get(
+  "/address/update",
+  checkSession.sessionExists,
+  checkSession.checkUserBlocked,
+  userRender.updateAddressPage
+);
 router.get("/cart",
   checkSession.sessionExists,
   checkSession.checkUserBlocked,
@@ -55,11 +67,11 @@ router.get("/login/resetPassword",
 router.get('/products/details/:id',
     userRender.productDetails
 )
-router.get("/address",
+router.get("/orders", 
   checkSession.sessionExists,
   checkSession.checkUserBlocked,
-  userRender.addressDetails
-);
+  userRender.myOrders
+)
 
 //POST METHODS
 
@@ -119,10 +131,20 @@ router.post(
 router.post("/address/add",
   userController.addAddress);
 
-router.delete("/address/delete/:addressId",
-  userController.deleteAddress);
+  router.delete("/address/delete/:addressId",
+    userController.deleteAddress);
 
-router.put("/address/update/:addressId",
+router.post("/address/update/:addressId",
   userController.updateAddress);
+  
+router.post("/checkout/coupon/apply",
+  checkSession.sessionExists,
+  checkSession.checkUserBlocked,
+  userController.applyCouponCode);
+
+  router.post("/checkout/placeOrder",
+    checkSession.sessionExists,
+    checkSession.checkUserBlocked,
+  userController.placeOrder);
 
 module.exports = router;

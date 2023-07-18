@@ -1,0 +1,266 @@
+<%-include('includes/header')%>
+<body class="app">
+    <header class="app-header fixed-top">
+        <div id="app-sidepanel" class="app-sidepanel">
+            <div id="sidepanel-drop" class="sidepanel-drop"></div>
+            <div class="sidepanel-inner d-flex flex-column">
+                <a href="#" id="sidepanel-close" class="sidepanel-close d-xl-none">&times;</a>
+                <div class="app-branding">
+                    <a class="app-logo" href="/admin/dashboard"><img class="logo-icon me-2"
+                            src="/admin/assets/images/app-logo.svg" alt="logo"><span class="logo-text">PORTAL</span></a>
+                </div><!--//app-branding-->
+                <nav id="app-nav-main" class="app-nav app-nav-main flex-grow-1">
+                    <ul class="app-menu list-unstyled accordion" id="menu-accordion">
+                        <li class="nav-item">
+                            <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                            <a class="nav-link" href="/admin/dashboard">
+                                <span class="nav-icon">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-house-door"
+                                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M7.646 1.146a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 .146.354v7a.5.5 0 0 1-.5.5H9.5a.5.5 0 0 1-.5-.5v-4H7v4a.5.5 0 0 1-.5.5H2a.5.5 0 0 1-.5-.5v-7a.5.5 0 0 1 .146-.354l6-6zM2.5 7.707V14H6v-4a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v4h3.5V7.707L8 2.207l-5.5 5.5z" />
+                                        <path fill-rule="evenodd"
+                                            d="M13 2.5V6l-2-2V2.5a.5.5 0 0 1 .5-.5h1a.5.5 0 0 1 .5.5z" />
+                                    </svg>
+                                </span>
+                                <span class="nav-link-text">Overview</span>
+                            </a><!--//nav-link-->
+                        </li><!--//nav-item-->
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/users?page=1">
+                                <span class="nav-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="feather feather-users">
+                                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="9" cy="7" r="4"></circle>
+                                        <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                        <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                    </svg>
+                                </span>
+                                <span class="nav-link-text">Users</span>
+                            </a><!--//nav-link-->
+                        </li><!--//nav-item-->
+
+
+                        <li class="nav-item">
+                            <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                            <a class="nav-link" href="/admin/orders">
+                                <span class="nav-icon">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-list"
+                                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
+                                        <path fill-rule="evenodd"
+                                            d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5z" />
+                                        <circle cx="3.5" cy="5.5" r=".5" />
+                                        <circle cx="3.5" cy="8" r=".5" />
+                                        <circle cx="3.5" cy="10.5" r=".5" />
+                                    </svg>
+                                </span>
+                                <span class="nav-link-text">Orders</span>
+                            </a><!--//nav-link-->
+                        </li><!--//nav-item-->
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/products?page=1">
+                                <span class="nav-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="feather feather-shopping-bag">
+                                        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+                                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                                        <path d="M16 10a4 4 0 0 1-8 0"></path>
+                                    </svg>
+                                </span>
+                                <span class="nav-link-text">Products</span>
+                            </a><!--//nav-link-->
+                        </li><!--//nav-item-->
+
+
+                        <li class="nav-item">
+                            <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                            <a class="nav-link" href="/admin/category">
+                                <span class="nav-icon">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-card-list"
+                                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M14.5 3h-13a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-9a.5.5 0 0 0-.5-.5zm-13-1A1.5 1.5 0 0 0 0 3.5v9A1.5 1.5 0 0 0 1.5 14h13a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-13z" />
+                                        <path fill-rule="evenodd"
+                                            d="M5 8a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7A.5.5 0 0 1 5 8zm0-2.5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0 5a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5z" />
+                                        <circle cx="3.5" cy="5.5" r=".5" />
+                                        <circle cx="3.5" cy="8" r=".5" />
+                                        <circle cx="3.5" cy="10.5" r=".5" />
+                                    </svg>
+                                </span>
+                                <span class="nav-link-text">Categories</span>
+                            </a><!--//nav-link-->
+                        </li><!--//nav-item-->
+
+
+                        <li class="nav-item">
+                            <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                            <a class="nav-link" href="/admin/banners">
+                                <span class="nav-icon">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-film"
+                                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M0 3a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3zm3-1v12h10V2H3z" />
+                                        <path d="M4.5.5v14h1V.5h-1zm6 0v14h1V.5h-1z" />
+                                    </svg>
+                                </span>
+                                <span class="nav-link-text">Banners</span>
+                            </a><!--//nav-link-->
+                        </li><!--//nav-item-->
+
+                        <li class="nav-item">
+                            <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                            <a class="nav-link" href="/admin/brands">
+                                <span class="nav-icon">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-film"
+                                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5z">
+                                        </path>
+                                    </svg>
+                                </span>
+                                <span class="nav-link-text">Brands</span>
+                            </a><!--//nav-link-->
+                        </li><!--//nav-item-->
+
+                        <li class="nav-item">
+                            <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                            <a class="nav-link" href="/admin/coupons">
+                                <span class="nav-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                        class="bi bi-ticket" viewBox="0 0 16 16">
+                                        <path
+                                            d="M0 4.5A1.5 1.5 0 0 1 1.5 3h13A1.5 1.5 0 0 1 16 4.5V6a.5.5 0 0 1-.5.5 1.5 1.5 0 0 0 0 3 .5.5 0 0 1 .5.5v1.5a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 0 11.5V10a.5.5 0 0 1 .5-.5 1.5 1.5 0 1 0 0-3A.5.5 0 0 1 0 6V4.5ZM1.5 4a.5.5 0 0 0-.5.5v1.05a2.5 2.5 0 0 1 0 4.9v1.05a.5.5 0 0 0 .5.5h13a.5.5 0 0 0 .5-.5v-1.05a2.5 2.5 0 0 1 0-4.9V4.5a.5.5 0 0 0-.5-.5h-13Z" />
+                                    </svg>
+                                </span>
+                                <span class="nav-link-text">Coupons</span>
+                            </a><!--//nav-link-->
+                        </li><!--//nav-item-->
+
+
+                        <li class="nav-item">
+                            <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
+                            <a class="nav-link" href="/admin/charts">
+                                <span class="nav-icon">
+                                    <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-bar-chart-line"
+                                        fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                        <path fill-rule="evenodd"
+                                            d="M11 2a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v12h.5a.5.5 0 0 1 0 1H.5a.5.5 0 0 1 0-1H1v-3a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3h1V7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7h1V2zm1 12h2V2h-2v12zm-3 0V7H7v7h2zm-5 0v-3H2v3h2z" />
+                                    </svg>
+                                </span>
+                                <span class="nav-link-text">Charts</span>
+                            </a><!--//nav-link-->
+                        </li><!--//nav-item-->
+                    </ul><!--//app-menu-->
+                </nav><!--//app-nav-->
+            </div><!--//sidepanel-inner-->
+        </div><!--//app-sidepanel-->
+    </header><!--//app-header-->
+
+        <div class="app-wrapper">
+            <div class="app-content pt-3 p-md-3 p-lg-4">
+                <div class="container-xl">
+                    <div class="row g-3 mb-4 align-items-center justify-content-between">
+                        <div class="col-auto">
+                            <h1 class="app-page-title mb-0">Order Details</h1>
+                        </div>
+                        <div class="col-auto">
+                            <div class="page-utilities">
+                                <div class="row g-2 justify-content-start justify-content-md-end align-items-center">
+                                    <div class="col-auto">
+
+
+                                        
+                                    </div><!--//col-->
+                                </div><!--//row-->
+                            </div><!--//table-utilities-->
+                        </div><!--//col-auto-->
+                    </div><!--//row-->
+
+
+                    <div class="tab-content" id="orders-table-tab-content">
+                        <div class="tab-pane fade show active" id="orders-details" role="tabpanel"
+                            aria-labelledby="orders-all-tab">
+                            <div class="app-card app-card-orders-table shadow-sm mb-5">
+                                <div class="app-card-body">
+                        <div class="col-auto">
+                            <h2>Order ID: <%= order._id %>
+                            </h2>
+                            <p>Ordered Date: <%= order.createdAt.toLocaleDateString() %>
+                            </p>
+                            <div style="border: 1px solid black; padding: 10px;">
+                                <h4>Delivery Address:</h4>
+                                <p>Name: <%= address.firstName %>
+                                        <%= address.lastName %>
+                                </p>
+                                <p>Postal Code: <%= address.postalCode %>
+                                </p>
+                                <p>Locality: <%= address.locality %>
+                                </p>
+                                <p>City: <%= address.city %>
+                                </p>
+                                <p>State: <%= address.state %>
+                                </p>
+                                <p>Address Line: <%= address.addressLine %>
+                                </p>
+                                <p>Landmark: <%= address.landmark %>
+                                </p>
+                                <p>Phone Number: <%= address.phoneNumber %>
+                                </p>
+                                <p>Email Address: <%= address.emailAddress %>
+                                </p>
+                            </div>
+                            <h4>Product Details:</h4>
+                            <table style="border-collapse: collapse;">
+                                <tr style="border-bottom: 1px solid black;">
+                                    <th style="border-right: 1px solid black; padding: 5px;">Product Name</th>
+                                    <th style="border-right: 1px solid black; padding: 5px;">Brand</th>
+                                    <th style="border-right: 1px solid black; padding: 5px;">Category</th>
+                                    <th style="border-right: 1px solid black; padding: 5px;">Image</th>
+                                    <th style="padding: 5px;">Quantity</th>
+                                </tr>
+                                <% order.items.forEach(function(item) { %>
+                                    <tr style="border-bottom: 1px solid black;">
+                                        <td style="border-right: 1px solid black; padding: 5px;">
+                                            <%= item.product.productName %>
+                                        </td>
+                                        <td style="border-right: 1px solid black; padding: 5px;">
+                                            <%= item.product.brand.brandName %>
+                                        </td>
+                                        <td style="border-right: 1px solid black; padding: 5px;">
+                                            <%= item.product.category.category%>
+                                        </td>
+                                        <td style="border-right: 1px solid black; padding: 5px;"><img
+                                                src="/<%= item.product.image[item.product.image.length - 1] %>" alt="Product Image"
+                                                style="width: 100px; height: 100px;"></td>
+                                        <td style="padding: 5px;">
+                                            <%= item.quantity %>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                            </table>
+                            <p><strong>Total Paid:</strong>
+                                <%= order.total %>
+                            </p>
+                            <p><strong>Ordered Method:</strong>
+                                <%= order.payment_method %>
+                            </p>
+                        </div><!--//col-->
+
+
+                                </div><!--//app-card-body-->
+                            </div><!--//app-card-->
+                        </div><!--//tab-pane-->
+                    </div><!--//tab-content-->
+                </div><!--//container-fluid-->
+            </div><!--//app-content-->
+        </div><!--//app-wrapper-->
+
+
+
+        <%-include('includes/footer')%>

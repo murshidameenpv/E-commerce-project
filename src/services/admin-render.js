@@ -4,6 +4,8 @@ const productDb = require("../models/productSchema");
 const categoryDb = require("../models/categorySchema");
 const bannerDb = require("../models/bannerSchema");
 const brandDb = require("../models/brandSchema");
+const couponDb = require('../models/couponSchema')
+const orderDb = require('../models/orderSchema')
  
 exports.adminLogin = (req, res) => {
   let message = "";
@@ -46,12 +48,12 @@ exports.adminProductManagement = async (req, res) => {
       .skip(skip)
       .limit(limit)
       .exec();
-    const category = await categoryDb.find().exec();
-    const brand = await brandDb.find().exec();
+    const categories = await categoryDb.find().exec();
+    const brands = await brandDb.find().exec();
     res.render("admin/products", {
       products,
-      category,
-      brand,
+      categories,
+      brands,
       totalPages,
       currentPage: parseInt(page),
     });
@@ -65,10 +67,6 @@ exports.adminProductManagement = async (req, res) => {
 
 exports.adminDashboard = (req, res) => {
   res.render("admin/index");
-};
-
-exports.adminOrderManagement = (req, res) => {
-  res.render("admin/orders");
 };
 
 exports.adminCategoryManagement = async (req, res) => {
@@ -96,7 +94,6 @@ exports.adminBrandManagement = async (req, res) => {
   try {
     const brands = await brandDb.find().populate("category").exec();
     const category = await categoryDb.find().exec()
-    console.log(category);  
     res.render("admin/brands", { brands, category });
   } catch (err) {
     console.error("Error retrieving brands:", err);
@@ -104,9 +101,53 @@ exports.adminBrandManagement = async (req, res) => {
   }
 };
 
+exports.adminCouponManagement = async (req, res) => {
+  try {
+    const coupons = await couponDb.find().exec();
+    res.render("admin/coupon", { coupons });
+  } catch (error) {
+    console.error(error);
+    res.status(500).sens("Internal Server Error");
+  }
+};
 
 
 exports.adminChartManagement = (req, res) => {
   res.render("admin/charts");
-  
 };
+
+exports.adminOrderManagement = async (req, res) => {
+  try {
+    const orders = await orderDb
+      .find()
+      .sort({ createdAt: -1 })
+      .populate({ path: "user", select: "name" }) // Populate only the 'name' field of the 'user' reference
+      .populate({ path: "items.product", select: "productName image" }); // Populate the 'name' and 'image' fields of the 'items.product' reference
+
+    res.render("admin/orders", { orders });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send(" Internal Server error");
+  }
+};
+
+
+exports.adminViewOrderDetails = async (req, res) => {
+  const orderId = req.query.orderId;
+  try {
+    const order = await orderDb.findOne({ _id: orderId }).populate({
+      path: "items.product",
+      populate: ["brand", "category"],
+    });
+    const user = await userDb.findOne({ _id: order.user });
+    const address = user.address.id(order.address);
+    res.render("admin/orderDetails", {
+      order,
+      address,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error retrieving order details");
+  }
+};
+

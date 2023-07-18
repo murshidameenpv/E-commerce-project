@@ -35,44 +35,45 @@
                         <span class="flex-sm-fill text-sm-center nav-link active" id="categor-all-tab" >All
                             Categories</span>
                     </nav>
-                    <div class="tab-content" id="category-table-tab-content">
-                        <div class="tab-pane fade show active" id="orders-all" role="tabpanel"
-                            aria-labelledby="orders-all-tab">
-                            <div class="app-card app-card-orders-table shadow-sm mb-5">
-                                <div class="app-card-body">
-                                    <div class="table-responsive">
-                                        <table class="table app-table-hover mb-0 text-left right-aligned-column">
-                                            <thead>
-                                                <tr>
-                                                    <th class="cell">Category</th>
-                                                    <th></th>
-                                                    <th class="cell">Delete Category</th>
-                                                </tr>
-                                            </thead>
-                                        <tbody>
-                                            <% categories.forEach((category)=> { %>
-                                                <tr>
-                                                    <td class="cell">
-                                                        <%= category.category %>
-                                                    </td>
-                                                    <td></td>
-                                                    <td class="cell">
-                                                        <span style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#editCategoryModal-<%= category.id %>">
-                                                            <i class="fa fa-edit"></i> Edit
-                                                        </span>
-                                                    </td>
-                                                </tr>
-                                                <% }) %>
-                                        </tbody>
-                                        </table>
-                                    </div><!--//table-responsive-->
-                                </div><!--//app-card-body-->
-                            </div><!--//app-card-->
-                        </div><!--//tab-pane-->
-                    </div><!--//category-table-tab-content-->
+                        <div class="tab-content" id="category-table-tab-content">
+                            <div class="tab-pane fade show active" id="orders-all" role="tabpanel"
+                                aria-labelledby="orders-all-tab">
+                                <div class="app-card app-card-orders-table shadow-sm mb-5">
+                                    <div class="app-card-body">
+                                        <div class="table-responsive">
+                                            <table class="table app-table-hover mb-0 text-left right-aligned-column">
+                                                <thead>
+                                                    <tr>
+                                                        <th class="cell">Category</th>
+                                                        <th></th>
+                                                        <th class="cell">Edit Category</th>
+                                                    </tr>
+                                                </thead>
+                                            <tbody>
+                                                <% categories.forEach((category)=> { %>
+                                                    <tr>
+                                                        <td class="cell">
+                                                            <%= category.category %>
+                                                        </td>
+                                                        <td></td>
+                                                        <td class="cell">
+                                                            <span style="cursor: pointer" data-bs-toggle="modal" data-bs-target="#editCategoryModal-<%= category.id %>">
+                                                                <i class="fa fa-edit"></i> Edit
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                            </tbody>
+                                            </table>
+                                        </div><!--//table-responsive-->
+                                    </div><!--//app-card-body-->
+                                </div><!--//app-card-->
+                            </div><!--//tab-pane-->
+                        </div><!--//category-table-tab-content-->
                 </div><!--//container-xl-->
             </div><!--//app-content-->
-
+            </div>
+            
 
             <!-- ADD Category Modal -->
             <div class="modal fade" id="addCategoryModal" tabindex="-1" role="dialog" aria-labelledby="addCategoryModalLabel"

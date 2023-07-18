@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
           // Show success message on the modal
           messageStatus.classList.add("alert-success");
           messageStatus.classList.remove("alert-danger");
-          messageStatus.textContent = "Category added successfully";
+          messageStatus.textContent =  response.data.message;
           messageStatus.style.display = "block";
           setTimeout(function () {
             messageStatus.style.display = "none";
@@ -46,18 +46,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
           // Enable submit button
           addCategoryBtn.disabled = false;
-
-          // Reload the table
-          axios.get(window.location.href).then(function (response) {
-            const categoryTableContent = document.querySelector(
-              "#category-table-tab-content"
-            );
-            const newContent = document.createElement("div");
-            newContent.innerHTML = response.data;
-            categoryTableContent.innerHTML = newContent.querySelector(
-              "#category-table-tab-content"
-            ).innerHTML;
-          });
+           window.location.reload();  
         })
         .catch(function (error) {
           console.error(error);

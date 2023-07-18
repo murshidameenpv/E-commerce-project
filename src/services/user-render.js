@@ -5,23 +5,24 @@
   const userDb = require('../models/userSchema')
   const cartDb = require('../models/cartSchema')
   const wishlistDb = require('../models/wishlistSchema')
+  const orderDb = require('../models/orderSchema')
   //RENDER HOME
-    exports.home = async(req, res) => { 
-      const superDeal = await productDb.find().limit(8).where({ listed :false}).populate('brand').exec();
-      const dealOfDay = await productDb.find().limit(6).where({ listed :false}).populate("brand").exec();
-      const category = await categoryDb.find().exec();
-      const todayOfferBanner = await bannerDb.findOne({ title: "Fire Bolt" });
-      const topDealBanner = await bannerDb.findOne({ title: "Top Deal" });
-      res.render("user/index", {
+exports.home = async(req, res) => { 
+    const superDeal = await productDb.find({ listed: false, stock: { $gt: 0 } }).limit(8).populate('brand').exec();
+    const dealOfDay = await productDb.find({ listed: false, stock: { $gt: 0 } }).limit(6).populate("brand").exec();
+    const category = await categoryDb.find().exec();
+    const todayOfferBanner = await bannerDb.findOne({ title: "Today Offer" });
+    const topDealBanner = await bannerDb.findOne({ title: "Top Deal" });
+    res.render("user/index", {
         user: req.session.user,
         superDeal,
         dealOfDay,
         category,
         todayOfferBanner,
         topDealBanner,
-      });
+    });
 }
-    
+
 
 //RENDER LOGIN
 exports.login = (req, res) => {
@@ -63,7 +64,7 @@ exports.logout = (req, res) => {
 //render products based on search,filter,sort,pagination
 exports.products = async (req, res) => {
   try {
-    const searchQuery = req.query.query;
+    const searchQuery = req.query.query ||"";
     const page = parseInt(req.query.page) || 1;
     const limit = 9;
     const skip = (page - 1) * limit;
@@ -193,14 +194,7 @@ exports.contactUs = async (req, res) => {
     }
   };
 
-  //RENDER CHECKOUT
-exports.checkout =async (req, res) => { 
-   const category = await categoryDb.find()
-  res.render("user/checkout", { 
-    user: req.session.user,
-    category
-  });
-}
+
 exports.cart = async (req, res) => {
   try {
     const category = await categoryDb.find();
@@ -290,21 +284,108 @@ exports.resetPassword = async (req, res) => {
 };
 
 
-//add delivery address address 
+//render  delivery address address on text area 
 const formatAddress = (address) => {
   return `${address.firstName} ${address.lastName},${address.addressLine},${address.locality}, ${address.city}, ${address.state}-${address.postalCode},${address.phoneNumber},${address.emailAddress}`;
 };
-exports.addressDetails = async (req, res) => {
+
+exports.addAddressPage = async (req, res) => {
   const userId = req.session.user._id;
   try {
-    const { address } = await userDb.findById(userId);
-    res.render("user/address", {
+    res.render("user/addAddress", {
       user: req.session.user,
-      addressData: address.length > 0 ? address.map(formatAddress) : undefined,
-      addressId: address ? address.map((address) => address._id) : undefined,
     });
   } catch (error) {
     console.error(error);
-    res.status(500).send("Error retrieving addresses");
+    res.status(500).send("Internal server error");
+  }
+};
+
+  exports.updateAddressPage = async (req, res) => {
+    const userId = req.session.user._id;
+    const addressId = req.query.addressId;
+    try {
+      const user = await userDb.findById(userId);
+      // Find the user's address data using their userId and addressId
+      const addressData = user.address.id(addressId);
+      res.render("user/updateAddress", {
+        user: req.session.user,
+        addressData,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Internal server error");
+    }
+  };
+
+
+
+
+  exports.checkout = async (req, res) => {
+    const userId = req.session.user._id;
+    try {
+      const category = await categoryDb.find();
+      const { address } = await userDb.findById(userId);
+      const userCart = await cartDb
+        .findOne({ userId })
+        .populate("coupon")
+        .populate("products.productId");
+      let total = 0;
+      if (userCart) {
+        userCart.products.forEach((product) => {
+          total += product.productId.price * product.quantity;
+        });
+      } else {
+        return res.redirect("/products");
+      }
+      let discount = 0;
+      let couponCode = ""
+      if (userCart.coupon) {
+        couponCode = userCart.coupon.code
+        if (total >= userCart.coupon.minAmount) {
+          discount = total * (userCart.coupon.discount / 100);
+          if (discount > userCart.coupon.maxAmount) {
+            discount = userCart.coupon.maxAmount;
+          }
+        }
+      }
+      let netAmount = total - discount + 40;  
+      res.render("user/checkout", {
+        user: req.session.user,
+        category,
+        addressData: address.length > 0 ? address.map(formatAddress) : [],
+        addressId: address ? address.map((address) => address._id) : [],
+        couponCode,
+        total,
+        discount,
+        netAmount,
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).send("Server Error");
+    }
+  };
+
+
+
+
+exports.myOrders = async (req, res) => {
+  try {
+    // Find the userId from the session
+    const userId = req.session.user._id;
+
+    // Find the orders of that user from the OrderDb
+    const orders = await orderDb
+      .find({ user: userId })
+      .populate("items.product");
+
+    res.render("user/orders", {
+      user: req.session.user,
+      orders,
+    });
+  } catch (error) {
+    // Handle any error that occurred during the process
+    console.error("Error fetching orders:", error);
+    res.send("Internal server error");
   }
 };
