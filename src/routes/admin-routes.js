@@ -162,6 +162,27 @@ router.delete(
   checkSession.sessionExists,
   adminController.adminDeleteCoupon
 );
+router.post(
+  "/api/admin/order/reject",
+  checkSession.sessionExists,
+  adminController.rejectOrderByAdmin
+)
+router.post(
+  "/api/admin/order/process",
+  checkSession.sessionExists,
+  adminController.processOrderByAdmin
+)
 
+router.post(
+  "/api/admin/order/ship",
+  checkSession.sessionExists,
+  adminController.shipOrderByAdmin
+)
+
+router.post(
+  "/api/admin/order/deliver",
+  checkSession.sessionExists,
+  adminController.deliverOrderByAdmin
+)
 
 module.exports = router;

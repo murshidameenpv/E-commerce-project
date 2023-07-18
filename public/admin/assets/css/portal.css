@@ -54,3 +54,11 @@
 .image-container:hover .delete-image-btn {
     opacity: 1;
 }
+.bg-orange {
+    background-color: #FD7F20;
+    color: white;
+}
+.bg-blue {
+    background-color: blue;
+    color: white;
+}

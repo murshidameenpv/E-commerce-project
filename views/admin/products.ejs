@@ -186,7 +186,7 @@
                             <div class="mb-3">
                                 <label for="brand">Brand:</label>
                                 <select class="form-select" id="brand" name="brandName">
-                                    <% brands.forEach((brand)=>{ %>
+                                    <% brands.forEach((brand)=>{ %> 
                                         <option value="<%=brand._id %>">
                                             <%=brand.brandName %>
                                         </option>
@@ -294,7 +294,7 @@
                                     <label for="updateImage" class="form-label">Upload Image</label>
                                     <input type="file" class="form-control" id="updateImage" name="image" multiple accept=".png, .jpg, .jpeg">
                                 </div>
-                                <button type="submit" class="btn btn-primary" id="updateProductBtn-<%= product._id %>">Update
+                                <button type="button" class="btn btn-primary" id="updateProductBtn-<%= product._id %>">Update
                                     Product</button>
                             </form>
                             <div id="loadingSpinnerUpdate-<%= product._id %>" class="spinner-border text-primary" role="status"

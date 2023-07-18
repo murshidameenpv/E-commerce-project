@@ -4,6 +4,7 @@ const categoryDb = require("../models/categorySchema");
 const bannerDb = require('../models/bannerSchema')
 const brandDb = require('../models/brandSchema')
 const couponDb = require('../models/couponSchema')
+const orderDb = require('../models/orderSchema')
 const sharp = require("sharp");
 
 exports.adminLogin = (req, res) => {
@@ -357,6 +358,53 @@ exports.adminDeleteCoupon = async (req, res) => {
     const couponId = req.params.id;
     await couponDb.findByIdAndDelete(couponId);
     res.status(200).json({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server error");
+  }
+};
+
+
+exports.rejectOrderByAdmin = async (req, res) => {
+  try {
+    const orderId = req.query.orderId;
+    const reason = req.body.reason
+    console.log(reason,orderId);
+    await orderDb.findByIdAndUpdate(orderId, { reason,status:"Rejected" });
+      res.json({message:"Order rejected"});
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server error");
+  }
+}
+
+exports.processOrderByAdmin = async (req, res) => {
+  try {
+    const orderId = req.query.orderId;
+    await orderDb.findByIdAndUpdate(orderId, { status: "Processing" });
+    res.send({success:true});
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server error");
+  }
+};
+
+exports.shipOrderByAdmin = async (req, res) => {
+  try {
+    const orderId = req.query.orderId;
+    await orderDb.findByIdAndUpdate(orderId, { status: "Shipped" });
+    res.send({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server error");
+  }
+};
+
+exports.deliverOrderByAdmin = async (req, res) => {
+  try {
+    const orderId = req.query.orderId;
+    await orderDb.findByIdAndUpdate(orderId, { status: "Delivered" });
+    res.send({ success: true });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server error");

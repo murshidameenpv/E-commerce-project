@@ -33,12 +33,12 @@ var orderSchema = new mongoose.Schema({
   status: {
     type: String,
     enum: [
-      "placed",
-      "Pending",
+      "Placed",
       "Processing",
       "Shipped",
       "Delivered",
       "Cancelled",
+      "Rejected",
       "Returned",
       "Refunded",
     ],

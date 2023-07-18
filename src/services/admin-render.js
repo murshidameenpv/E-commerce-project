@@ -124,7 +124,44 @@ exports.adminOrderManagement = async (req, res) => {
       .populate({ path: "user", select: "name" }) // Populate only the 'name' field of the 'user' reference
       .populate({ path: "items.product", select: "productName image" }); // Populate the 'name' and 'image' fields of the 'items.product' reference
 
-    res.render("admin/orders", { orders });
+const rejectedOrder = await orderDb
+  .find({ status: "Rejected" })
+  .sort({ createdAt: -1 })
+  .populate({ path: "user", select: "name" })
+  .populate({ path: "items.product", select: "productName image" });
+
+const shippedOrder = await orderDb
+  .find({ status: "Shipped" })
+  .sort({ createdAt: -1 })
+  .populate({ path: "user", select: "name" })
+  .populate({ path: "items.product", select: "productName image" });
+
+const processingOrder = await orderDb
+  .find({ status: "Processing" })
+  .sort({ createdAt: -1 })
+  .populate({ path: "user", select: "name" })
+  .populate({ path: "items.product", select: "productName image" });
+
+const deliveredOrder = await orderDb
+  .find({ status: "Delivered" })
+  .sort({ createdAt: -1 })
+  .populate({ path: "user", select: "name" })
+  .populate({ path: "items.product", select: "productName image" });
+
+const canceledOrder = await orderDb
+  .find({ status: "Canceled" })
+  .sort({ createdAt: -1 })
+  .populate({ path: "user", select: "name" })
+  .populate({ path: "items.product", select: "productName image" });
+
+   res.render("admin/orders", {
+     orders,
+     rejectedOrder,
+     shippedOrder,
+     processingOrder,
+     deliveredOrder,
+     canceledOrder,
+   });
   } catch (err) {
     console.error(err);
     res.status(500).send(" Internal Server error");
@@ -132,7 +169,7 @@ exports.adminOrderManagement = async (req, res) => {
 };
 
 
-exports.adminViewOrderDetails = async (req, res) => {
+exports.  adminViewOrderDetails = async (req, res) => {
   const orderId = req.query.orderId;
   try {
     const order = await orderDb.findOne({ _id: orderId }).populate({

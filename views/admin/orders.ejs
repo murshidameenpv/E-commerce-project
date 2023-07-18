@@ -38,9 +38,11 @@
 			    
 			    <nav id="orders-table-tab" class="orders-table-tab app-nav-tabs nav shadow-sm flex-column flex-sm-row mb-4">
 				    <a class="flex-sm-fill text-sm-center nav-link active" id="orders-all-tab" data-bs-toggle="tab" href="#orders-all" role="tab" aria-controls="orders-all" aria-selected="true">All</a>
-				    <a class="flex-sm-fill text-sm-center nav-link"  id="orders-paid-tab" data-bs-toggle="tab" href="#orders-paid" role="tab" aria-controls="orders-paid" aria-selected="false">Paid</a>
-				    <a class="flex-sm-fill text-sm-center nav-link" id="orders-pending-tab" data-bs-toggle="tab" href="#orders-pending" role="tab" aria-controls="orders-pending" aria-selected="false">Pending</a>
-				    <a class="flex-sm-fill text-sm-center nav-link" id="orders-cancelled-tab" data-bs-toggle="tab" href="#orders-cancelled" role="tab" aria-controls="orders-cancelled" aria-selected="false">Cancelled</a>
+				    <a class="flex-sm-fill text-sm-center nav-link"  id="orders-rejected-tab" data-bs-toggle="tab" href="#orders-rejected" role="tab" aria-controls="orders-rejected" aria-selected="false">Rejected</a>
+				    <a class="flex-sm-fill text-sm-center nav-link" id="orders-processing-tab" data-bs-toggle="tab" href="#orders-processing" role="tab" aria-controls="orders-processing" aria-selected="false">Processing</a>
+				    <a class="flex-sm-fill text-sm-center nav-link" id="orders-shipped-tab" data-bs-toggle="tab" href="#orders-shipped" role="tab" aria-controls="orders-shipped" aria-selected="false">Shipped</a>
+				    <a class="flex-sm-fill text-sm-center nav-link" id="orders-delivered-tab" data-bs-toggle="tab" href="#orders-delivered" role="tab" aria-controls="orders-delivered" aria-selected="false">Delivered</a>
+				    <a class="flex-sm-fill text-sm-center nav-link" id="orders-delivered-tab" data-bs-toggle="tab" href="#orders-canceled" role="tab" aria-controls="orders-canceled" aria-selected="false">Canceled</a>
 				</nav>
 				
 				
@@ -49,54 +51,115 @@
 					    <div class="app-card app-card-orders-table shadow-sm mb-5">
 						    <div class="app-card-body">
 							    <div class="table-responsive">
-							        <table class="table app-table-hover mb-0 text-left">
-										<thead>
+								<table class="table app-table-hover mb-0 text-left">
+									<thead>
+										<tr>
+											<th class="cell">Order ID</th>
+											<th class="cell">Customer</th>
+											<th class="cell">Date</th>
+											<th class="cell">Payment</th>
+											<th class="cell">Status</th>
+											<th class="cell">Cancel</th>
+											<th class="cell">Process</th>
+											<th class="cell">Ship</th>
+											<th class="cell">Deliver</th>
+											<th class="cell">Details</th>
+										</tr>
+									</thead>
+									<tbody>
+										<% orders.forEach(order=> { %>
 											<tr>
-												<th class="cell">Order ID</th>
-												<th class="cell">Customer</th>
-												<th class="cell">Date</th>
-												<th class="cell">Payment</th>
-												<th class="cell">Status</th>
-												<th class="cell">Action</th>
-												<th class="cell">Details</th>
-											</tr>
-										</thead>
-										<tbody>
-											<% orders.forEach(order=> { %>
-												<tr>
-													<td class="cell">
-														<%= order._id.toString().slice(-5) %>
-													</td>
-													<td class="cell"><span class="truncate">
-															<%= order.user.name %>
-														</span></td>
-													<td class="cell">
-														<span>
-															<%= order.createdAt.toLocaleDateString() %>
-														</span>
-														<span class="note">
-															<%= order.createdAt.toLocaleTimeString() %>
-														</span>
-													</td>
-													<td class="cell">
-														<%= order.payment_method %>
-													</td>
-													<td class="cell"><span class="badge bg-success">
-															<%= order.status %>
-														</span></td>
-														<td>
-															
-														</td>
-													<td class="cell">
-													<span style="cursor: pointer" 
-														onclick="viewOrder('<%= order._id %>')">
-														<i class="fa fa-eye"></i> View
+												<td class="cell">
+													<%= order._id.toString().slice(-5) %>
+												</td>
+												<td class="cell"><span class="truncate">
+														<%= order.user.name %>
+													</span></td>
+												<td class="cell">
+													<span>
+														<%= order.createdAt.toLocaleDateString() %>
 													</span>
-													</td>
-												</tr>
-												<% }) %>
-										</tbody>
-									</table>
+													<span class="note">
+														<%= order.createdAt.toLocaleTimeString() %>
+													</span>
+												</td>
+												<td class="cell">
+													<%= order.payment_method %>
+												</td>
+									<td class="cell">
+										<% if (order.status==='Placed' ) { %>
+											<span class="badge bg-blue">
+												<%= order.status %>
+											</span>
+											<% } else if (order.status==='Processing' ) { %>
+												<span class="badge bg-warning">
+													<%= order.status %>
+												</span>
+												<% } else if (order.status==='Shipped' ) { %>
+													<span class="badge bg-secondary">
+														<%= order.status %>
+													</span>
+													<% } else if (order.status==='Delivered' ) { %>
+														<span class="badge bg-success">
+															<%= order.status %>
+														</span>
+														<% } else if (order.status==='Rejected' ) { %>
+															<span class="badge bg-orange">
+																<%= order.status %>
+															</span>
+														<% } else if (order.status==='Canceled' ) { %>
+															<span class="badge bg-danger">
+																<%= order.status %>
+															</span>
+															<% } else { %>
+																<%= order.status %>
+																	<% } %>
+									</td>
+
+									<td class="cell">
+										<% if (order.status==='Shipped' ||order.status==='Processing' || order.status==='Delivered' || order.status==='Rejected' || order.status==='Canceled' ) { %>
+											<button type="button" class="btn btn-danger" disabled>Reject</button>
+											<% } else { %>
+												<button type="button" class="btn btn-danger" data-bs-toggle="modal"
+													data-bs-target="#rejectOrderModal_<%= order._id %>" data-order-id="<%= order._id %>">Reject</button>
+												<% } %>
+									</td>
+									
+									<td class="cell">
+										<% if (order.status==='Processing' || order.status==='Shipped' || order.status==='Delivered' || order.status==='Rejected' || order.status==='Canceled' ) { %>
+											<button type="button" class="btn btn-warning" disabled>Process</button>
+											<% } else { %>
+												<button type="button" class="btn btn-warning" onclick="processOrder('<%= order._id %>')">Process</button>
+												<% } %>
+									</td>
+									
+									<td class="cell">
+										<% if (order.status==='Placed'|| order.status==='Shipped' || order.status==='Delivered' || order.status==='Rejected' || order.status==='Canceled'  ) { %>
+											<button type="button" class="btn btn-secondary" disabled>Ship</button>
+											<% } else { %>
+												<button type="button" class="btn btn-secondary" onclick="shipOrder('<%= order._id %>')">Ship</button>
+												<% } %>
+									</td>
+									
+									<td class="cell">
+										<% if (order.status==='Placed' || order.status==='Processing' || order.status==='Delivered' || order.status==='Rejected' || order.status==='Canceled' ) { %>
+											<button type="button" class="btn btn-primary" disabled>Deliver</button>
+											<% } else { %>
+												<button type="button" class="btn btn-primary" onclick="deliverOrder('<%= order._id %>')">Deliver</button>
+												<% } %>
+									</td>
+
+											
+												<td class="cell">
+															<span style="cursor: pointer" onclick="viewOrder('<%= order._id %>')"><i class="fa fa-eye"></i>
+																View</span>
+												</td>
+											</tr>
+											<% }) %>
+									</tbody>
+
+								</table>
+
 						        </div><!--//table-responsive-->
 						       
 						    </div><!--//app-card-body-->		
@@ -117,7 +180,7 @@
 						
 			        </div><!--//tab-pane-->
 			        
-			        <div class="tab-pane fade" id="orders-paid" role="tabpanel" aria-labelledby="orders-paid-tab">
+			        <div class="tab-pane fade" id="orders-rejected" role="tabpanel" aria-labelledby="orders-rejected-tab">
 					    <div class="app-card app-card-orders-table mb-5">
 						    <div class="app-card-body">
 							    <div class="table-responsive">
@@ -125,103 +188,289 @@
 							        <table class="table mb-0 text-left">
 										<thead>
 											<tr>
-												<th class="cell">Order</th>
-												<th class="cell">Product</th>
+												<th class="cell">Order ID</th>
 												<th class="cell">Customer</th>
 												<th class="cell">Date</th>
+												<th class="cell">Payment</th>
 												<th class="cell">Status</th>
-												<th class="cell">Total</th>
-												<th class="cell"></th>
+												<th class="cell">Refund</th>
+												<th class="cell">Details</th>
 											</tr>
 										</thead>
 										<tbody>
+											<% rejectedOrder.forEach(order=> { %>
 											<tr>
-												<td class="cell">#15346</td>
-												<td class="cell"><span class="truncate">Lorem ipsum dolor sit amet eget volutpat erat</span></td>
-												<td class="cell">John Sanders</td>
-												<td class="cell"><span>17 Oct</span><span class="note">2:16 PM</span></td>
-												<td class="cell"><span class="badge bg-success">Paid</span></td>
-												<td class="cell">$259.35</td>
-												<td class="cell"><a class="btn-sm app-btn-secondary" href="#">View</a></td>
+												<td class="cell"><%= order._id.toString().slice(-5) %></td>
+												<td	 class="cell"><span class="truncate"><%= order.user.name %></span></td>
+												<td class="cell"><span><%= order.createdAt.toLocaleDateString() %></span><span class="note"><%= order.createdAt.toLocaleTimeString() %></span></td>
+												<td class="cell">
+													<%= order.payment_method %>
+												</td>
+												<td class="cell">
+													<span class="badge bg-orange">
+														<%= order.status %>
+													</span>
+												</td>
+												<td class="cell">
+													<button type="button" class="btn btn-primary" onclick="refundOrder('<%= order._id %>')">Refund</button>
+												</td>
+
+												<td class="cell">
+													<span style="cursor: pointer" onclick="viewOrder('<%= order._id %>')"><i class="fa fa-eye"></i>
+														View</span>
+												</td>
 											</tr>
 										</tbody>
+										<% }) %>
 									</table>
 						        </div><!--//table-responsive-->
 						    </div><!--//app-card-body-->		
 						</div><!--//app-card-->
 			        </div><!--//tab-pane-->
 			        
-			        <div class="tab-pane fade" id="orders-pending" role="tabpanel" aria-labelledby="orders-pending-tab">
+			        <div class="tab-pane fade" id="orders-processing" role="tabpanel" aria-labelledby="orders-processing-tab">
 					    <div class="app-card app-card-orders-table mb-5">
 						    <div class="app-card-body">
 							    <div class="table-responsive">
-							        <table class="table mb-0 text-left">
+									<table class="table mb-0 text-left">
 										<thead>
 											<tr>
-												<th class="cell">Order</th>
-												<th class="cell">Product</th>
+												<th class="cell">Order ID</th>
 												<th class="cell">Customer</th>
 												<th class="cell">Date</th>
+												<th class="cell">Payment</th>
 												<th class="cell">Status</th>
-												<th class="cell">Total</th>
-												<th class="cell"></th>
+												<th class="cell">Ship</th>
+												<th class="cell">Details</th>
 											</tr>
 										</thead>
 										<tbody>
-											<tr>
-												<td class="cell">#15345</td>
-												<td class="cell"><span class="truncate">Consectetur adipiscing elit</span></td>
-												<td class="cell">Dylan Ambrose</td>
-												<td class="cell"><span class="cell-data">16 Oct</span><span class="note">03:16 AM</span></td>
-												<td class="cell"><span class="badge bg-warning">Pending</span></td>
-												<td class="cell">$96.20</td>
-												<td class="cell"><a class="btn-sm app-btn-secondary" href="#">View</a></td>
-											</tr>
+											<% processingOrder.forEach(order=> { %>
+												<tr>
+													<td class="cell">
+														<%= order._id.toString().slice(-5) %>
+													</td>
+													<td class="cell"><span class="truncate">
+															<%= order.user.name %>
+														</span></td>
+													<td class="cell"><span>
+															<%= order.createdAt.toLocaleDateString() %>
+														</span><span class="note">
+															<%= order.createdAt.toLocaleTimeString() %>
+														</span></td>
+													<td class="cell">
+														<%= order.payment_method %>
+													</td>
+													<td class="cell">
+														<span class="badge bg-warning">
+															<%= order.status %>
+														</span>
+													</td>
+													<td class="cell">
+														<button type="button" class="btn btn-secondary" onclick="shipOrder('<%= order._id %>')">Ship</button>
+													</td>
+													<td class="cell">
+														<span style="cursor: pointer" onclick="viewOrder('<%= order._id %>')"><i class="fa fa-eye"></i>
+															View</span>
+													</td>
+												</tr>
 										</tbody>
+										<% }) %>
 									</table>
 						        </div><!--//table-responsive-->
 						    </div><!--//app-card-body-->		
 						</div><!--//app-card-->
 			        </div><!--//tab-pane-->
-			        <div class="tab-pane fade" id="orders-cancelled" role="tabpanel" aria-labelledby="orders-cancelled-tab">
+
+
+			        <div class="tab-pane fade" id="orders-shipped" role="tabpanel" aria-labelledby="orders-shipped-tab">
 					    <div class="app-card app-card-orders-table mb-5">
 						    <div class="app-card-body">
 							    <div class="table-responsive">
-							        <table class="table mb-0 text-left">
+									<table class="table mb-0 text-left">
 										<thead>
 											<tr>
-												<th class="cell">Order</th>
-												<th class="cell">Product</th>
+												<th class="cell">Order ID</th>
 												<th class="cell">Customer</th>
 												<th class="cell">Date</th>
+												<th class="cell">Payment</th>
 												<th class="cell">Status</th>
-												<th class="cell">Total</th>
-												<th class="cell"></th>
+												<th class="cell">Deliver</th>
+												<th class="cell">Details</th>
 											</tr>
 										</thead>
 										<tbody>
-											
-											<tr>
-												<td class="cell">#15342</td>
-												<td class="cell"><span class="truncate">Justo feugiat neque</span></td>
-												<td class="cell">Reina Brooks</td>
-												<td class="cell"><span class="cell-data">12 Oct</span><span class="note">04:23 PM</span></td>
-												<td class="cell"><span class="badge bg-danger">Cancelled</span></td>
-												<td class="cell">$59.00</td>
-												<td class="cell"><a class="btn-sm app-btn-secondary" href="#">View</a></td>
-											</tr>
-											
+											<% shippedOrder.forEach(order=> { %>
+												<tr>
+													<td class="cell">
+														<%= order._id.toString().slice(-5) %>
+													</td>
+													<td class="cell"><span class="truncate">
+															<%= order.user.name %>
+														</span></td>
+													<td class="cell"><span>
+															<%= order.createdAt.toLocaleDateString() %>
+														</span><span class="note">
+															<%= order.createdAt.toLocaleTimeString() %>
+														</span></td>
+													<td class="cell">
+														<%= order.payment_method %>
+													</td>
+													<td class="cell">
+														<span class="badge bg-secondary">
+															<%= order.status %>
+														</span>
+													</td>
+													<td class="cell">
+														<button type="button" class="btn btn-primary"
+															onclick="deliverOrder('<%= order._id %>')">Ship</button>
+													</td>
+													<td class="cell">
+														<span style="cursor: pointer" onclick="viewOrder('<%= order._id %>')"><i class="fa fa-eye"></i>
+															View</span>
+													</td>
+												</tr>
 										</tbody>
+										<% }) %>
 									</table>
 						        </div><!--//table-responsive-->
 						    </div><!--//app-card-body-->		
 						</div><!--//app-card-->
 			        </div><!--//tab-pane-->
+
+					<div class="tab-pane fade" id="orders-delivered" role="tabpanel" aria-labelledby="orders-delivered-tab">
+						<div class="app-card app-card-orders-table mb-5">
+							<div class="app-card-body">
+								<div class="table-responsive">
+									<table class="table mb-0 text-left">
+										<thead>
+											<tr>
+												<th class="cell">Order ID</th>
+												<th class="cell">Customer</th>
+												<th class="cell">Date</th>
+												<th class="cell">Payment</th>
+												<th class="cell">Status</th>
+												<th class="cell">Details</th>
+											</tr>
+										</thead>
+										<tbody>
+											<% deliveredOrder.forEach(order=> { %>
+												<tr>
+													<td class="cell">
+														<%= order._id.toString().slice(-5) %>
+													</td>
+													<td class="cell"><span class="truncate">
+															<%= order.user.name %>
+														</span></td>
+													<td class="cell"><span>
+															<%= order.createdAt.toLocaleDateString() %>
+														</span><span class="note">
+															<%= order.createdAt.toLocaleTimeString() %>
+														</span></td>
+													<td class="cell">
+														<%= order.payment_method %>
+													</td>
+													<td class="cell">
+														<span class="badge bg-primary">
+															<%= order.status %>
+														</span>
+													</td>
+													<td class="cell">
+														<span style="cursor: pointer" onclick="viewOrder('<%= order._id %>')"><i class="fa fa-eye"></i>
+															View</span>
+													</td>
+												</tr>
+										</tbody>
+										<% }) %>
+									</table>
+								</div><!--//table-responsive-->
+							</div><!--//app-card-body-->
+						</div><!--//app-card-->
+					</div><!--//tab-pane-->
+
+					<div class="tab-pane fade" id="orders-canceled" role="tabpanel" aria-labelledby="orders-canceled-tab">
+						<div class="app-card app-card-orders-table mb-5">
+							<div class="app-card-body">
+								<div class="table-responsive">
+									<table class="table mb-0 text-left">
+										<thead>
+											<tr>
+												<th class="cell">Order ID</th>
+												<th class="cell">Customer</th>
+												<th class="cell">Date</th>
+												<th class="cell">Payment</th>
+												<th class="cell">Status</th>
+												<th class="cell">Refund</th>
+												<th class="cell">Details</th>
+											</tr>
+										</thead>
+										<tbody>
+											<% canceledOrder.forEach(order=> { %>
+												<tr>
+													<td class="cell">
+														<%= order._id.toString().slice(-5) %>
+													</td>
+													<td class="cell"><span class="truncate">
+															<%= order.user.name %>
+														</span></td>
+													<td class="cell"><span>
+															<%= order.createdAt.toLocaleDateString() %>
+														</span><span class="note">
+															<%= order.createdAt.toLocaleTimeString() %>
+														</span></td>
+													<td class="cell">
+														<%= order.payment_method %>
+													</td>
+													<td class="cell">
+														<span class="badge bg-danger">
+															<%= order.status %>
+														</span>
+													</td>
+													<td class="cell">
+														<button type="button" class="btn btn-primary"
+															onclick="refundOrder('<%= order._id %>')">Refund</button>
+													</td>
+									
+													<td class="cell">
+														<span style="cursor: pointer" onclick="viewOrder('<%= order._id %>')"><i class="fa fa-eye"></i>
+															View</span>
+													</td>
+												</tr>
+										</tbody>
+										<% }) %>
+									</table>
+								</div><!--//table-responsive-->
+							</div><!--//app-card-body-->
+						</div><!--//app-card-->
+					</div><!--//tab-pane-->
+					
 				</div><!--//tab-content-->    
 		    </div><!--//container-fluid-->
 	    </div><!--//app-content-->
     </div><!--//app-wrapper-->    	
 
+//REJECT ORDER MODAL
+<% orders.forEach(order=> { %>
+<div class="modal fade" id="rejectOrderModal_<%= order._id %>" tabindex="-1" aria-labelledby="rejectOrderModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="rejectOrderModalLabel">Reason to Reject</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				
+					<div class="mb-3">
+						<label for="reasonToReject" class="form-label">Reason to Reject</label>
+						<input type="text" class="form-control" id="reasonToReject" name="reason" required>
+					</div>
+					<button type="button" class="btn btn-primary" data-order-id="<%= order._id %>">Submit</button>
+					<div id="rejectMessageStatus" class="alert" style="display: none;"></div>
+			</div>
+		</div>
+	</div>
+</div>
+<% }) %>
 
 	
 <%-include('includes/footer')%>

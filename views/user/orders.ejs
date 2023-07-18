@@ -30,7 +30,31 @@
         <div class="col-md-9 col-9">
             <div class="cart_3l1i1">
                 <h6 class="fw-bold"><span>Order ID: <%= order._id %></span></h6>
-                <h6 class="fw-normal font_12 mt-3">STATUS: <%= order.status %>
+                <h6 class="fw-normal font_12 mt-3">
+                    <strong>STATUS:</strong>
+                    <% if (order.status==='Placed' ) { %>
+                        <span class="badge bg-success">
+                            <%= order.status %>
+                        </span>
+                        <% } else if (order.status==='Processing' ) { %>
+                            <span class="badge bg-warning text-dark">
+                                <%= order.status %>
+                            </span>
+                            <% } else if (order.status==='Cancelled' ) { %>
+                                <span class="badge bg-danger">
+                                    <%= order.status %>
+                                </span>
+                                <% } else if (order.status==='Shipped' ) { %>
+                                    <span class="badge bg-primary">
+                                        <%= order.status %>
+                                    </span>
+                                    <% } else if (order.status==='Delivered' ) { %>
+                                        <span class="badge bg-success">
+                                            <%= order.status %>
+                                        </span>
+                                        <% } else { %>
+                                            <%= order.status %>
+                                                <% } %>
                 </h6>
                 <h3 class="font_12 mt-3">ORDERED:<%= new Date(order.createdAt).toLocaleDateString() %>
                 </h3>

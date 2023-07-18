@@ -463,7 +463,7 @@ exports.placeOrder = async (req, res) => {
     const order = new orderDb({
       user: userId,
       total: netAmount,
-      status: "placed",
+      status: "Placed",
       payment_method: paymentMethod,
       address: addressId,
     });
