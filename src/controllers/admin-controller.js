@@ -160,22 +160,27 @@ exports.adminUpdateProduct = async (req, res) => {
   };
 
 
-  //PRODUCT DELETE IMAGE
-  exports.deleteProductImage = async (req, res) => {
-    const productId = req.query.productId
-    const imageUrl = req.query.imageUrl
-    try {
-      await productDb.updateOne(
-        { _id: productId },
-        { $pull: { image: imageUrl } });
-        return res.json({success:true});
-    }
-    catch (err) {
-      console.error("Error Deleting Image  from Mongoose", err);
-      res.status(500).send("Internal Server Error");
-    }
+ exports.deleteProductImage = async (req, res) => {
+   const productId = req.body.productId;
+   const index = req.body.image;
+   console.log(productId,index);
+   try {
+     const product = await productDb.findById(productId);
+     if (product) {
+       product.image.splice(index, 1);
+       await product.save();
+       return res.json({ success: true });
+     } else {
+       return res
+         .status(404)
+         .json({ success: false });
+     }
+   } catch (err) {
+     console.error("Error Deleting Image from Mongoose", err);
+     res.status(500).send("Internal Server Error");
+   }
+ };
 
-  }
 
 
 //ADD CATEGORY

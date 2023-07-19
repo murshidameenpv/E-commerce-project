@@ -109,7 +109,7 @@ router.put(
   upload.array('image'),
  adminController.adminUpdateProduct
 );
-router.delete(
+router.post(
   "/api/admin/product/delete-image",
   checkSession.sessionExists,
   adminController.deleteProductImage

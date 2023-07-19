@@ -131,3 +131,26 @@ document.addEventListener("click", function (event) {
   }
 });
 
+
+
+   async function deleteImage(productId, index) {
+     if (confirm("Are you sure you want to delete this image?")) {
+       try {
+         const response = await axios.post("/api/admin/product/delete-image", {
+           productId,
+           index,
+         });
+         if (response.data.success) {
+           // Remove the image from the table
+           const imageContainer = document.querySelector(
+             `.image-container[data-product-id="${productId}"][data-index="${index}"]`
+           );
+           if (imageContainer) {
+             imageContainer.remove();
+           }
+         }
+       } catch (err) {
+         console.error(err);
+       }
+     }
+   }

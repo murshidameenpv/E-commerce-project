@@ -79,10 +79,13 @@
                                                         </td>
                                                         <td class="cell">
                                                             <% product.image.forEach((img,index)=> { %>
-                                                                <div class="image-container">
-                                                                    <img src="/<%= img %>" alt="Product Image" style="width: 100px; height: 100px;">
-                                                                    <span class="delete-image-btn" onclick="deleteImage('<%= product._id %>', '<%= img %>' )" style="cursor: pointer;"> <i class="fas fa-times"></i></span>
-                                                                </div>
+                                                            <div class="image-container" data-product-id="<%= product._id %>" data-index="<%= index %>">
+                                                                <img src="/<%= img %>" alt="Product Image" style="width: 100px; height: 100px;">
+                                                                <span class="delete-image-btn" onclick="deleteImage('<%= product._id %>', '<%= index %>')" style="cursor: pointer;">
+                                                                    <i class="fas fa-times"></i>
+                                                                </span>
+                                                            </div>
+
                                                                 <% }) %>
                                                         </td>
 
@@ -369,6 +372,7 @@
             loadingSpinner.style.display = "none";
         }
     }
+
 
         
     </script>
