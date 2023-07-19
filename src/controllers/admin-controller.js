@@ -91,51 +91,52 @@ exports.adminAddProduct = async (req, res) => {
 };
   
 
-//ADMIN UPDATE PRODUCT
-exports.adminUpdateProduct = async (req, res) => {
-  try {
-    const productId = req.query.productId;
-    const { productName, category, price, stock, description, brandName } = req.body;
+  //ADMIN UPDATE PRODUCT
+  exports.adminUpdateProduct = async (req, res) => {
+    try {
+      const productId = req.query.productId;
+      const { productName, category, price, stock, description, brandName } = req.body;
+      console.log(productName, category, price, stock, description, brandName)
+      console.log(productId);
+      const resizeImage = async (inputPath, outputPath, width, height) => {
+        await sharp(inputPath)
+          .resize(width, height, {
+            fit: "contain",
+            background: { r: 255, g: 255, b: 255, alpha: 1 },
+          })
+          .toFile(outputPath);
+      };
 
-    const resizeImage = async (inputPath, outputPath, width, height) => {
-      await sharp(inputPath)
-        .resize(width, height, {
-          fit: "contain",
-          background: { r: 255, g: 255, b: 255, alpha: 1 },
-        })
-        .toFile(outputPath);
-    };
+      const newImages = req.files.map((file) => {
+        const inputPath = file.path;
+        const outputPath = 'uploads/resized/' + file.filename;
+        resizeImage(inputPath, outputPath, 500, 500);
+        return file.filename;
+      });
 
-    const newImages = req.files.map((file) => {
-      const inputPath = file.path;
-      const outputPath = 'uploads/resized/' + file.filename;
-      resizeImage(inputPath, outputPath, 500, 500);
-      return file.filename;
-    });
-
-    const updatedProduct = await productDb.findByIdAndUpdate(
-      productId,
-      {
-        $push: { image: { $each: newImages } },
-        $set: {
-          productName: productName,
-          category: category,
-          brand: brandName,
-          price: price,
-          stock: stock,
-          description: description,
-          listed: false,
+      const updatedProduct = await productDb.findByIdAndUpdate(
+        productId,
+        {
+          $push: { image: { $each: newImages } },
+          $set: {
+            productName: productName,
+            category: category,
+            brand: brandName,
+            price: price,
+            stock: stock,
+            description: description,
+            listed: false,
+          },
         },
-      },
-      { new: true }
-    );
+        { new: true }
+      );
 
-    res.status(201).json(updatedProduct);
-  } catch (err) {
-    console.error("Error updating product:", err);
-    res.status(500).send("Internal Server Error");
-  }
-};
+      res.status(201).json({message:"Updated Successuflly",success:true});
+    } catch (err) {
+      console.error("Error updating product:", err);
+      res.status(500).send("Internal Server Error");
+    }
+  };
 
   //PRODUCT LISTED UNLISTED CONTROLLER
   exports.adminListProduct = async (req, res) => {

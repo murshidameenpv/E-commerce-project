@@ -297,8 +297,9 @@
                                     <label for="updateImage" class="form-label">Upload Image</label>
                                     <input type="file" class="form-control" id="updateImage" name="image" multiple accept=".png, .jpg, .jpeg">
                                 </div>
-                                <button type="button" class="btn btn-primary" id="updateProductBtn-<%= product._id %>">Update
-                                    Product</button>
+                                <button type="button" class="btn btn-primary" id="updateProductBtn-<%= product._id %>"
+                                    onclick="updateProduct('<%= product._id %>')">Update Product</button>
+
                             </form>
                             <div id="loadingSpinnerUpdate-<%= product._id %>" class="spinner-border text-primary" role="status"
                                 style="display: none;">
@@ -373,6 +374,7 @@
         }
     }
 
+   
 
         
     </script>

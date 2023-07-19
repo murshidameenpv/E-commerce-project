@@ -153,4 +153,50 @@ document.addEventListener("click", function (event) {
          console.error(err);
        }
      }
-   }
+}
+   
+
+async function updateProduct(productId) {
+  // Get the form data
+  const form = document.querySelector(`#updateProductForm-${productId}`);
+  const formData = new FormData(form);
+
+  // Disable the update button and show the loading spinner
+  const updateBtn = document.querySelector(`#updateProductBtn-${productId}`);
+  updateBtn.disabled = true;
+  const loadingSpinner = document.querySelector(
+    `#loadingSpinnerUpdate-${productId}`
+  );
+  loadingSpinner.style.display = "block";
+
+  try {
+    // Make the axios request
+    const response = await axios.put(
+      `/api/admin/product/update?productId=${productId}`,
+      formData
+    );
+    if (response.data.success) {
+     loadingSpinner.style.display = "none";
+     updateBtn.disabled = false;
+     const messageStatus = document.querySelector(
+       `#messageStatus-${productId}`
+     );
+     messageStatus.classList.add("alert-success");
+     messageStatus.textContent = response.data.message;
+     messageStatus.style.display = "block";
+
+     // Reload the page after 2 seconds
+     setTimeout(() => {
+       location.reload();
+     }, 2000);
+    } else {
+      console.error(error);
+    }
+  } catch (err) {
+    console.error(err);
+  } finally {
+    // Re-enable the update button and hide the loading spinner
+    updateBtn.disabled = false;
+    loadingSpinner.style.display = "none";
+  }
+}
