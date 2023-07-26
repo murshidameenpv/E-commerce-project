@@ -25,53 +25,167 @@
                     <div class="cart_3l">
                         <h6>Orders</h6>
                     </div>
-                    <div class="cart_3l1 mt-3 row ms-0 me-0">
-    <% orders.forEach(order=> { %>
-        <div class="col-md-9 col-9">
-            <div class="cart_3l1i1">
-                <h6 class="fw-bold"><span>Order ID: <%= order._id %></span></h6>
-                <h6 class="fw-normal font_12 mt-3">
-                    <strong>STATUS:</strong>
-                    <% if (order.status==='Placed' ) { %>
-                        <span class="badge bg-success">
-                            <%= order.status %>
-                        </span>
-                        <% } else if (order.status==='Processing' ) { %>
-                            <span class="badge bg-warning text-dark">
-                                <%= order.status %>
-                            </span>
-                            <% } else if (order.status==='Cancelled' ) { %>
-                                <span class="badge bg-danger">
-                                    <%= order.status %>
-                                </span>
-                                <% } else if (order.status==='Shipped' ) { %>
-                                    <span class="badge bg-primary">
-                                        <%= order.status %>
-                                    </span>
+                      <div class="cart_3l1 mt-3 row ms-0 me-0">
+                                    <% orders.forEach(order=> { %>
+                                        <div class="col-md-9 col-9">
+                                            <% if (order.status==='Placed' ) { %>
+                                                <div class="cart_3l1i1">
+                                                    <h6 class="fw-bold"><span>Order ID : <%= order._id %></span></h6>
+                                                    <h6 class="fw-normal font_12 mt-3">
+                                                        <strong>STATUS:</strong>
+                                                        <span class="badge bg-success">
+                                                            <%= order.status %>
+                                                        </span>
+                                                    </h6>
+                                                    <h3 class="font_12 mt-3">ORDERED : <%= new Date(order.createdAt).toLocaleDateString() %>
+                                                    </h3>
+                                                    <h6 class="font_12 mt-3">PAYMENT : <%= order.payment_method %>
+                                                    </h6>
+                                                    <% if (order.payment_method==='cod' ) { %>
+                                                        <h6>To Pay : <span class="col_yell mt-3">$<%= order.total %></span></h6>
+                                                        <% } else { %>
+                                                            <h6>Total Amount Paid : <span class="col_yell mt-3">$<%= order.total %></span></h6>
+                                                            <% } %>
+                                                </div>
+                                                <div class="cart_3l1i2">
+                                                    <h6><a class="button_1" onclick="cancelOrder('<%= order._id %>')">CANCEL ORDER</a></h6>
+                                                    <h6><a class="button" data-bs-toggle="modal" data-bs-target="#orderDetailsModal-<%= order._id %>"
+                                                            data-order-id="<%= order._id %>">VIEW DETAILS</a></h6>
+                                                </div>
+                                               
+                                                <% } else if (order.status==='Processing' ) { %>
+                                                    <div class="cart_3l1i1">
+                                                        <h6 class="fw-bold"><span>Order ID : <%= order._id %></span></h6>
+                                                        <h6 class="fw-normal font_12 mt-3">
+                                                            <strong>STATUS : </strong>
+                                                            <span class="badge bg-warning text-dark">
+                                                                <%= order.status %>
+                                                            </span>
+                                                        </h6>
+                                                        <h3 class="font_12 mt-3">Processed : <%= new Date(order.createdAt).toLocaleDateString() %>
+                                                        </h3>
+                                                        <h6 class="font_12 mt-3">PAYMENT : <%= order.payment_method %>
+                                                        </h6>
+                                                        <% if (order.payment_method==='cod' ) { %>
+                                                            <h6>To Pay : <span class="col_yell mt-3">$<%= order.total %></span></h6>
+                                                            <% } else { %>
+                                                                <h6>Total Amount Paid : <span class="col_yell mt-3">$<%= order.total %></span></h6>
+                                                                <% } %>
+                                                    </div>
+                                                    <div class="cart_3l1i2">
+                                                        <h6><a class="button_1" onclick="cancelOrder('<%= order._id %>')">CANCEL ORDER</a></h6>
+                                                        <h6><a class="button" data-bs-toggle="modal" data-bs-target="#orderDetailsModal-<%= order._id %>"
+                                                                data-order-id="<%= order._id %>">VIEW DETAILS</a></h6>
+                                                    </div>
+                                                    <hr>
+                                                    <% } else if (order.status==='Shipped' ) { %>
+                                                        <div class="cart_3l1i1">
+                                                            <h6 class="fw-bold"><span>Order ID: <%= order._id %></span></h6>
+                                                            <h6 class="fw-normal font_12 mt-3">
+                                                                <strong>STATUS:</strong>
+                                                                <span class="badge bg-grey">
+                                                                    <%= order.status %>
+                                                                </span>
+                                                            </h6>
+                                                            <h3 class="font_12 mt-3">SHIPPED : <%= new Date(order.createdAt).toLocaleDateString() %>
+                                                            </h3>
+                                                            <h6 class="font_12 mt-3">PAYMENT : <%= order.payment_method %>
+                                                            </h6>
+                                                            <% if (order.payment_method==='cod' ) { %>
+                                                                <h6>To Pay: <span class="col_yell mt-3">$<%= order.total %>
+                                                                    </span>
+                                                                </h6>
+                                                                <% } else { %>
+                                                                    <h6>Total Amount Paid : <span class="col_yell mt-3">$<%= order.total %>
+                                                                        </span>
+                                                                    </h6>
+                                                                    <% } %>
+                                                        </div>
+                                                        <div class="cart_3l1i2">
+                                                            <h6><a class="button_1" onclick="cancelOrder('<%= order._id %>')">CANCEL ORDER</a></h6>
+                                                            <h6><a class="button" data-bs-toggle="modal"
+                                                                    data-bs-target="#orderDetailsModal-<%= order._id %>"
+                                                                    data-order-id="<%= order._id %>">VIEW DETAILS</a></h6>
+                                                        </div>
+                                                        <hr>
                                     <% } else if (order.status==='Delivered' ) { %>
-                                        <span class="badge bg-success">
-                                            <%= order.status %>
-                                        </span>
-                                        <% } else { %>
-                                            <%= order.status %>
+                                        <h6 class="fw-bold"><span>Order ID : <%= order._id %></span></h6>
+                                        <h6 class="fw-normal font_12 mt-3">
+                                            <strong>STATUS:</strong>
+                                            <span class="badge bg-success">
+                                                <%= order.status %>
+                                            </span>
+                                        </h6>
+                                        <h3 class="font_12 mt-3">DELIVERED : <%= new Date(order.createdAt).toLocaleDateString() %>
+                                        </h3>
+                                        <h6 class="font_12 mt-3">PAYMENT : <%= order.payment_method %>
+                                        </h6>
+                                        <h6>Total Amount Paid : <span class="col_yell mt-3">$<%= order.total %></span></h6>
+                                        <div class="cart_3l1i2">
+                                            <% if (new Date() - new Date(order.deliveredAt) <=3 * 24 * 60 * 60 * 1000) { %>
+                                                <h6><a class="button_1" onclick="returnOrder('<%= order._id %>')">RETURN ORDER</a></h6>
                                                 <% } %>
-                </h6>
-                <h3 class="font_12 mt-3">ORDERED:<%= new Date(order.createdAt).toLocaleDateString() %>
-                </h3>
-                <h6 class="font_12 mt-3">PAYMENT: <%= order.payment_method %>
-                </h6>
-                <h6>Total Amount Paid:<span class="col_yell mt-3">  $<%= order.total %></span> 
-                </h6>
-            </div>
-            <div class="cart_3l1i2">
-                <h6><a class="button_1" href="#">CANCEL ORDER</a></h6>
-        <h6><a class="button" data-bs-toggle="modal" data-bs-target="#orderDetailsModal-<%= order._id %>" data-order-id="<%= order._id %>">VIEW
-                DETAILS</a></h6>
-
-            </div>
-            <hr class="line">
-        </div>
-        <% }) %>
+                                            <h6><a class="button" data-bs-toggle="modal" data-bs-target="#orderDetailsModal-<%= order._id %>"
+                                                    data-order-id="<%= order._id %>">VIEW DETAILS</a></h6>
+                                        </div>
+                                        <hr>
+                                    <% } else if (order.status==='Cancelled' ) { %>
+                                        <h6 class="fw-bold"><span>Order ID: <%= order._id %></span></h6>
+                                        <h6 class="fw-normal font_12 mt-3">
+                                            <strong>STATUS:</strong>
+                                            <span class="badge bg-danger">
+                                                <%= order.status %>
+                                            </span>
+                                        </h6>
+                                        <h6 class="font_12 mt-3">PAYMENT : <%= order.payment_method %>
+                                        </h6>
+                                    <% if (order.payment_method==='cod' ) {%>
+                                        <h6>[ Order cancelled ]</h6>
+                                        <% } else { %>
+                                    <b><span style="font-size: 14px;"><span class="col_yell mt-3">$<%= order.total %></span> will be credited to your wallet within 10 days</span></b>
+                                            <% } %>
+                                            
+                                        <div class="cart_3l1i2">
+                                            <h6><a class="button" data-bs-toggle="modal" data-bs-target="#orderDetailsModal-<%= order._id %>"
+                                                    data-order-id="<%= order._id %>">VIEW DETAILS</a></h6>
+                                        </div>
+                                    <hr>
+                                    <% } else if (order.status==='Returned' ) { %>
+                                        <h6 class="fw-bold"><span>Order ID: <%= order._id %></span></h6>
+                                        <h6 class="fw-normal font_12 mt-3">
+                                            <strong>STATUS:</strong>
+                                            <span class="badge bg-danger">
+                                                <%= order.status %>
+                                            </span>
+                                        </h6>
+                                        <h6 class="font_12 mt-3">PAYMENT : <%= order.payment_method %>
+                                        </h6>
+                                        <h6>[ Order Returned ]</h6>
+                                       <b><span style="font-size: 14px;"><span class="col_yell mt-3">$<%= order.total %></span> will be credited to your wallet within 10 days</span></b>
+                                        <div class="cart_3l1i2">
+                                        <h6><a class="button" data-bs-toggle="modal" data-bs-target="#orderDetailsModal-<%= order._id %>"
+                                                    data-order-id="<%= order._id %>">VIEW DETAILS</a></h6>
+                                        </div>
+                                        <hr>    
+                                    <% } else if (order.status==='Refunded' ) { %>
+                                        <h6 class="fw-bold"><span>Order ID: <%= order._id %></span></h6>
+                                        <h6 class="fw-normal font_12 mt-3">
+                                            <strong>STATUS:</strong>
+                                            <span class="badge bg-success">
+                                                <%= order.status %>
+                                            </span>
+                                        </h6>
+                                        <h6 class="font_12 mt-3">PAYMENT : <%= order.payment_method %>
+                                        </h6>
+                                        <h6>[ <span class="col_yell mt-3">$<%= order.total %></span> Order Refunded to your wallet ]</h6>
+                                        <div class="cart_3l1i2">
+                                        <h6><a class="button" data-bs-toggle="modal" data-bs-target="#orderDetailsModal-<%= order._id %>"
+                                                    data-order-id="<%= order._id %>">VIEW DETAILS</a></h6>
+                                        </div>
+                                        <hr>
+                                        <% } %>
+                             </div>
+                         <% }) %>
                     </div>
                  </div>
             </div>
@@ -86,31 +200,51 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="orderDetailsModalLabel">Order Details</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                    </button>
                 </div>
                 <div class="modal-body" id="orderDetailsModalBody">
-                    <% order.items.forEach(item=> { %>
-                        <div class="col-md-3 ps-0 col-3">
-                            <div class="cart_3l1i">
-                                <a href="/products/details/<%=item.product._id%>"><img src="<%= item.product.image.slice(-1)[0]%>"
-                                        alt="abc" class="w-100"></a>
-                            </div>
-                        </div>
-                        <div class="col-md-9 col-9">
-                            <div class="cart_3l1i1">
-                                <h6 class="fw-bold"><a href="/products/details/<%=item.product._id%>">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Product Name</th>
+                                <th>Image</th>
+                                <th>Quantity</th>
+                                <th>Total Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% order.items.forEach(item=> { %>
+                                <tr>
+                                    <td>
                                         <%= item.product.productName %>
-                                    </a>
-                                </h6>
-                                <p class="fw-bold">Quantity: <%= item.quantity %>
-                                </p>
-                                <p class="fw-bold">Total Price: <span class="col_yell mt-3"><%= item.price * item.quantity %></span>
-                                </p>
-                            </div>
-                        </div>
-                        <% }) %>
+                                    </td>
+                                    <td><img src="<%= item.product.image.slice(-1)[0] %>"
+                                            alt="<%= item.product.productName %>" width="50"></td>
+                                    <td>
+                                        <%= item.quantity %>
+                                    </td>
+                                    <td>
+                                        <%= item.price * item.quantity %>
+                                    </td>
+                                </tr>
+                                <% }) %>
+                        </tbody>
+                    </table>
+
+                    <h5>Deliver to:</h5>
+                    <div style="background-color: lightgrey; padding: 10px;">
+                        <address>
+                            <%= order.address.firstName %>
+                                <%= order.address.lastName %><br />
+                                    <%= order.address.addressLine %><br />
+                                        <%= order.address.locality %>, <%= order.address.city %>
+                                                <%= order.address.postalCode %><br />
+                                                    <%= order.address.state %><br />
+                                                        <%= order.address.landmark %><br />
+                                                            Phone: <%= order.address.phoneNumber %><br />
+                                                                Email: <%= order.address.emailAddress %><br />
+                        </address>
+                    </div>
+
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>

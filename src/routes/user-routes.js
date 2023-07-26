@@ -72,6 +72,23 @@ router.get("/orders",
   checkSession.checkUserBlocked,
   userRender.myOrders
 )
+router.get("/wallet", 
+  checkSession.sessionExists,
+  checkSession.checkUserBlocked,
+  userRender.myWallet
+)
+router.get(
+  "/paypal-success/:addressId",
+  checkSession.sessionExists,
+  checkSession.checkUserBlocked,
+  userController.paypalSuccessPage
+);
+router.get(
+  "/paypal-fail",
+  checkSession.sessionExists,
+  checkSession.checkUserBlocked,
+  userRender.paypalFailPage
+);
 
 //POST METHODS
 
@@ -142,9 +159,29 @@ router.post("/checkout/coupon/apply",
   checkSession.checkUserBlocked,
   userController.applyCouponCode);
 
-  router.post("/checkout/placeOrder",
+  router.post(
+    "/checkout/cod",
     checkSession.sessionExists,
     checkSession.checkUserBlocked,
-  userController.placeOrder);
+    userController.codPlaceOrder
+  );
+
+  router.post(
+    "/checkout/proceedToPaypal",
+    checkSession.sessionExists,
+    checkSession.checkUserBlocked,
+    userController.proceedToPayPal
+  );
+  
+router.post('/order/cancel',
+  checkSession.sessionExists,
+  checkSession.checkUserBlocked,
+  userController.cancelOrder);
+router.post(
+  "/order/return",
+  checkSession.sessionExists,
+  checkSession.checkUserBlocked,
+  userController.returnOrder
+);
 
 module.exports = router;

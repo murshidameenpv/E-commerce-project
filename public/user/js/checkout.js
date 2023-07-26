@@ -22,8 +22,7 @@ document.getElementById("applyCouponBtn")?.addEventListener("click", () => {
     });
 });
 
-
-//MAKE ORDER
+//make order
 document
   .querySelector("#checkout-button")
   ?.addEventListener("click", async function (event) {
@@ -59,9 +58,9 @@ document
       return;
     }
     // Get the selected payment method
-      const paymentMethod = paymentMethodElement.value;
-      const netAmountElement = document.querySelector("#netAmount");
-      const netAmount = netAmountElement.getAttribute("data-netamount")
+    const paymentMethod = paymentMethodElement.value;
+    const netAmountElement = document.querySelector("#netAmount");
+    const netAmount = netAmountElement.getAttribute("data-netamount");
     const result = await Swal.fire({
       title: "Are you sure?",
       text: "Once confirmed, your order will be placed.",
@@ -73,23 +72,41 @@ document
     });
     if (result.isConfirmed) {
       try {
-        await axios.post("/checkout/placeOrder", {
-          paymentMethod,
-          addressId,
-          netAmount,
-        })
-        .then((response) => {
-              const responseData = response.data;
-              Swal.fire({
-                title: responseData.title,
-                text: responseData.message,
-                icon: responseData.icon,
-                confirmButtonColor: "#1d4289",
-              });
-        })
-      .then(() => {
-          window.location.href = "/orders";
-        });
+        let response;
+        if (paymentMethod === "paypal") {
+          // Make an axios request to the /checkout/proceedToPaypal route
+          response = await axios.post("/checkout/proceedToPaypal", {
+            addressId,
+            netAmount,
+          });
+            window.location.href = response.data.approvalUrl;
+
+        } else if (paymentMethod === "cod") {
+          // Make an axios request to the /checkout/codPlaceOrder route
+          response = await axios.post("/checkout/cod", {
+            paymentMethod,
+            addressId,
+            netAmount,
+          });
+        
+          const responseData = response.data;
+          if (responseData.message === "Insufficient balance in wallet") {
+            Swal.fire({
+              title: "Error!",
+              text: responseData.message,
+              icon: responseData.icon,
+              confirmButtonColor: "#1d4289",
+            });
+          } else {
+            Swal.fire({
+              title: responseData.title,
+              text: responseData.message,
+              icon: responseData.icon,
+              confirmButtonColor: "#1d4289",
+            });
+          }
+          location.reload();
+        }
       } catch (error) {
         Swal.fire({
           title: "Error!",
@@ -99,4 +116,3 @@ document
       }
     }
   });
-

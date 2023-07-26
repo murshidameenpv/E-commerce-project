@@ -6,6 +6,8 @@
   const cartDb = require('../models/cartSchema')
   const wishlistDb = require('../models/wishlistSchema')
   const orderDb = require('../models/orderSchema')
+  const walletDb = require('../models/walletSchema')
+  
   //RENDER HOME
 exports.home = async(req, res) => { 
     const superDeal = await productDb.find({ listed: false, stock: { $gt: 0 } }).limit(8).populate('brand').exec();
@@ -359,6 +361,7 @@ exports.addAddressPage = async (req, res) => {
         total,
         discount,
         netAmount,
+      
       });
     } catch (error) {
       console.error(error);
@@ -371,9 +374,7 @@ exports.addAddressPage = async (req, res) => {
 
 exports.myOrders = async (req, res) => {
   try {
-    // Find the userId from the session
     const userId = req.session.user._id;
-
     // Find the orders of that user from the OrderDb
     const orders = await orderDb
       .find({ user: userId })
@@ -384,8 +385,26 @@ exports.myOrders = async (req, res) => {
       orders,
     });
   } catch (error) {
-    // Handle any error that occurred during the process
     console.error("Error fetching orders:", error);
     res.send("Internal server error");
   }
 };
+
+exports.myWallet = async (req, res) => {
+      const userId = req.session.user._id;
+      const wallet = await walletDb.findOne({ user: userId });
+  try {
+     const balance = wallet ? wallet.balance : 0;
+     res.render("user/wallet", { user: req.session.user, balance,wallet });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Server Error");
+  }
+};
+
+
+//RENDER FORGOT PASSWORD 
+exports.paypalFailPage = (req, res) => {
+  res.render("user/paypalError");
+};
+

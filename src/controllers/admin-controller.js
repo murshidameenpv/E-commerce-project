@@ -6,6 +6,7 @@ const brandDb = require('../models/brandSchema')
 const couponDb = require('../models/couponSchema')
 const orderDb = require('../models/orderSchema')
 const sharp = require("sharp");
+const walletDb = require("../models/walletSchema");
 
 exports.adminLogin = (req, res) => {
   res.redirect(302, "/admin");
@@ -387,7 +388,10 @@ exports.rejectOrderByAdmin = async (req, res) => {
 exports.processOrderByAdmin = async (req, res) => {
   try {
     const orderId = req.query.orderId;
-    await orderDb.findByIdAndUpdate(orderId, { status: "Processing" });
+    await orderDb.findByIdAndUpdate(orderId, {
+      status: "Processing",
+      processedAt: new Date(),
+    });
     res.send({success:true});
   } catch (error) {
     console.error(error);
@@ -398,7 +402,10 @@ exports.processOrderByAdmin = async (req, res) => {
 exports.shipOrderByAdmin = async (req, res) => {
   try {
     const orderId = req.query.orderId;
-    await orderDb.findByIdAndUpdate(orderId, { status: "Shipped" });
+    await orderDb.findByIdAndUpdate(orderId, {
+      status: "Shipped",
+      shippedAt: new Date(),
+    });
     res.send({ success: true });
   } catch (error) {
     console.error(error);
@@ -409,7 +416,39 @@ exports.shipOrderByAdmin = async (req, res) => {
 exports.deliverOrderByAdmin = async (req, res) => {
   try {
     const orderId = req.query.orderId;
-    await orderDb.findByIdAndUpdate(orderId, { status: "Delivered" });
+    await orderDb.findByIdAndUpdate(orderId, {
+      status: "Delivered",
+      deliveredAt: new Date(),
+    });
+    res.send({ success: true });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server error");
+  }
+};
+
+
+exports.refundAmountByAdmin = async (req, res) => {
+  try {
+    const orderId = req.query.orderId;
+    const order = await orderDb.findById(orderId);
+    order.status = "Refunded";
+    order.refundedAt = new Date();
+    await order.save();
+    const total = order.total;
+    const userId = order.user;
+    let wallet = await walletDb.findOne({ user: userId });
+    if (!wallet) {
+      wallet = new walletDb({ user: userId });
+    }
+    wallet.balance += total;
+    wallet.transactions.push({
+      order: orderId,
+      walletUpdate: "credited",
+      date: new Date(),
+      total:total
+    });
+    await wallet.save();
     res.send({ success: true });
   } catch (error) {
     console.error(error);

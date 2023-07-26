@@ -56,11 +56,6 @@ router.get(
   checkSession.sessionExists,
   adminRender.adminCouponManagement
 )
-router.get(
-  "/admin/charts",
-  checkSession.sessionExists,
-  adminRender.adminChartManagement
-);
 //POST METHODS
 router.post(
   "/adminLogout", adminController.adminLogout);
@@ -183,6 +178,11 @@ router.post(
   "/api/admin/order/deliver",
   checkSession.sessionExists,
   adminController.deliverOrderByAdmin
+)
+router.post(
+  "/api/admin/order/refund",
+  checkSession.sessionExists,
+  adminController.refundAmountByAdmin
 )
 
 module.exports = router;

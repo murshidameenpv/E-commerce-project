@@ -507,7 +507,19 @@ background:#f7ba01;
 color:#fff; 
  }
 /*********************common_end****************/
+.bg-orange {
+  background-color: #FD7F20;
+  color: white;
+}
 
+.bg-blue {
+  background-color: blue;
+  color: white;
+}
+.bg-grey {
+  background-color: rgb(125, 125, 133);
+  color: white;
+}
 
 /*********************subs****************/
 .subs_1l span{

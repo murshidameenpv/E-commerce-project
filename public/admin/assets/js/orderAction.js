@@ -38,10 +38,12 @@ document.querySelectorAll(".modal .btn-primary").forEach((button) => {
       });
   });
 });
+function viewOrder(orderId) {
+  window.location.href = `/admin/orders/details?orderId=${orderId}`;
+}
 
 
 function processOrder(orderId) {
-  // Make an Axios call to the /api/admin/order/process route
   axios
     .post(`/api/admin/order/process?orderId=${orderId}`)
     .then((response) => {
@@ -54,7 +56,6 @@ function processOrder(orderId) {
     });
 }
 function shipOrder(orderId) {
-  // Make an Axios call to the /api/admin/order/process route
   axios
     .post(`/api/admin/order/ship?orderId=${orderId}`)
     .then((response) => {
@@ -67,7 +68,6 @@ function shipOrder(orderId) {
     });
 }
 function deliverOrder(orderId) {
-  // Make an Axios call to the /api/admin/order/process route
   axios
     .post(`/api/admin/order/deliver?orderId=${orderId}`)
     .then((response) => {
@@ -79,3 +79,20 @@ function deliverOrder(orderId) {
       console.error(error);
     });
 }
+function refundOrder(orderId) {
+  if (confirm("Are you sure you want to refund this order?")) {
+    axios
+      .post(`/api/admin/order/refund?orderId=${orderId}`)
+      .then((response) => {
+        // Handle successful response
+        if (response.data.success) {
+          location.reload();
+        }
+      })
+      .catch((error) => {
+        // Handle error response
+        console.error(error);
+      });
+  }
+}
+

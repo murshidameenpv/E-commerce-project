@@ -63,12 +63,6 @@ exports.adminProductManagement = async (req, res) => {
   }
 };
 
-
-
-exports.adminDashboard = (req, res) => {
-  res.render("admin/index");
-};
-
 exports.adminCategoryManagement = async (req, res) => {
   try {
     const categories = await categoryDb.find().exec();
@@ -111,57 +105,72 @@ exports.adminCouponManagement = async (req, res) => {
   }
 };
 
-
-exports.adminChartManagement = (req, res) => {
-  res.render("admin/charts");
-};
-
 exports.adminOrderManagement = async (req, res) => {
   try {
+    const page = req.query.page || 1; // Get the current page from the query parameter (default to 1 if not provided)
+    const limit = 10; 
+    const count = await orderDb.countDocuments(); 
+    const totalPages = Math.ceil(count / limit); 
+    const skip = (page - 1) * limit;
     const orders = await orderDb
       .find()
       .sort({ createdAt: -1 })
       .populate({ path: "user", select: "name" }) // Populate only the 'name' field of the 'user' reference
-      .populate({ path: "items.product", select: "productName image" }); // Populate the 'name' and 'image' fields of the 'items.product' reference
+      .populate({ path: "items.product", select: "productName image" }) // Populate the 'name' and 'image' fields of the 'items.product' reference
+      .skip(skip)
+      .limit(limit)
+      .exec();
+    const shippedOrder = await orderDb
+      .find({ status: "Shipped" })
+      .sort({ shippedAt: -1 })
+      .populate({ path: "user", select: "name" })
+      .populate({ path: "items.product", select: "productName image" });
 
-const rejectedOrder = await orderDb
-  .find({ status: "Rejected" })
-  .sort({ createdAt: -1 })
-  .populate({ path: "user", select: "name" })
-  .populate({ path: "items.product", select: "productName image" });
+    const placedOrder = await orderDb
+      .find({ status: "Placed" })
+      .sort({ createdAt: -1 })
+      .populate({ path: "user", select: "name" })
+      .populate({ path: "items.product", select: "productName image" });
+    const processingOrder = await orderDb
+      .find({ status: "Processing" })
+      .sort({ processedAt: -1 })
+      .populate({ path: "user", select: "name" })
+      .populate({ path: "items.product", select: "productName image" });
 
-const shippedOrder = await orderDb
-  .find({ status: "Shipped" })
-  .sort({ createdAt: -1 })
-  .populate({ path: "user", select: "name" })
-  .populate({ path: "items.product", select: "productName image" });
+    const deliveredOrder = await orderDb
+      .find({ status: "Delivered" })
+      .sort({ deliveredAt: -1 })
+      .populate({ path: "user", select: "name" })
+      .populate({ path: "items.product", select: "productName image" });
 
-const processingOrder = await orderDb
-  .find({ status: "Processing" })
-  .sort({ createdAt: -1 })
-  .populate({ path: "user", select: "name" })
-  .populate({ path: "items.product", select: "productName image" });
+    const cancelledOrder = await orderDb
+      .find({ status: "Cancelled" })
+      .sort({ createdAt: -1 })
+      .populate({ path: "user", select: "name" })
+      .populate({ path: "items.product", select: "productName image" });
+    const returnedOrder = await orderDb
+      .find({ status: "Returned" })
+      .sort({ returnedAt: -1 })
+      .populate({ path: "user", select: "name" })
+      .populate({ path: "items.product", select: "productName image" });
+    const refundedOrder = await orderDb
+      .find({ status: "Refunded" })
+      .sort({ refundedAt: -1 })
+      .populate({ path: "user", select: "name" })
+      .populate({ path: "items.product", select: "productName image" });
 
-const deliveredOrder = await orderDb
-  .find({ status: "Delivered" })
-  .sort({ createdAt: -1 })
-  .populate({ path: "user", select: "name" })
-  .populate({ path: "items.product", select: "productName image" });
-
-const canceledOrder = await orderDb
-  .find({ status: "Canceled" })
-  .sort({ createdAt: -1 })
-  .populate({ path: "user", select: "name" })
-  .populate({ path: "items.product", select: "productName image" });
-
-   res.render("admin/orders", {
-     orders,
-     rejectedOrder,
-     shippedOrder,
-     processingOrder,
-     deliveredOrder,
-     canceledOrder,
-   });
+    res.render("admin/orders", {
+      orders,
+      placedOrder,
+      shippedOrder,
+      processingOrder,
+      deliveredOrder,
+      cancelledOrder,
+      returnedOrder,
+      refundedOrder,
+      totalPages,
+      currentPage: parseInt(page),
+    });
   } catch (err) {
     console.error(err);
     res.status(500).send(" Internal Server error");
@@ -169,15 +178,14 @@ const canceledOrder = await orderDb
 };
 
 
-exports.  adminViewOrderDetails = async (req, res) => {
+exports.adminViewOrderDetails = async (req, res) => {
   const orderId = req.query.orderId;
   try {
     const order = await orderDb.findOne({ _id: orderId }).populate({
       path: "items.product",
       populate: ["brand", "category"],
     });
-    const user = await userDb.findOne({ _id: order.user });
-    const address = user.address.id(order.address);
+  const address = order.address;
     res.render("admin/orderDetails", {
       order,
       address,
@@ -188,3 +196,19 @@ exports.  adminViewOrderDetails = async (req, res) => {
   }
 };
 
+exports.adminDashboard = async (req, res) => {
+  const deliveredOrders = await orderDb
+    .find({ status: "Delivered" })
+    .populate("user", "name")
+    .select("user total createdAt payment_method deliveredAt")
+    .sort({ deliveredAt: -1 });
+  const totalAmount = deliveredOrders.reduce( (acc, order) => acc + order.total,0 );
+  const userCount = await userDb.countDocuments();
+  const orderCount = await orderDb.countDocuments();
+  res.render("admin/index", {
+    deliveredOrders,
+    totalAmount,
+    userCount,
+    orderCount,
+  });
+};

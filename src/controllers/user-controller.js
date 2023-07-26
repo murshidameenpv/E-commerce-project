@@ -7,6 +7,10 @@ const wishlistDb = require("../models/wishlistSchema");
 const productDb = require("../models/productSchema");
 const couponDb = require("../models/couponSchema")
 const orderDb = require('../models/orderSchema')
+const walletDb = require('../models/walletSchema')
+const paypal = require('paypal-rest-sdk');
+const { log } = require("console");
+
 
 //USER SIGNUP
 exports.userSignUp = async (req, res) => {
@@ -453,47 +457,197 @@ exports.applyCouponCode = async (req, res) => {
   }
 };
 
-exports.placeOrder = async (req, res) => {
+exports.codPlaceOrder = async (req, res) => {
   try {
-    // Extract the body data from the request
     const { paymentMethod, addressId, netAmount } = req.body;
-    // Extract userId from req.session.user._id
     const userId = req.session.user._id;
-    // Create an order
-    const order = new orderDb({
-      user: userId,
-      total: netAmount,
-      status: "Placed",
-      payment_method: paymentMethod,
-      address: addressId,
-    });
-    // Find the products in the cart using userId
-    const cart = await cartDb.findOne({ userId });
-    // Populate the quantity and add that product reference and quantity in cartDb to that items array
-    for (const item of cart.products) {
-      // Find the product price from product db using populate
-      const product = await productDb.findById(item.productId);
-      order.items.push({
-        product: item.productId,
-        quantity: item.quantity,
-        price: item.quantity * product.price,
+    const user = await userDb.findById(userId);
+    const address = user.address.find((addr) => addr._id.toString() === addressId);
+      // Create an order
+      const order = new orderDb({
+        user: userId,
+        total: netAmount,
+        status: "Placed",
+        payment_method: paymentMethod,
+        address: address,
       });
-      // Decrease the stock of the product by the quantity ordered
-      product.stock -= item.quantity;
-      await product.save();
-    }
-    // Save the order
-    await order.save();
-    // Delete the user's cart
-    await cartDb.findOneAndDelete({ userId });
-    res.status(200).json({
-      success: true,
-      message: "Order Placed Successfully",
-      icon: "success",
-    });
+      // Find the products in the cart using userId
+      const cart = await cartDb.findOne({ userId });
+      // Populate the quantity and add that product reference and quantity in cartDb to that items array
+      for (const item of cart.products) {
+        const product = await productDb.findById(item.productId);
+        order.items.push({
+          product: item.productId,
+          quantity: item.quantity,
+          price: item.quantity * product.price,
+        });
+        product.stock -= item.quantity;
+        await product.save();
+      }
+      // Save the order
+      await order.save();
+      // Delete the user's cart
+      await cartDb.findOneAndDelete({ userId });
+      res.status(200).json({
+        success: true,
+        message: "Order Placed Successfully",
+        icon: "success",
+      });
+    
   } catch (error) {
     console.error(error);
     res.status(500).send("Error Placing Order");
   }
 };
 
+const { PAYPAL_CLIENT_KEY, PAYPAL_SECRET_KEY, PAYPAL_MODE } = process.env;
+paypal.configure({
+  mode: PAYPAL_MODE,
+  client_id: PAYPAL_CLIENT_KEY,
+  client_secret: PAYPAL_SECRET_KEY,
+});
+
+exports.proceedToPayPal = async (req, res) => {
+  try {
+    const { addressId, netAmount } = req.body;
+    const netAmountNumber = Number(netAmount); 
+      const createPayment = {
+        intent: "sale",
+        payer: {
+          payment_method: "paypal",
+        },
+
+        redirect_urls: {
+          return_url: `http://localhost:8000/paypal-success/${addressId}?netAmount=${netAmountNumber.toFixed(2)}`,
+          cancel_url: "http://localhost:8000/paypal-failed",
+        },
+        transactions: [
+          {
+            amount: {
+              total: netAmountNumber.toFixed(2), // Replace with actual total amount
+              currency: "USD", // Replace with actual currency
+            },
+            description: "Shop Pay",
+          },
+        ],
+      };
+      paypal.payment.create(createPayment, function (error, payment) {
+        if (error) {
+          throw error;
+        } else {
+          for (let i = 0; i < payment.links.length; i++) {
+            if (payment.links[i].rel === "approval_url") {
+              res.send({ approvalUrl: payment.links[i].href });
+            }
+          }
+        }
+      });
+    
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+exports.paypalSuccessPage = async (req, res) => {
+  try {
+    const paymentId = req.query.paymentId;
+    const payerId = req.query.PayerID;
+    const executePayment = {
+      payer_id: payerId,
+    };
+    paypal.payment.execute(
+      paymentId,
+      executePayment,
+      async function (error, payment) {
+        if (error) {
+          console.log(error);
+          res.send("Error executing payment");
+        } else { 
+          const addressId = req.params.addressId;
+          const netAmount = req.query.netAmount;
+          const userId = req.session.user._id;
+          const user = await userDb.findById(userId);
+          const address = user.address.find(
+                 (addr) => addr._id.toString() === addressId
+               );
+               // Create an order
+               const order = new orderDb({
+                 user: userId,
+                 total: netAmount,
+                 status: "Placed",
+                 payment_method: 'paypal',
+                 address: address,
+               });
+          const cart = await cartDb.findOne({ userId });
+           if (!cart || cart.products.length === 0) {
+             // Redirect the user to the /orders page
+             res.redirect("/orders");
+             return;
+           } else {
+               for (const item of cart.products) {
+                 const product = await productDb.findById(item.productId);
+                 order.items.push({
+                   product: item.productId,
+                   quantity: item.quantity,
+                   price: item.quantity * product.price,
+                 });
+                 product.stock -= item.quantity;
+                 await product.save();
+               }
+           }
+               // Save the order
+               await order.save();
+               // Delete the user's cart
+               await cartDb.findOneAndDelete({ userId });
+                res.render("user/paypalSuccess", {
+                  user: req.session.user,
+                  paymentID: paymentId,
+                });
+        }
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+  exports.cancelOrder = async (req, res) => {
+    try {
+      const orderId = req.query.orderId;
+      await orderDb.findByIdAndUpdate(
+        orderId,
+        { status: "Cancelled" },
+        { new: true }
+      );
+      res.json({
+        title: "Success!",
+        message: "Order canceled Successfully",
+        icon: "success",
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error cancelling order" });
+    }
+  };
+
+  exports.returnOrder = async (req, res) => {
+    try {
+      const orderId = req.query.orderId;
+      await orderDb.findByIdAndUpdate(
+        orderId, {
+        status: "Returned",
+        returnedAt: new Date()
+      });
+      res.json({
+        title: "Success!",
+        message: "Item returned Successfully",
+        icon: "success",
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Error returning order" });
+    }
+  }
+
+
+  

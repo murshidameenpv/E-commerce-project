@@ -1,0 +1,71 @@
+<%-include('includes/header')%>
+    <%-include('includes/navbar')%>
+
+        <section id="center" class="center_o pt-4 pb-4 bg-light">
+            <div class="container-xl">
+                <div class="row center_o1 text-center">
+                    <div class="col-md-12">
+                        <h1>WALLET</h1>
+                        <h6 class="d-inline-block  font_14 col_yell bg-white"><a class="col_light" href="#">Home</a>
+                            <span class="me-2 ms-2">/</span>My wallet</h6>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    <section id="cart_page" class="cart pt-4 pb-4">
+        <div class="container-xl">
+            <div class="cart_2 row">
+                <div class="col-md-12">
+                    <div class="container">
+                        <div class="card text-white bg-secondary mb-3">
+                            <div class="card-body">
+                                <h5 class="card-title">Current balance:</h5>
+                                <h3 class="card-text wallet-amount">$ <%= balance %>
+                                </h3>
+                            </div>
+                        </div>
+    
+                        <h2>Transactions</h2>   
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Amount</th>
+                                    <th>Type</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (wallet) { %>
+                                <% wallet.transactions.forEach(transaction=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= transaction.date.toLocaleDateString() %>
+                                        </td>
+                                        <% if (transaction.walletUpdate==='credited' ) { %>
+                                            <td>$<%= transaction.total %>
+                                            </td>
+                                            <% } else { %>
+                                                <td>-$<%= transaction.total %>
+                                                </td>
+                                                <% } %>
+                                                <td class="<%= transaction.walletUpdate === 'credited' ? 'text-success' : 'text-danger' %>">
+                                                    <%= transaction.walletUpdate %>
+                                                </td>
+                                    </tr>
+                                    <% }) %>
+                                    <% } else { %>
+                                        <p>Wallet is empty</p>
+                                        <% } %>
+                            </tbody>
+                        </table>
+                    </div>
+    
+                </div>
+            </div>
+    
+        </div>
+    </section>
+       
+
+                <%-include('includes/footer')%>

@@ -237,21 +237,21 @@
             <ul class="mb-0">
                 <% if (currentPage> 1) { %>
                     <li>
-                        <a href="#" onclick="event.preventDefault(); goToPage(<%= currentPage - 1 %>)">
+                        <a href="#" onclick="event.preventDefault(); goToPage('<%= currentPage - 1 %>')">
                             <i class="fa fa-chevron-left"></i>
                         </a>
                     </li>
                     <% } %>
                         <% for (let i=1; i <=totalPages; i++) { %>
                             <li class="<%= i === currentPage ? 'act' : '' %>">
-                                <a href="#" onclick="event.preventDefault(); goToPage(<%= i %>)">
+                                <a href="#" onclick="event.preventDefault(); goToPage('<%= i %>')">
                                     <%= i %>
                                 </a>
                             </li>
                             <% } %>
                                 <% if (currentPage < totalPages) { %>
                                     <li>
-                                        <a href="#" onclick="event.preventDefault(); goToPage(<%= currentPage + 1 %>)">
+                                        <a href="#" onclick="event.preventDefault(); goToPage('<%= currentPage + 1 %>')">
                                             <i class="fa fa-chevron-right"></i>
                                         </a>
                                     </li>

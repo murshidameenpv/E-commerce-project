@@ -1,0 +1,28 @@
+<%-include('includes/header')%>
+    <%-include('includes/navbar')%>
+
+        <section id="cart_page" class="cart pt-4 pb-4">
+            <div class="container-xl">
+                <div class="cart_2 row">
+                    <div class="col-md-12">
+                        ...
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <%-include('includes/footer')%>
+
+            <script>
+                Swal.fire({
+                    title: "Order Successfully Placed",
+                    text: "Thank you for your purchase!",
+                    icon: "success",
+                    confirmButtonText: "OK",
+                    confirmButtonColor: "#1d4289"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = '/orders';
+                    }
+                });
+            </script>
