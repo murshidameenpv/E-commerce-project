@@ -81,7 +81,7 @@ router.get(
   "/paypal-success/:addressId",
   checkSession.sessionExists,
   checkSession.checkUserBlocked,
-  userController.paypalSuccessPage
+  userRender.paypalSuccessPage
 );
 router.get(
   "/paypal-fail",
@@ -171,6 +171,18 @@ router.post("/checkout/coupon/apply",
     checkSession.sessionExists,
     checkSession.checkUserBlocked,
     userController.proceedToPayPal
+  );
+  router.post(
+    "/checkout/createRazorPayOrderInstance",
+    checkSession.sessionExists,
+    checkSession.checkUserBlocked,
+    userController.createRazorPayOrderInstance
+  );
+  router.post(
+    "/checkout/razorpayCreateOrder",
+    checkSession.sessionExists,
+    checkSession.checkUserBlocked,
+    userController.razorpayCreateOrder
   );
   
 router.post('/order/cancel',

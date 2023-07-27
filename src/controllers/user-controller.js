@@ -9,7 +9,8 @@ const couponDb = require("../models/couponSchema")
 const orderDb = require('../models/orderSchema')
 const walletDb = require('../models/walletSchema')
 const paypal = require('paypal-rest-sdk');
-const { log } = require("console");
+const Razorpay = require("razorpay");
+
 
 
 //USER SIGNUP
@@ -489,7 +490,6 @@ exports.codPlaceOrder = async (req, res) => {
       // Delete the user's cart
       await cartDb.findOneAndDelete({ userId });
       res.status(200).json({
-        success: true,
         message: "Order Placed Successfully",
         icon: "success",
       });
@@ -499,6 +499,7 @@ exports.codPlaceOrder = async (req, res) => {
     res.status(500).send("Error Placing Order");
   }
 };
+
 
 const { PAYPAL_CLIENT_KEY, PAYPAL_SECRET_KEY, PAYPAL_MODE } = process.env;
 paypal.configure({
@@ -524,8 +525,8 @@ exports.proceedToPayPal = async (req, res) => {
         transactions: [
           {
             amount: {
-              total: netAmountNumber.toFixed(2), // Replace with actual total amount
-              currency: "USD", // Replace with actual currency
+              total: netAmountNumber.toFixed(2), 
+              currency: "USD",
             },
             description: "Shop Pay",
           },
@@ -548,68 +549,100 @@ exports.proceedToPayPal = async (req, res) => {
   }
 };
 
-exports.paypalSuccessPage = async (req, res) => {
+const { RAZORPAY_CLIENT_KEY, RAZORPAY_SECRET_KEY } = process.env;
+const razorpayInstance = new Razorpay({
+  key_id: RAZORPAY_CLIENT_KEY,
+  key_secret: RAZORPAY_SECRET_KEY,
+});
+exports.createRazorPayOrderInstance = async (req, res) => {
   try {
-    const paymentId = req.query.paymentId;
-    const payerId = req.query.PayerID;
-    const executePayment = {
-      payer_id: payerId,
+    const { netAmount } = req.body;
+    const options = {
+      amount: netAmount * 100,
+      currency: "INR",
+      receipt: "murshidmonpv@gmail.com",
     };
-    paypal.payment.execute(
-      paymentId,
-      executePayment,
-      async function (error, payment) {
-        if (error) {
-          console.log(error);
-          res.send("Error executing payment");
-        } else { 
-          const addressId = req.params.addressId;
-          const netAmount = req.query.netAmount;
-          const userId = req.session.user._id;
-          const user = await userDb.findById(userId);
-          const address = user.address.find(
-                 (addr) => addr._id.toString() === addressId
-               );
-               // Create an order
-               const order = new orderDb({
-                 user: userId,
-                 total: netAmount,
-                 status: "Placed",
-                 payment_method: 'paypal',
-                 address: address,
-               });
-          const cart = await cartDb.findOne({ userId });
-           if (!cart || cart.products.length === 0) {
-             // Redirect the user to the /orders page
-             res.redirect("/orders");
-             return;
-           } else {
-               for (const item of cart.products) {
-                 const product = await productDb.findById(item.productId);
-                 order.items.push({
-                   product: item.productId,
-                   quantity: item.quantity,
-                   price: item.quantity * product.price,
-                 });
-                 product.stock -= item.quantity;
-                 await product.save();
-               }
-           }
-               // Save the order
-               await order.save();
-               // Delete the user's cart
-               await cartDb.findOneAndDelete({ userId });
-                res.render("user/paypalSuccess", {
-                  user: req.session.user,
-                  paymentID: paymentId,
-                });
-        }
+    razorpayInstance.orders.create(options, async (err, order) => {
+      if (!err) {
+        const userId = req.session.user._id;
+        const user = await userDb.findOne({ _id: userId });
+
+        // Send the response with the user's name, email, and contact information
+        res.status(200).send({
+          success: true,
+          msg: "Order Created",
+          order_id: order.id,
+          amount: netAmount * 100,
+          key_id: RAZORPAY_CLIENT_KEY,
+          contact: user.phone,
+          name: user.name,
+          email: user.email,
+        });
+      } else {
+        res.status(500).send("Order creation failed in razorpay");
       }
-    );
+    });
   } catch (error) {
     console.log(error);
   }
 };
+
+exports.razorpayCreateOrder = async (req, res) => {
+  try {
+    const { razorpay_payment_id, razorpay_order_id, netAmount, addressId } = req.body;
+    const payment = await razorpayInstance.payments.fetch(razorpay_payment_id);
+    if (payment.status === "captured" && payment.order_id === razorpay_order_id) {
+          const userId = req.session.user._id;
+          const user = await userDb.findById(userId);
+          const address = user.address.find(
+            (addr) => addr._id.toString() === addressId);
+          const order = new orderDb({
+            user: userId,
+            total: netAmount,
+            status: "Placed",
+            payment_method: "razorpay",
+            address: address,
+          });
+          const cart = await cartDb.findOne({ userId });
+          if (!cart || cart.products.length === 0) {
+            // Redirect the user to the /orders page
+            res.redirect("/orders");
+            return;
+          } else {
+            for (const item of cart.products) {
+              const product = await productDb.findById(item.productId);
+              order.items.push({
+                product: item.productId,
+                quantity: item.quantity,
+                price: item.quantity * product.price,
+              });
+              product.stock -= item.quantity;
+              await product.save();
+            }
+          }
+          // Save the order
+          await order.save();
+          // Delete the user's cart
+          await cartDb.findOneAndDelete({ userId });
+          res
+            .status(200)
+            .json({
+              title: "Success!",
+              message: "Successfully ordered",
+              icon: "success",
+            });
+      
+    } else {
+      // Payment is not verified
+      // Send an error response
+      res.status(400).send({ success: false });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error creating order");
+  }
+};
+
 
   exports.cancelOrder = async (req, res) => {
     try {

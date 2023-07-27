@@ -423,7 +423,7 @@
 														</span>
 													</td>
 													<td class="cell">
-														<% if (order.payment_method==='paypal' || order.payment_method==='wallet') { %>
+														<% if (order.payment_method==='paypal' || order.payment_method==='wallet' || order.payment_method==='razorpay') { %>
 															<button type="button" class="btn btn-primary" onclick="refundOrder('<%= order._id %>')">Refund</button>
 															<% } else {%>
 																<span>____</span>
@@ -482,7 +482,7 @@
 														</span>
 													</td>
 													<td class="cell">
-														<% if (order.payment_method==='paypal' || order.payment_method==='wallet' ) { %>
+														<% if (order.payment_method==='paypal' || order.payment_method==='wallet'|| order.payment_method==='razorpay' ) { %>
 															<button type="button" class="btn btn-primary" onclick="refundOrder('<%= order._id %>')">Refund</button>
 															<% } else {%>
 																<span>____</span>

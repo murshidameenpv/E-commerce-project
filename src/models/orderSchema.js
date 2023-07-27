@@ -46,7 +46,7 @@
 
     payment_method: {
       type: String,
-      enum: ["cod", "paypal", "wallet"],
+      enum: ["cod", "paypal", "wallet", "razorpay"],
       required: true,
     },
 

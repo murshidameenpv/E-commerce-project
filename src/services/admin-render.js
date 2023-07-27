@@ -6,7 +6,8 @@ const bannerDb = require("../models/bannerSchema");
 const brandDb = require("../models/brandSchema");
 const couponDb = require('../models/couponSchema')
 const orderDb = require('../models/orderSchema')
- 
+var moment = require("moment");
+
 exports.adminLogin = (req, res) => {
   let message = "";
   if (req.session.message) {
@@ -200,15 +201,80 @@ exports.adminDashboard = async (req, res) => {
   const deliveredOrders = await orderDb
     .find({ status: "Delivered" })
     .populate("user", "name")
-    .select("user total createdAt payment_method deliveredAt")
-    .sort({ deliveredAt: -1 });
-  const totalAmount = deliveredOrders.reduce( (acc, order) => acc + order.total,0 );
+    .select("user total createdAt payment_method deliveredAt");
+  const totalAmount = deliveredOrders.reduce(
+    (acc, order) => acc + order.total,
+    0
+  );
   const userCount = await userDb.countDocuments();
   const orderCount = await orderDb.countDocuments();
+  const placedCount = await orderDb.countDocuments({ status: "Placed" });
+  const deliveredCount = await orderDb.countDocuments({ status: "Delivered" });
+  const cancelledCount = await orderDb.countDocuments({ status: "Cancelled" });
+  const shippedCount = await orderDb.countDocuments({ status: "Shipped" });
+  const processingCount = await orderDb.countDocuments({
+    status: "Processing",
+  });
+  // Get the start and end dates for the current week
+  const startOfCurrentWeek = moment().startOf("week").toDate();
+  const endOfCurrentWeek = moment().endOf("week").toDate();
+
+  // Get the start and end dates for the previous week
+  const startOfPrevWeek = moment().subtract(1, "week").startOf("week").toDate();
+  const endOfPrevWeek = moment().subtract(1, "week").endOf("week").toDate();
+
+  // Find the total paid amount of delivered orders for each day in the current week
+  const currentWeekSales = await orderDb.aggregate([
+    {
+      $match: {
+        status: "Delivered",
+        deliveredAt: { $gte: startOfCurrentWeek, $lte: endOfCurrentWeek },
+      },
+    },
+    {
+      $group: {
+        _id: { $dayOfWeek: "$createdAt" },
+        totalAmount: { $sum: "$total" },
+      },
+    },
+  ]);
+
+  // Find the total paid amount of delivered orders for each day in the previous week
+  const prevWeekSales = await orderDb.aggregate([
+    {
+      $match: {
+        status: "Delivered",
+        deliveredAt: { $gte: startOfPrevWeek, $lte: endOfPrevWeek },
+      },
+    },
+    {
+      $group: {
+        _id: { $dayOfWeek: "$createdAt" },
+        totalAmount: { $sum: "$total" },
+      },
+    },
+  ]);
+
+  // Convert the aggregation results to arrays
+  const currentWeekSalesArray = Array(7).fill(0);
+  for (const { _id, totalAmount } of currentWeekSales) {
+    currentWeekSalesArray[_id - 1] = totalAmount;
+  }
+  const prevWeekSalesArray = Array(7).fill(0);
+  for (const { _id, totalAmount } of prevWeekSales) {
+    prevWeekSalesArray[_id - 1] = totalAmount;
+  }
   res.render("admin/index", {
     deliveredOrders,
     totalAmount,
     userCount,
     orderCount,
+    placedCount,
+    deliveredCount,
+    cancelledCount,
+    shippedCount,
+    processingCount,
+    currentWeekSalesArray,
+    prevWeekSalesArray,
   });
-};
+}

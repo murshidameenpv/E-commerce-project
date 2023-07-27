@@ -6,7 +6,9 @@
   const cartDb = require('../models/cartSchema')
   const wishlistDb = require('../models/wishlistSchema')
   const orderDb = require('../models/orderSchema')
-  const walletDb = require('../models/walletSchema')
+const walletDb = require('../models/walletSchema')
+const paypal = require("paypal-rest-sdk");
+  
   
   //RENDER HOME
 exports.home = async(req, res) => { 
@@ -403,7 +405,70 @@ exports.myWallet = async (req, res) => {
 };
 
 
-//RENDER FORGOT PASSWORD 
+
+exports.paypalSuccessPage = async (req, res) => {
+  try {
+    const paymentId = req.query.paymentId;
+    const payerId = req.query.PayerID;
+    const executePayment = {
+      payer_id: payerId,
+    };
+    paypal.payment.execute(
+      paymentId,
+      executePayment,
+      async function (error, payment) {
+        if (error) {
+          console.log(error);
+          res.redirect("user/paypalError");
+        } else {
+          const addressId = req.params.addressId;
+          const netAmount = req.query.netAmount;
+          const userId = req.session.user._id;
+          const user = await userDb.findById(userId);
+          const address = user.address.find(
+            (addr) => addr._id.toString() === addressId
+          );
+          // Create an order
+          const order = new orderDb({
+            user: userId,
+            total: netAmount,
+            status: "Placed",
+            payment_method: "paypal",
+            address: address,
+          });
+          const cart = await cartDb.findOne({ userId });
+          if (!cart || cart.products.length === 0) {
+            // Redirect the user to the /orders page
+            res.redirect("/orders");
+            return;
+          } else {
+            for (const item of cart.products) {
+              const product = await productDb.findById(item.productId);
+              order.items.push({
+                product: item.productId,
+                quantity: item.quantity,
+                price: item.quantity * product.price,
+              });
+              product.stock -= item.quantity;
+              await product.save();
+            }
+          }
+          // Save the order
+          await order.save();
+          // Delete the user's cart
+          await cartDb.findOneAndDelete({ userId });
+          res.render("user/paypalSuccess", {
+            user: req.session.user,
+            paymentID: paymentId,
+          });
+        }
+      }
+    );
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 exports.paypalFailPage = (req, res) => {
   res.render("user/paypalError");
 };
