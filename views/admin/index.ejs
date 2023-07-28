@@ -88,7 +88,7 @@
                                 <div class="tab-content" id="dashboard-table-tab-content">
                                     <div class="app-card app-card-orders-table shadow-sm mb-5">
                                         <div class="app-card-body" id="dashboardTable">
-                                            <div class="table-responsive">                    
+                                            <div class="table-responsive">
                                                 <table class="table app-table-hover mb-0 text-left" id="table_dashboard">
                                                     <thead>
                                                         <tr>
@@ -101,30 +101,30 @@
 
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
-                                                        <% deliveredOrders.forEach((order,index)=> { %>
-                                                            <tr>
-                                                                <td class="cell">
-                                                                    <%= index+1 %>
-                                                                </td>
-                                                                <td class="cell">
-                                                                    <%= order.createdAt.toDateString() %>
-                                                                </td>
-                                                                <td class="cell">
-                                                                    <%= order._id %>
-                                                                </td>
-                                                                <td class="cell">
-                                                                    <%= order.user.name %>
-                                                                </td>
-                                                                <td class="cell">
-                                                                    <%= order.total %>
-                                                                </td>
-                                                                <td class="cell">
-                                                                    <%= order.payment_method %>
-                                                                </td>
-                                                            </tr>
-                                                            <% }) %>
-                                                    </tbody>
+                                                        <tbody>
+                                                            <% deliveredOrders.forEach((order,index)=> { %>
+                                                                <tr>
+                                                                    <td class="cell">
+                                                                        <%= index+1 %>
+                                                                    </td>
+                                                                    <td class="cell">
+                                                                        <%= order.deliveredAt.toDateString() %>
+                                                                    </td>
+                                                                    <td class="cell">
+                                                                        <%= order._id %>
+                                                                    </td>
+                                                                    <td class="cell">
+                                                                        <%= order.user.name %>
+                                                                    </td>
+                                                                    <td class="cell">
+                                                                        <%= order.total %>
+                                                                    </td>
+                                                                    <td class="cell">
+                                                                        <%= order.payment_method %>
+                                                                    </td>
+                                                                </tr>
+                                                                <% }) %>
+                                                        </tbody>
                                                 </table>
                                             </div>
                                         </div>
