@@ -3,8 +3,8 @@
 <section id="header" class="bg_light">
     <nav class="navbar navbar-expand-md navbar-light pt-0 pb-0" id="navbar_sticky">
         <div class="container-fluid">
-            <a class="col_dark navbar-brand" href="index.html"><i class="fa fa-shopping-basket col_yell"></i>
-                GadgetsOn</a>
+            <a class="col_dark navbar-brand" href="/home"><i class="fa fa-shopping-basket col_yell"></i>
+                The Gadgets Zone</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                 data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
                 aria-label="Toggle navigation">
@@ -21,22 +21,14 @@
                             <% if (locals.category) { %>
                                 <% category.forEach(Category=> { %>
                                     <li>
-                                        <a class="dropdown-item" href="#">
-                                            <% if (Category.category==='Smart Wearables') { %>
-                                            <i class="fa fa-times-circle-o me-2 col_yell"></i>
-                                             <% } else if (Category.category==='Health Wearables') { %>
-                                            <i class="fa fa-heartbeat me-2 col_yell"></i>
-                                            <% } else if (Category.category==='Speakers' ) { %>
-                                            <i class="fa fa-volume-up me-2 col_yell"></i>
-                                            <% } else if (Category.category==='Headphones' ) { %>
-                                            <i class="fa fa-headphones me-2 col_yell"></i>
-                                          <% } %>
-                                           <%= Category.category %>
-                                         </a>
+                                        <a class="dropdown-item" href="/products?category_id=<%= Category._id %>">
+                                            <%= Category.category %>
+                                        </a>
                                     </li>
                                     <% }) %>
                                         <% } %>
                         </ul>
+
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/home">Home</a>

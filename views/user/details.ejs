@@ -46,18 +46,7 @@
                     <h6 class="d-inline-block bg_red text-white font_12 ps-3 pe-3 pt-2 pb-2 rounded-1" >Out of Stock</h6>
                     <% } %>
                     <h4 class="mt-2"><%=product.productName %></h4>
-                    <h6 class="font_14 mt-3">
-                        <span class="col_yell">
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-star"></i>
-                            <i class="fa fa-sta-or"></i>
-                        </span>
-                        - 2 Customer Reviews
-                    </h6>
-                    <h4 class="mt-3"><span class="col_yell me-3">$<%=product.price %></span> <span
-                            class="font_14  text-decoration-line-through col_light">$78.00</span></h4>
+                    <h6><strong>PRODUCT DETAILS :</strong></h6>
                     <p style="white-space: pre-wrap;"><%=product.description %></p>
                     <h6 class="mb-2">Stock:<%=product.stock %></h6>
                     <input type="number" min="1" max="<%= product.stock %>" value="1" class="form-control mt-2 quantity-box-custom" id="productQuantity">
@@ -78,67 +67,6 @@
                                 </h6>
                                 <% } %>
                     <hr>
-                </div>
-            </div>
-        </div>
-        <div class="detail_4 row mt-4">
-            <div class="col-md-12">
-                <h4>Product Reviews</h4>
-                <hr>
-            </div>
-        </div>
-        <div class="detail_5 row">
-            <div class="col-md-6">
-                <div class="detail_5l">
-                    <div class="detail_5li row mt-3">
-                        <div class="col-md-10 col-sm-10">
-                            <div class="detail_5lir">
-                                <h6 class="font_14">Semper Diam <span class="col_light font_12 ms-2">- November 12,
-                                        2022</span>
-                                    <span class="col_yell font_12 float-end">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star-half-o"></i>
-                                    </span>
-                                </h6>
-                                <p class="mb-0">Cramond Leopard & Pythong Print Anorak Jacket In Beige but also the leap
-                                    into electronic typesetting, remaining.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-            <div class="col-md-6">
-                <div class="detail_5r">
-                    <p>Your email address will not be published. Required fields are marked *</p>
-                    <h6 class="mb-2">YOUR RATING</h6>
-                    <span class="col_yell fs-6">
-                        <i class="fa fa-star-o"></i>
-                        <i class="fa fa-star-o"></i>
-                        <i class="fa fa-star-o"></i>
-                        <i class="fa fa-star-o"></i>
-                        <i class="fa fa-star-o"></i>
-                    </span>
-                    <h6 class="font_13 mt-4 mb-3">YOUR REVIEW *</h6>
-                    <textarea class="form-control form_area"></textarea>
-                    <div class="row detail_5ri mt-4">
-                        <div class="col-md-6">
-                            <div class="detail_5ril">
-                                <h6 class="font_13 mb-3">YOUR NAME *</h6>
-                                <input class="form-control" type="text">
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="detail_5ril">
-                                <h6 class="font_13 mb-3">YOUR EMAIL *</h6>
-                                <input class="form-control" type="text">
-                            </div>
-                        </div>
-                    </div>
-                    <h6 class="mb-0 mt-4"><a class="button" href="#">SUBMIT</a></h6>
                 </div>
             </div>
         </div>

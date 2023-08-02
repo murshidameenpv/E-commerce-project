@@ -29,7 +29,7 @@ exports.home = async(req, res) => {
 
 
 //RENDER LOGIN
-exports.login = (req, res) => {
+exports.login = async(req, res) => {
   if (req.session.user) {
     res.redirect('/home')
   } 
@@ -38,18 +38,20 @@ exports.login = (req, res) => {
     message = req.session.message;
     delete req.session.message// Clear the message from the session
   }
-  res.render('user/login', { message }); // Pass the message to the user-signup view
+    const category = await categoryDb.find();
+  res.render('user/login', { message,category }); // Pass the message to the user-signup view
   }
 
 
 //RENDER SIGNUP
 exports.signup = async (req, res) => {
+  const category = await categoryDb.find();
   let message = ""; 
   if (req.session.message) {
     message = req.session.message;
     delete req.session.message; 
   }
-  res.render('user/signup', { message });
+  res.render('user/signup', { message,category});
 };
 
 
@@ -232,6 +234,7 @@ exports.wishlist = async (req, res) => {
     // Get the user ID from the session
     const userId = req.session.user._id;
     const Wishlist = await wishlistDb.findOne({ userId });
+    const category = await categoryDb.find();
     // Find the products in the wishlist
     let wishlistProducts;
     if (Wishlist) {
@@ -243,6 +246,7 @@ exports.wishlist = async (req, res) => {
       wishlistProducts: wishlistProducts ? wishlistProducts : undefined,
       user: req.session.user,
       Wishlist: Wishlist ? Wishlist : undefined,
+      category,
     });
   } catch (err) {
     // Handle errors
@@ -376,6 +380,7 @@ exports.addAddressPage = async (req, res) => {
 
 exports.myOrders = async (req, res) => {
   try {
+    const category = await categoryDb.find();
     const userId = req.session.user._id;
     // Find the orders of that user from the OrderDb
     const orders = await orderDb
@@ -385,6 +390,7 @@ exports.myOrders = async (req, res) => {
     res.render("user/orders", {
       user: req.session.user,
       orders,
+      category
     });
   } catch (error) {
     console.error("Error fetching orders:", error);
@@ -394,10 +400,11 @@ exports.myOrders = async (req, res) => {
 
 exports.myWallet = async (req, res) => {
       const userId = req.session.user._id;
-      const wallet = await walletDb.findOne({ user: userId });
+  const wallet = await walletDb.findOne({ user: userId });
+  const category = await categoryDb.find();
   try {
      const balance = wallet ? wallet.balance : 0;
-     res.render("user/wallet", { user: req.session.user, balance,wallet });
+     res.render("user/wallet", { user: req.session.user, balance,wallet ,category});
   } catch (error) {
     console.error(error);
     res.status(500).send("Server Error");
