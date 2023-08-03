@@ -5,7 +5,6 @@ const nocache = require("nocache");
 const morgan = require('morgan');
 const sessionMiddleware = require('./middleware/user/sessionMiddleware');
 require("./db/mongodb");
-const path = require("path");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
 const app = express();
 
