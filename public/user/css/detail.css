@@ -1,7 +1,5 @@
 
-.carousel-indicators {
-bottom:-50px;
-}
+.carousel-indicators {bottom:-50px;margin-bottom: 30px;}
 .detail_1l .carousel-indicators [data-bs-target] {
 background-color: #f7ba01;
 }

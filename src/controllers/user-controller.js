@@ -501,11 +501,11 @@ exports.codPlaceOrder = async (req, res) => {
 };
 
 
-const { PAYPAL_CLIENT_KEY, PAYPAL_SECRET_KEY, PAYPAL_MODE } = process.env;
+// const { PAYPAL_CLIENT_KEY, PAYPAL_SECRET_KEY, PAYPAL_MODE } = process.env;
 paypal.configure({
-  mode: PAYPAL_MODE,
-  client_id: PAYPAL_CLIENT_KEY,
-  client_secret: PAYPAL_SECRET_KEY,
+  mode: process.env.PAYPAL_MODE,
+  client_id: process.env.PAYPAL_CLIENT_KEY,
+  client_secret: process.env.PAYPAL_SECRET_KEY,
 });
 
 exports.proceedToPayPal = async (req, res) => {
