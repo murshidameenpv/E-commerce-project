@@ -165,6 +165,12 @@ router.post("/checkout/coupon/apply",
     checkSession.checkUserBlocked,
     userController.codPlaceOrder
   );
+  router.post(
+    "/checkout/wallet",
+    checkSession.sessionExists,
+    checkSession.checkUserBlocked,
+    userController.walletPlaceOrder
+  );
 
   router.post(
     "/checkout/proceedToPaypal",

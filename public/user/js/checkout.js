@@ -81,76 +81,76 @@ document
             addressId,
             netAmount,
           });
-            window.location.href = response.data.approvalUrl;
+          window.location.href = response.data.approvalUrl;
 
         }
         
         
         else if (paymentMethod === "razorpay") {
           // Make an axios request to the /checkout/codPlaceOrder route
-        const response = await axios.post(
-          "/checkout/createRazorPayOrderInstance",
-          {
-            netAmount,
-          }
-        );
-       if (response.data.success) {
-    // Load the Razorpay checkout form
-    const options = {
-      key: response.data.key_id,
-      amount: response.data.amount,
-      currency: "USD",
-      name: "Gadgets On",
-      description: "Complete payment to purchase!",
-      order_id: response.data.order_id,
-      handler: async function (response) {
-        // Payment was successful
-        // Get the payment ID and order ID from the response
-        const { razorpay_payment_id, razorpay_order_id } = response;
+          const response = await axios.post(
+            "/checkout/createRazorPayOrderInstance",
+            {
+              netAmount,
+            }
+          );
+          if (response.data.success) {
+            // Load the Razorpay checkout form
+            const options = {
+              key: response.data.key_id,
+              amount: response.data.amount,
+              currency: "USD",
+              name: "Gadgets On",
+              description: "Complete payment to purchase!",
+              order_id: response.data.order_id,
+              handler: async function (response) {
+                // Payment was successful
+                // Get the payment ID and order ID from the response
+                const { razorpay_payment_id, razorpay_order_id } = response;
 
-        // Make an axios request to your server to create the order in your database
-        const responseData = await axios.post("/checkout/razorpayCreateOrder", {
-          razorpay_payment_id,
-          razorpay_order_id,
-          netAmount,
-          addressId,
-        });
-        // Show a success message using SweetA  lert
-        await Swal.fire({
-          title: "Success!",
-          text: responseData.data.message,
-          icon: responseData.data.icon,
-          confirmButtonColor: "#1d4289",
-        }).then((result) => {
-          if (result.isConfirmed) {
-            // Redirect the user to the checkout page
-            window.location.href = "/checkout";
-          }
-        });
-      },
-      prefill: {
-        name: response.data.name,
-        email: response.data.email,
-        contact: response.data.contact,
-      },
-      theme: {
-        color: "##1d4289",
-      },
-    };
-    const rzp1 = new Razorpay(options);
-    rzp1.open();
-  } else {
-    await Swal.fire({
-      title: "Error!",
-      text: "Something went wrong",
-      icon: "error",
-      confirmButtonColor: "#1d4289",
-    });
+                // Make an axios request to your server to create the order in your database
+                const responseData = await axios.post("/checkout/razorpayCreateOrder", {
+                  razorpay_payment_id,
+                  razorpay_order_id,
+                  netAmount,
+                  addressId,
+                });
+                // Show a success message using SweetA  lert
+                await Swal.fire({
+                  title: "Success!",
+                  text: responseData.data.message,
+                  icon: responseData.data.icon,
+                  confirmButtonColor: "#1d4289",
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    // Redirect the user to the checkout page
+                    window.location.href = "/checkout";
+                  }
+                });
+              },
+              prefill: {
+                name: response.data.name,
+                email: response.data.email,
+                contact: response.data.contact,
+              },
+              theme: {
+                color: "##1d4289",
+              },
+            };
+            const rzp1 = new Razorpay(options);
+            rzp1.open();
+          } else {
+            await Swal.fire({
+              title: "Error!",
+              text: "Something went wrong",
+              icon: "error",
+              confirmButtonColor: "#1d4289",
+            });
           }
           
         
         
-      } else if (paymentMethod === "cod") {
+        } else if (paymentMethod === "cod") {
           // Make an axios request to the /checkout/codPlaceOrder route
           response = await axios.post("/checkout/cod", {
             paymentMethod,
@@ -159,23 +159,30 @@ document
           });
         
           const responseData = response.data;
-          if (responseData.message === "Insufficient balance in wallet") {
-            Swal.fire({
-              title: "Error!",
-              text: responseData.message,
-              icon: responseData.icon,
-              confirmButtonColor: "#1d4289",
-            });
-          } else {
-            Swal.fire({
+                      Swal.fire({
               title: responseData.title,
               text: responseData.message,
               icon: responseData.icon,
               confirmButtonColor: "#1d4289",
             });
-          }
+          location.reload();
+        } else if (paymentMethod === "wallet") {
+          // Make an axios request to the /checkout/codPlaceOrder route
+          response = await axios.post("/checkout/wallet", {
+            paymentMethod,
+            addressId,
+            netAmount,
+          });
+          const responseData = response.data;
+          Swal.fire({
+            title: responseData.title,
+            text: responseData.message,
+            icon: responseData.icon,
+            confirmButtonColor: "#1d4289",
+          });
           location.reload();
         }
+        
       } catch (error) {
         Swal.fire({
           title: "Error!",

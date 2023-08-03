@@ -443,7 +443,6 @@ exports.refundAmountByAdmin = async (req, res) => {
     }
     wallet.balance += total;
     wallet.transactions.push({
-      order: orderId,
       walletUpdate: "credited",
       date: new Date(),
       total:total

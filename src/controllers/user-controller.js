@@ -489,11 +489,74 @@ exports.codPlaceOrder = async (req, res) => {
       await order.save();
       // Delete the user's cart
       await cartDb.findOneAndDelete({ userId });
-      res.status(200).json({
+    res.status(200).json({
+        title:"Success!",
         message: "Order Placed Successfully",
         icon: "success",
       });
     
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Error Placing Order");
+  }
+};
+
+exports.walletPlaceOrder = async (req, res) => {
+  try {
+    const { paymentMethod, addressId, netAmount } = req.body;
+    const userId = req.session.user._id;
+    const user = await userDb.findById(userId);
+    const address = user.address.find(
+      (addr) => addr._id.toString() === addressId
+    );
+    const wallet = await walletDb.findOne({ user: userId });
+    if (!wallet || wallet.balance < netAmount) {
+      return res.json({
+        title: "Error!",
+        message: "Insufficient balance",
+        icon: "error",
+      });
+    } else {
+      // Create an order
+      const order = new orderDb({
+        user: userId,
+        total: netAmount,
+        status: "Placed",
+        payment_method: paymentMethod,
+        address: address,
+      });
+      // Find the products in the cart using userId
+      const cart = await cartDb.findOne({ userId });
+      // Populate the quantity and add that product reference and quantity in cartDb to that items array
+      for (const item of cart.products) {
+        const product = await productDb.findById(item.productId);
+        order.items.push({
+          product: item.productId,
+          quantity: item.quantity,
+          price: item.quantity * product.price,
+        });
+        product.stock -= item.quantity;
+        await product.save();
+      }
+      // Save the order
+      await order.save();
+      // Delete the user's cart
+      await cartDb.findOneAndDelete({ userId });
+      // Deduct the order amount from the user's wallet
+      wallet.balance -= netAmount;
+      wallet.transactions.push({
+        order: order._id,
+        walletUpdate: "debited",
+        total: netAmount,
+        date: new Date(),
+      });
+      await wallet.save();
+      res.status(200).json({
+        title: "Success!",
+        message: "Order Placed Successfully",
+        icon: "success",
+      });
+    }
   } catch (error) {
     console.error(error);
     res.status(500).send("Error Placing Order");
