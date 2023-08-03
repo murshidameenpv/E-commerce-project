@@ -13,7 +13,6 @@ const Razorpay = require("razorpay");
 require('dotenv').config()
 
 
-
 //USER SIGNUP
 exports.userSignUp = async (req, res) => {
   const data = req.body;
@@ -502,13 +501,13 @@ exports.codPlaceOrder = async (req, res) => {
 };
 
 
-// const { PAYPAL_CLIENT_KEY, PAYPAL_SECRET_KEY, PAYPAL_MODE } = process.env;
+const { PAYPAL_CLIENT_KEY, PAYPAL_SECRET_KEY, PAYPAL_MODE } = process.env;
 paypal.configure({
-  mode: process.env.PAYPAL_MODE,
-  client_id: process.env.PAYPAL_CLIENT_KEY,
-  client_secret: process.env.PAYPAL_SECRET_KEY,
+  mode: PAYPAL_MODE,
+  client_id: PAYPAL_CLIENT_KEY,
+  client_secret: PAYPAL_SECRET_KEY,
 });
-
+console.log(PAYPAL_CLIENT_KEY, PAYPAL_SECRET_KEY, PAYPAL_MODE,"---------00000000000");
 exports.proceedToPayPal = async (req, res) => {
   try {
     const { addressId, netAmount } = req.body;
