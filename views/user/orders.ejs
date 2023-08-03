@@ -42,9 +42,9 @@
                                                     <h6 class="font_12 mt-3">PAYMENT : <%= order.payment_method %>
                                                     </h6>
                                                     <% if (order.payment_method==='cod' ) { %>
-                                                        <h6>To Pay : <span class="col_yell mt-3">$<%= order.total %></span></h6>
+                                                        <h6>To Pay : <span class="col_yell mt-3">Rs <%= order.total %></span></h6>
                                                         <% } else { %>
-                                                            <h6>Total Amount Paid : <span class="col_yell mt-3">$<%= order.total %></span></h6>
+                                                            <h6>Total Amount Paid : <span class="col_yell mt-3">Rs <%= order.total %></span></h6>
                                                             <% } %>
                                                 </div>
                                                 <div class="cart_3l1i2">
@@ -67,9 +67,9 @@
                                                         <h6 class="font_12 mt-3">PAYMENT : <%= order.payment_method %>
                                                         </h6>
                                                         <% if (order.payment_method==='cod' ) { %>
-                                                            <h6>To Pay : <span class="col_yell mt-3">$<%= order.total %></span></h6>
+                                                            <h6>To Pay : <span class="col_yell mt-3">Rs <%= order.total %></span></h6>
                                                             <% } else { %>
-                                                                <h6>Total Amount Paid : <span class="col_yell mt-3">$<%= order.total %></span></h6>
+                                                                <h6>Total Amount Paid : <span class="col_yell mt-3">Rs<%= order.total %></span></h6>
                                                                 <% } %>
                                                     </div>
                                                     <div class="cart_3l1i2">
@@ -92,11 +92,11 @@
                                                             <h6 class="font_12 mt-3">PAYMENT : <%= order.payment_method %>
                                                             </h6>
                                                             <% if (order.payment_method==='cod' ) { %>
-                                                                <h6>To Pay: <span class="col_yell mt-3">$<%= order.total %>
+                                                                <h6>To Pay: <span class="col_yell mt-3">Rs <%= order.total %>
                                                                     </span>
                                                                 </h6>
                                                                 <% } else { %>
-                                                                    <h6>Total Amount Paid : <span class="col_yell mt-3">$<%= order.total %>
+                                                                    <h6>Total Amount Paid : <span class="col_yell mt-3">Rs <%= order.total %>
                                                                         </span>
                                                                     </h6>
                                                                     <% } %>
@@ -120,7 +120,7 @@
                                         </h3>
                                         <h6 class="font_12 mt-3">PAYMENT : <%= order.payment_method %>
                                         </h6>
-                                        <h6>Total Amount Paid : <span class="col_yell mt-3">$<%= order.total %></span></h6>
+                                        <h6>Total Amount Paid : <span class="col_yell mt-3">Rs <%= order.total %></span></h6>
                                         <div class="cart_3l1i2">
                                             <% if (new Date() - new Date(order.deliveredAt) <=3 * 24 * 60 * 60 * 1000) { %>
                                                 <h6><a class="button_1" onclick="returnOrder('<%= order._id %>')">RETURN ORDER</a></h6>
@@ -142,7 +142,7 @@
                                     <% if (order.payment_method==='cod' ) {%>
                                         <h6>[ Order cancelled ]</h6>
                                         <% } else { %>
-                                    <b><span style="font-size: 14px;"><span class="col_yell mt-3">$<%= order.total %></span> will be credited to your wallet within 10 days</span></b>
+                                    <b><span style="font-size: 14px;"><span class="col_yell mt-3">Rs <%= order.total %></span> will be credited to your wallet within 10 days</span></b>
                                             <% } %>
                                             
                                         <div class="cart_3l1i2">
@@ -161,7 +161,7 @@
                                         <h6 class="font_12 mt-3">PAYMENT : <%= order.payment_method %>
                                         </h6>
                                         <h6>[ Order Returned ]</h6>
-                                       <b><span style="font-size: 14px;"><span class="col_yell mt-3">$<%= order.total %></span> will be credited to your wallet within 10 days</span></b>
+                                       <b><span style="font-size: 14px;"><span class="col_yell mt-3">Rs <%= order.total %></span> will be credited to your wallet within 10 days</span></b>
                                         <div class="cart_3l1i2">
                                         <h6><a class="button" data-bs-toggle="modal" data-bs-target="#orderDetailsModal-<%= order._id %>"
                                                     data-order-id="<%= order._id %>">VIEW DETAILS</a></h6>
@@ -177,7 +177,7 @@
                                         </h6>
                                         <h6 class="font_12 mt-3">PAYMENT : <%= order.payment_method %>
                                         </h6>
-                                        <h6>[ <span class="col_yell mt-3">$<%= order.total %></span> Order Refunded to your wallet ]</h6>
+                                        <h6>[ <span class="col_yell mt-3">Rs <%= order.total %></span> Order Refunded to your wallet ]</h6>
                                         <div class="cart_3l1i2">
                                         <h6><a class="button" data-bs-toggle="modal" data-bs-target="#orderDetailsModal-<%= order._id %>"
                                                     data-order-id="<%= order._id %>">VIEW DETAILS</a></h6>

@@ -207,7 +207,10 @@ exports.adminDashboard = async (req, res) => {
     0
   );
   const userCount = await userDb.countDocuments();
-  const orderCount = await orderDb.countDocuments();
+  const deliveredOrderCount = await orderDb.countDocuments({
+    status: "Delivered",
+  });
+
   const placedCount = await orderDb.countDocuments({ status: "Placed" });
   const deliveredCount = await orderDb.countDocuments({ status: "Delivered" });
   const cancelledCount = await orderDb.countDocuments({ status: "Cancelled" });
@@ -268,7 +271,7 @@ exports.adminDashboard = async (req, res) => {
     deliveredOrders,
     totalAmount,
     userCount,
-    orderCount,
+    deliveredOrderCount,
     placedCount,
     deliveredCount,
     cancelledCount,

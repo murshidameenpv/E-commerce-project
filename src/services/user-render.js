@@ -15,8 +15,9 @@ exports.home = async(req, res) => {
     const superDeal = await productDb.find({ listed: false, stock: { $gt: 0 } }).limit(8).populate('brand').exec();
     const dealOfDay = await productDb.find({ listed: false, stock: { $gt: 0 } }).limit(6).populate("brand").exec();
     const category = await categoryDb.find().exec();
-    const todayOfferBanner = await bannerDb.findOne({ title: "Today Offer" });
-    const topDealBanner = await bannerDb.findOne({ title: "Top Deal" });
+    const todayOfferBanner = await bannerDb.findOne({ title: "Top Deal" });
+    const topDealBanner = await bannerDb.findOne({title: "Today Offer",
+    });
     res.render("user/index", {
         user: req.session.user,
         superDeal,

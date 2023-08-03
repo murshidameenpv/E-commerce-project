@@ -21,7 +21,7 @@
                         <div class="card text-white bg-secondary mb-3">
                             <div class="card-body">
                                 <h5 class="card-title">Current balance:</h5>
-                                <h3 class="card-text wallet-amount">$ <%= balance %>
+                                <h3 class="card-text wallet-amount">Rs <%= balance %>
                                 </h3>
                             </div>
                         </div>
@@ -43,10 +43,10 @@
                                             <%= transaction.date.toLocaleDateString() %>
                                         </td>
                                         <% if (transaction.walletUpdate==='credited' ) { %>
-                                            <td>$<%= transaction.total %>
+                                            <td>Rs <%= transaction.total %>
                                             </td>
                                             <% } else { %>
-                                                <td>-$<%= transaction.total %>
+                                                <td>-Rs <%= transaction.total %>
                                                 </td>
                                                 <% } %>
                                                 <td class="<%= transaction.walletUpdate === 'credited' ? 'text-success' : 'text-danger' %>">

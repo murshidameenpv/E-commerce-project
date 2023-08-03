@@ -570,7 +570,6 @@ paypal.configure({
   client_id: PAYPAL_CLIENT_KEY,
   client_secret: PAYPAL_SECRET_KEY,
 });
-console.log(PAYPAL_CLIENT_KEY, PAYPAL_SECRET_KEY, PAYPAL_MODE,"---------00000000000");
 exports.proceedToPayPal = async (req, res) => {
   try {
     const { addressId, netAmount } = req.body;
