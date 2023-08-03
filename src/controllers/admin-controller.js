@@ -97,8 +97,6 @@ exports.adminAddProduct = async (req, res) => {
     try {
       const productId = req.query.productId;
       const { productName, category, price, stock, description, brandName } = req.body;
-      console.log(productName, category, price, stock, description, brandName)
-      console.log(productId);
       const resizeImage = async (inputPath, outputPath, width, height) => {
         await sharp(inputPath)
           .resize(width, height, {

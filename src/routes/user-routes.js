@@ -8,7 +8,6 @@ const checkSession = require('../middleware/user/checkSession')
 const nodeMailer = require('../services/nodemailer')
 //GET METHODS
 router.get('/',
-    checkSession.sessionExists,
     userRender.home);
 router.get("/home",
   userRender.home);  
