@@ -5,7 +5,7 @@ const nocache = require("nocache");
 const morgan = require('morgan');
 const sessionMiddleware = require('./middleware/user/sessionMiddleware');
 require("./db/mongodb");
-
+require('dotenv').config()
 const app = express();
 
 const port = process.env.PORT || 8001;
