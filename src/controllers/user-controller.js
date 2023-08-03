@@ -10,6 +10,7 @@ const orderDb = require('../models/orderSchema')
 const walletDb = require('../models/walletSchema')
 const paypal = require('paypal-rest-sdk');
 const Razorpay = require("razorpay");
+require('dotenv').config()
 
 
 
@@ -503,7 +504,7 @@ exports.codPlaceOrder = async (req, res) => {
 
 // const { PAYPAL_CLIENT_KEY, PAYPAL_SECRET_KEY, PAYPAL_MODE } = process.env;
 paypal.configure({
-  mode: 'sandbox',
+  mode: process.env.PAYPAL_MODE,
   client_id: process.env.PAYPAL_CLIENT_KEY,
   client_secret: process.env.PAYPAL_SECRET_KEY,
 });
