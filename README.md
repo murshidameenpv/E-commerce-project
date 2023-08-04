@@ -1,60 +1,57 @@
-Uniclub is a fully functional e-commerce website,
+<h1 align="center" id="title">E-commerce-TheGadgetszone-shopping-webApplication</h1>
 
-The live version of the project can be accessed at https://uniclubonline.store .
-Built the website using a range of modern technologies, including:
-Node.js and Express.js for the backend
-MongoDB for the database
-Handlebars.js, CSS, and Bootstrap 4 for the frontend
-JavaScript ES6 for programming
-Axios for handling HTTP requests
-JQuery for DOM manipulation
-Cropper.js, DataTables, Toastify.js, Twilio, Cloudinary, Razorpay, and PayPal integrations through npm libraries
-Designed the website layout and user interface using Figma
-Designed and developed a fully functional e-commerce website featuring multiple pages and functionality including,
-USER SIDE :
+<p align="center"><img src="https://dgadgetszone.shop" alt="project-image"></p>
 
-signup and login with validation
-login and forgot password with OTP
-profile management
-Address Management (CRUD)
-profile Picture change with image cropping
-wallet
-product single page with image zooming ( for image zooming I used elevate-zoom JQuery lib )
-Category Managed, products can be listed as per the category.
-Filters :
-price filter with a slider range
-price Sorting ( High to Low && Low to High )
-Search ( search is done by the regular expression mongoDB )
-search with category
-search with price
-search with model
-search with brand
-order View where we can cancel and return order. We can return order only after the order is delivered.
-wishlist
-cart
-Stock Management with validation for OUT OF STOCK.
-checkout
-Coupons can be used to get Discounts.
-PAYMENT INTEGRATION
+<p id="description">TheGadgets Zone is an e-commerce website that specializes in selling electronic gadgets. The website which can be found at dgadgetszone.shop offers a wide range of products and features to make shopping for gadgets easy and convenient. Some of the features available on the site include a shopping cart where customers can add items they wish to purchase and a wishlist where they can save items for later. The site is user-friendly and easy to navigate making it the perfect place to shop for all your electronic gadget needs. Check it out today!</p>
 
-Razorpay
-Paypal
-ADMIN SIDE :
+<h2>Project Screenshots:</h2>
 
-Admin signin with Validation
-Chart and Graph Management
-Fully functional Dashboard
-Sales Report, In sales report we can download the report as per the the user need. we can download the report as pdf, excel, csv, and more..
-Total users, Total Outcome in a month, Total orders placed in the recent month in the Admin Dashboard.
-User Management (CRUD)
-Product Management (CRUD) ,Product images can be cropped before adding the product. ( cropper.js npm library used ).
-Stock Management
-Category Management with validation
-Order Management
-Banner Management
-HOSTING
+<img src="https://imgtr.ee/images/2023/08/04/eaf13b259599f4335787c15af9d10c9b.png" width="1000" height="500/">
 
-Hosted the e-commerce website on an AWS instance using Nginx with PM2 to ensure optimal performance and reliability.
-A live video of the UNICLUB web Application working -visit my LinkedIn : https://www.linkedin.com/in/nijas-khan-073712230/
+<img src="https://imgtr.ee/images/2023/08/04/ae3fafb3f79b4597b9fde9bb20336dd0.png" alt="project-screenshot" width="1000" height="500/">
 
-The live version of the project can be accessed at https://uniclubonline.store .
+  
+  
+<h2>🧐 Features</h2>
+
+Here're some of the project's best features:
+
+*   Shopping cart
+*   Wishlist
+*   Easy navigation
+*   Secure payment option
+*   Mobile optimization
+
+<h2>🛠️ Installation Steps:</h2>
+
+<p>1. To install</p>
+
+```
+npm install npm@latest -g
+```
+
+<p>2. Clone the repo</p>
+
+```
+https://github.com/murshidameenpv/E-commerce-project.git
+```
+
+<p>3. Add .env fileEnter your API in</p>
+
+```
+const API_KEY = 'ENTER YOUR API';
+```
+
+  
+  
+<h2>💻 Built with</h2>
+
+Technologies used in the project:
+
+*   Node.js and Express.js for the backend
+*   MongoDB for the database
+*   JavaScript ES6 for programming
+*   Axios library for handling HTTP requests
+*   JQuery for DOM manipulation
+*   Cropper.js DataTables Toastify.js TwilioRazorpay and PayPal integrations through npm libraries
+*   Designed the website layout and user interface using Figma
